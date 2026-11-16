@@ -284,6 +284,63 @@ section {
     margin: 30px 0;
 }
 
+/* CONTACT */
+
+.contact {
+    background: white;
+}
+
+.contact-card {
+    max-width: 650px;
+    margin: auto;
+    background: var(--light);
+    border-radius: 14px;
+    padding: 35px;
+    border: 1px solid var(--border);
+}
+
+.contact-card label {
+    display: block;
+    font-weight: 600;
+    color: var(--navy);
+    margin: 16px 0 6px;
+    font-size: 14px;
+}
+
+.contact-card input,
+.contact-card textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font: inherit;
+    background: white;
+}
+
+.contact-card textarea {
+    min-height: 130px;
+    resize: vertical;
+}
+
+.contact-card button.btn {
+    border: 0;
+    cursor: pointer;
+    margin: 22px 0 0;
+    font-size: 15px;
+}
+
+.contact-phone {
+    margin-top: 25px;
+    text-align: center;
+    font-size: 16px;
+}
+
+.contact-phone a {
+    color: var(--blue);
+    font-weight: 700;
+    text-decoration: none;
+}
+
 /* FOOTER */
 
 footer {
@@ -351,7 +408,8 @@ html[dir="rtl"] footer {
         padding: 50px 6%;
     }
 
-    .download-card {
+    .download-card,
+    .contact-card {
         padding: 25px 15px;
     }
 }
@@ -382,7 +440,11 @@ html[dir="rtl"] footer {
         </a>
 
         <a href="#download" data-i18n="navDownload">
-            Téléchargement
+            Version d'évaluation
+        </a>
+
+        <a href="#contact" data-i18n="navContact">
+            Contact
         </a>
 
         <select id="language" aria-label="Language">
@@ -416,7 +478,7 @@ html[dir="rtl"] footer {
         <a class="btn"
            href="https://github.com/redak125/CBPManagement/releases/latest/download/Setup_CBPManagement.exe"
            data-i18n="downloadWindows">
-            Télécharger pour Windows
+            Version d'évaluation pour Windows
         </a>
 
         <a class="btn secondary"
@@ -600,7 +662,7 @@ html[dir="rtl"] footer {
     <div class="section-title">
 
         <h2 data-i18n="downloadTitle">
-            Télécharger CBPManagement
+            Version d'évaluation de CBPManagement
         </h2>
 
         <p data-i18n="downloadSubtitle">
@@ -622,7 +684,7 @@ html[dir="rtl"] footer {
         <a class="btn"
            href="https://github.com/redak125/CBPManagement/releases/latest/download/Setup_CBPManagement.exe"
            data-i18n="downloadNow">
-            Télécharger maintenant
+            Version d'évaluation
         </a>
 
         <hr class="download-divider">
@@ -634,6 +696,50 @@ html[dir="rtl"] footer {
         </p>
 
         <span>DEB</span>
+
+    </div>
+
+</section>
+
+<!-- CONTACT -->
+
+<section class="contact" id="contact">
+
+    <div class="section-title">
+
+        <h2 data-i18n="contactTitle">Contact</h2>
+
+        <p data-i18n="contactSubtitle">
+            Une question ? Écrivez-nous, nous vous répondrons rapidement.
+        </p>
+
+    </div>
+
+    <div class="contact-card">
+
+        <form action="https://formsubmit.co/cherfa.abdelkader@gmail.com" method="POST">
+
+            <input type="hidden" name="_subject" value="Contact depuis la page CBPManagement">
+            <input type="hidden" name="_template" value="table">
+            <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+
+            <label for="c-name" data-i18n="labelName">Nom</label>
+            <input type="text" id="c-name" name="Nom" required>
+
+            <label for="c-email" data-i18n="labelEmail">Votre e-mail</label>
+            <input type="email" id="c-email" name="email" required>
+
+            <label for="c-msg" data-i18n="labelMessage">Message</label>
+            <textarea id="c-msg" name="Message" required></textarea>
+
+            <button class="btn" type="submit" data-i18n="send">Envoyer</button>
+
+        </form>
+
+        <p class="contact-phone">
+            <span data-i18n="mobile">Mobile</span> :
+            <a href="tel:+213550271004" dir="ltr">0550 271 004</a>
+        </p>
 
     </div>
 
@@ -668,14 +774,15 @@ fr: {
     navHome: "Accueil",
     navFeatures: "Fonctionnalités",
     navScreenshots: "Captures d'écran",
-    navDownload: "Téléchargement",
+    navDownload: "Version d'évaluation",
+    navContact: "Contact",
 
     heroTitle: "Pilotez votre centrale à béton avec précision",
 
     heroText:
     "CBPManagement est une application de gestion conçue pour accompagner les professionnels du béton prêt à l'emploi dans le suivi de leur activité.",
 
-    downloadWindows: "Télécharger pour Windows",
+    downloadWindows: "Version d'évaluation pour Windows",
     discover: "Découvrir l'application",
 
     featuresTitle: "Une gestion centralisée",
@@ -709,12 +816,20 @@ fr: {
     screenshotsSubtitle: "Découvrez l'interface de CBPManagement.",
     screenshotCaption: "Interface principale de CBPManagement.",
 
-    downloadTitle: "Télécharger CBPManagement",
+    downloadTitle: "Version d'évaluation de CBPManagement",
     downloadSubtitle: "Choisissez votre système d'exploitation.",
 
     available: "Disponible",
-    downloadNow: "Télécharger maintenant",
+    downloadNow: "Version d'évaluation",
     comingSoon: "Bientôt disponible",
+
+    contactTitle: "Contact",
+    contactSubtitle: "Une question ? Écrivez-nous, nous vous répondrons rapidement.",
+    labelName: "Nom",
+    labelEmail: "Votre e-mail",
+    labelMessage: "Message",
+    send: "Envoyer",
+    mobile: "Mobile",
 
     footerText: "Conçu pour la gestion des centrales à béton."
 
@@ -725,14 +840,15 @@ en: {
     navHome: "Home",
     navFeatures: "Features",
     navScreenshots: "Screenshots",
-    navDownload: "Downloads",
+    navDownload: "Evaluation version",
+    navContact: "Contact",
 
     heroTitle: "Manage your concrete plant with precision",
 
     heroText:
     "CBPManagement is a management application designed to help ready-mix concrete professionals monitor their operations.",
 
-    downloadWindows: "Download for Windows",
+    downloadWindows: "Evaluation version for Windows",
     discover: "Discover the application",
 
     featuresTitle: "Centralized management",
@@ -766,12 +882,20 @@ en: {
     screenshotsSubtitle: "Discover the CBPManagement interface.",
     screenshotCaption: "CBPManagement main interface.",
 
-    downloadTitle: "Download CBPManagement",
+    downloadTitle: "CBPManagement evaluation version",
     downloadSubtitle: "Choose your operating system.",
 
     available: "Available",
-    downloadNow: "Download now",
+    downloadNow: "Evaluation version",
     comingSoon: "Coming soon",
+
+    contactTitle: "Contact",
+    contactSubtitle: "Any question? Write to us and we will reply quickly.",
+    labelName: "Name",
+    labelEmail: "Your email",
+    labelMessage: "Message",
+    send: "Send",
+    mobile: "Mobile",
 
     footerText: "Designed for concrete plant management."
 
@@ -782,14 +906,15 @@ ar: {
     navHome: "الرئيسية",
     navFeatures: "الميزات",
     navScreenshots: "لقطات الشاشة",
-    navDownload: "التنزيل",
+    navDownload: "النسخة التجريبية",
+    navContact: "اتصل بنا",
 
     heroTitle: "أدر محطة الخرسانة الخاصة بك بدقة",
 
     heroText:
     "CBPManagement تطبيق لإدارة ومتابعة نشاط المؤسسات المتخصصة في الخرسانة الجاهزة.",
 
-    downloadWindows: "تحميل لنظام Windows",
+    downloadWindows: "النسخة التجريبية لنظام Windows",
     discover: "اكتشف التطبيق",
 
     featuresTitle: "إدارة مركزية",
@@ -823,12 +948,20 @@ ar: {
     screenshotsSubtitle: "اكتشف واجهة CBPManagement.",
     screenshotCaption: "الواجهة الرئيسية للتطبيق.",
 
-    downloadTitle: "تحميل CBPManagement",
+    downloadTitle: "النسخة التجريبية من CBPManagement",
     downloadSubtitle: "اختر نظام التشغيل.",
 
     available: "متوفر",
-    downloadNow: "تحميل الآن",
+    downloadNow: "النسخة التجريبية",
     comingSoon: "قريباً",
+
+    contactTitle: "اتصل بنا",
+    contactSubtitle: "لديك سؤال؟ راسلنا وسنرد عليك في أقرب وقت.",
+    labelName: "الاسم",
+    labelEmail: "بريدك الإلكتروني",
+    labelMessage: "الرسالة",
+    send: "إرسال",
+    mobile: "الهاتف المحمول",
 
     footerText: "مصمم لإدارة محطات الخرسانة."
 
