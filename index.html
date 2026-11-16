@@ -44,10 +44,17 @@ select {
   color: white;
 }
 .hero {
-  background: linear-gradient(135deg, #0b1730, #163d70);
+  background:
+    linear-gradient(rgba(7, 19, 42, 0.78), rgba(7, 19, 42, 0.88)),
+    url("capture-cbpmanagement.png") center center / cover no-repeat;
   color: white;
-  padding: 95px 8%;
+  padding: 120px 8%;
   text-align: center;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 .hero h1 { font-size: clamp(34px, 5vw, 55px); margin: 0 0 18px; }
 .hero p {
