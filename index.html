@@ -1,306 +1,868 @@
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="CBPManagement - Gestion professionnelle des centrales à béton prêt à l'emploi.">
+
+<meta name="description" content="CBPManagement - Logiciel professionnel de gestion des centrales à béton prêt à l'emploi.">
+<meta name="theme-color" content="#0b1730">
+
 <title>CBPManagement | Concrete Batch Plant Management</title>
 
 <style>
 :root {
-  --navy: #0b1730;
-  --blue: #1769d2;
-  --light: #f3f6fb;
-  --white: #ffffff;
-  --text: #26354c;
-  --muted: #aebbd0;
+    --navy: #0b1730;
+    --navy-light: #142747;
+    --blue: #1769d2;
+    --blue-hover: #3185ef;
+    --light: #f3f6fb;
+    --white: #ffffff;
+    --text: #26354c;
+    --muted: #718096;
+    --border: #e4eaf2;
+    --green: #16834a;
 }
-* { box-sizing: border-box; }
+
+* {
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
 body {
-  margin: 0;
-  font-family: "Segoe UI", Arial, sans-serif;
-  background: var(--light);
-  color: var(--text);
+    margin: 0;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--light);
+    color: var(--text);
 }
+
+/* HEADER */
+
 header {
-  background: var(--navy);
-  color: white;
-  padding: 20px 7%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 16px;
+    background: var(--navy);
+    color: white;
+    padding: 18px 7%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
 }
-.logo { font-size: 25px; font-weight: 800; letter-spacing: .5px; }
-.logo span { color: #55a2ff; }
-nav { display: flex; align-items: center; gap: 22px; flex-wrap: wrap; }
-nav a { color: white; text-decoration: none; font-size: 14px; }
+
+.logo {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: .5px;
+}
+
+.logo span {
+    color: #55a2ff;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 23px;
+    flex-wrap: wrap;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color .2s;
+}
+
+nav a:hover {
+    color: #69adff;
+}
+
 select {
-  padding: 9px 12px;
-  border-radius: 7px;
-  border: 1px solid #53647e;
-  background: #142747;
-  color: white;
+    padding: 9px 12px;
+    border-radius: 7px;
+    border: 1px solid #53647e;
+    background: #142747;
+    color: white;
+    cursor: pointer;
 }
+
+/* HERO */
+
 .hero {
-  background:
-    linear-gradient(rgba(7, 19, 42, 0.10), rgba(7, 19, 42, 0.20)),
-    url("capture-cbpmanagement.png") center center / cover no-repeat;
-  color: white;
-  padding: 120px 8%;
-  text-align: center;
-  min-height: 500px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+    background: linear-gradient(135deg, #0b1730, #163d70);
+    color: white;
+    padding: 100px 8%;
+    text-align: center;
+    min-height: 430px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
-.hero h1 { font-size: clamp(34px, 5vw, 55px); margin: 0 0 18px; }
+
+.hero h1 {
+    font-size: clamp(32px, 5vw, 54px);
+    margin: 0 0 20px;
+    max-width: 950px;
+}
+
 .hero p {
-  color: #d2deef;
-  max-width: 720px;
-  margin: 0 auto 30px;
-  font-size: 18px;
-  line-height: 1.7;
+    color: #d2deef;
+    max-width: 740px;
+    margin: 0 auto 30px;
+    font-size: 18px;
+    line-height: 1.8;
 }
+
+/* BUTTONS */
+
 .btn {
-  display: inline-block;
-  background: var(--blue);
-  color: white;
-  text-decoration: none;
-  padding: 15px 25px;
-  border-radius: 8px;
-  font-weight: 700;
-  margin: 6px;
+    display: inline-block;
+    background: var(--blue);
+    color: white;
+    text-decoration: none;
+    padding: 14px 25px;
+    border-radius: 8px;
+    font-weight: 700;
+    margin: 6px;
+    transition: background .2s, transform .2s;
 }
-.btn:hover { background: #3185ef; }
-.btn.secondary { background: #263b59; }
-section { padding: 65px 8%; }
-.section-title { text-align: center; margin-bottom: 38px; }
-.section-title h2 { color: var(--navy); font-size: 30px; }
-.section-title p { color: #687991; }
+
+.btn:hover {
+    background: var(--blue-hover);
+    transform: translateY(-2px);
+}
+
+.btn.secondary {
+    background: #263b59;
+    border: 1px solid #607795;
+}
+
+.btn.secondary:hover {
+    background: #354e70;
+}
+
+/* SECTIONS */
+
+section {
+    padding: 70px 8%;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.section-title h2 {
+    color: var(--navy);
+    font-size: 31px;
+    margin-bottom: 12px;
+}
+
+.section-title p {
+    color: var(--muted);
+    font-size: 15px;
+}
+
+/* FEATURES */
+
 .features {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 22px;
+    max-width: 1250px;
+    margin: auto;
 }
+
 .feature {
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  border: 1px solid #e5eaf2;
-  box-shadow: 0 5px 18px rgba(20,40,70,.04);
+    background: white;
+    padding: 28px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 5px 18px rgba(20,40,70,.04);
+    transition: transform .2s, box-shadow .2s;
 }
-.feature .symbol { font-size: 28px; }
-.feature h3 { color: var(--navy); margin-bottom: 10px; }
-.feature p { color: #65758b; line-height: 1.6; font-size: 14px; }
+
+.feature:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(20,40,70,.09);
+}
+
+.feature .symbol {
+    font-size: 32px;
+    margin-bottom: 15px;
+}
+
+.feature h3 {
+    color: var(--navy);
+    margin: 0 0 12px;
+    font-size: 18px;
+}
+
+.feature p {
+    color: #65758b;
+    line-height: 1.7;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* SCREENSHOTS */
+
+.screenshots {
+    background: white;
+}
+
+.screenshot-container {
+    max-width: 1100px;
+    margin: auto;
+    text-align: center;
+}
+
+.screenshot-container img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 8px 30px rgba(0,0,0,.12);
+}
+
+.screenshot-caption {
+    color: var(--muted);
+    font-size: 14px;
+    margin-top: 18px;
+}
+
+/* DOWNLOAD */
+
 .download {
-  background: white;
-  text-align: center;
+    background: var(--light);
+    text-align: center;
 }
+
 .download-card {
-  max-width: 650px;
-  margin: auto;
-  background: var(--light);
-  border-radius: 14px;
-  padding: 30px;
+    max-width: 650px;
+    margin: auto;
+    background: white;
+    border-radius: 14px;
+    padding: 35px;
+    border: 1px solid var(--border);
+    box-shadow: 0 5px 20px rgba(20,40,70,.05);
 }
-.status { color: #16834a; font-weight: 700; }
+
+.download-card h3 {
+    color: var(--navy);
+}
+
+.status {
+    color: var(--green);
+    font-weight: 700;
+}
+
+.coming-soon {
+    color: #8793a5;
+}
+
+.download-divider {
+    border: 0;
+    border-top: 1px solid var(--border);
+    margin: 30px 0;
+}
+
+/* FOOTER */
+
 footer {
-  background: var(--navy);
-  color: var(--muted);
-  text-align: center;
-  padding: 28px 15px;
-  font-size: 13px;
+    background: var(--navy);
+    color: #aebbd0;
+    text-align: center;
+    padding: 30px 15px;
+    font-size: 13px;
+    line-height: 1.8;
 }
-[dir="rtl"] { text-align: right; }
-[dir="rtl"] header { direction: rtl; }
-[dir="rtl"] nav { direction: rtl; }
-[dir="rtl"] .hero, [dir="rtl"] .section-title,
-[dir="rtl"] .download { text-align: center; }
-[dir="rtl"] .feature { text-align: right; }
-@media(max-width:650px) {
-  header { justify-content: center; }
-  nav { justify-content: center; }
-  .hero { padding: 65px 6%; }
-  section { padding: 48px 6%; }
+
+footer strong {
+    color: white;
+}
+
+/* RTL ARABIC */
+
+html[dir="rtl"] body {
+    direction: rtl;
+}
+
+html[dir="rtl"] header {
+    direction: rtl;
+}
+
+html[dir="rtl"] nav {
+    direction: rtl;
+}
+
+html[dir="rtl"] .feature {
+    text-align: right;
+}
+
+html[dir="rtl"] .hero,
+html[dir="rtl"] .section-title,
+html[dir="rtl"] .download,
+html[dir="rtl"] footer {
+    text-align: center;
+}
+
+/* RESPONSIVE */
+
+@media(max-width: 700px) {
+
+    header {
+        justify-content: center;
+        text-align: center;
+    }
+
+    nav {
+        justify-content: center;
+        gap: 14px;
+    }
+
+    .hero {
+        padding: 70px 6%;
+        min-height: 380px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    section {
+        padding: 50px 6%;
+    }
+
+    .download-card {
+        padding: 25px 15px;
+    }
 }
 </style>
 </head>
 
 <body>
+
+<!-- HEADER -->
+
 <header>
-  <div class="logo">CBP<span>Management</span></div>
-  <nav>
-    <a href="#home" data-i18n="navHome">Accueil</a>
-    <a href="#features" data-i18n="navFeatures">Fonctionnalités</a>
-    <a href="#download" data-i18n="navDownload">Téléchargement</a>
-    <select id="language" aria-label="Language">
-      <option value="fr">Français</option>
-      <option value="en">English</option>
-      <option value="ar">العربية</option>
-    </select>
-  </nav>
+
+    <div class="logo">
+        CBP<span>Management</span>
+    </div>
+
+    <nav>
+
+        <a href="#home" data-i18n="navHome">Accueil</a>
+
+        <a href="#features" data-i18n="navFeatures">
+            Fonctionnalités
+        </a>
+
+        <a href="#screenshots" data-i18n="navScreenshots">
+            Captures d'écran
+        </a>
+
+        <a href="#download" data-i18n="navDownload">
+            Téléchargement
+        </a>
+
+        <select id="language" aria-label="Language">
+            <option value="fr">Français</option>
+            <option value="en">English</option>
+            <option value="ar">العربية</option>
+        </select>
+
+    </nav>
+
 </header>
 
 <main>
+
+<!-- HOME -->
+
 <section class="hero" id="home">
-  <h1 data-i18n="heroTitle">Pilotez votre centrale à béton avec précision</h1>
-  <p data-i18n="heroText">
-    CBPManagement est une application de gestion conçue pour accompagner
-    les professionnels du béton prêt à l'emploi dans le suivi de leur activité.
-  </p>
-  <a class="btn" href="https://github.com/redak125/CBPManagement/releases/latest/download/Setup_CBPManagement.exe"
-     data-i18n="downloadWindows">Télécharger pour Windows</a>
-  <a class="btn secondary" href="#features" data-i18n="discover">Découvrir l'application</a>
+
+    <h1 data-i18n="heroTitle">
+        Pilotez votre centrale à béton avec précision
+    </h1>
+
+    <p data-i18n="heroText">
+        CBPManagement est une application de gestion conçue
+        pour accompagner les professionnels du béton prêt à
+        l'emploi dans le suivi de leur activité.
+    </p>
+
+    <div>
+
+        <a class="btn"
+           href="https://github.com/redak125/CBPManagement/releases/latest/download/Setup_CBPManagement.exe"
+           data-i18n="downloadWindows">
+            Télécharger pour Windows
+        </a>
+
+        <a class="btn secondary"
+           href="#features"
+           data-i18n="discover">
+            Découvrir l'application
+        </a>
+
+    </div>
+
 </section>
+
+<!-- FEATURES -->
 
 <section id="features">
-  <div class="section-title">
-    <h2 data-i18n="featuresTitle">Une gestion centralisée</h2>
-    <p data-i18n="featuresSubtitle">Les outils essentiels pour suivre votre activité.</p>
-  </div>
 
-  <div class="features">
-    <article class="feature">
-      <div class="symbol">🏭</div>
-      <h3 data-i18n="f1Title">Activité et production</h3>
-      <p data-i18n="f1Text">Suivi de l'activité quotidienne et de la production de béton.</p>
-    </article>
-    <article class="feature">
-      <div class="symbol">🧪</div>
-      <h3 data-i18n="f2Title">Recettes</h3>
-      <p data-i18n="f2Text">Organisation et consultation des formulations de béton.</p>
-    </article>
-    <article class="feature">
-      <div class="symbol">📦</div>
-      <h3 data-i18n="f3Title">Approvisionnements</h3>
-      <p data-i18n="f3Text">Suivi des achats, fournitures et services.</p>
-    </article>
-    <article class="feature">
-      <div class="symbol">💰</div>
-      <h3 data-i18n="f4Title">Dépenses et recettes</h3>
-      <p data-i18n="f4Text">Suivi financier et contrôle des mouvements.</p>
-    </article>
-    <article class="feature">
-      <div class="symbol">🤝</div>
-      <h3 data-i18n="f5Title">Clients et fournisseurs</h3>
-      <p data-i18n="f5Text">Gestion des contacts et suivi des situations.</p>
-    </article>
-    <article class="feature">
-      <div class="symbol">👷</div>
-      <h3 data-i18n="f6Title">Personnel et matériel</h3>
-      <p data-i18n="f6Text">Gestion des équipes et des équipements.</p>
-    </article>
-    <article class="feature">
-      <div class="symbol">📊</div>
-      <h3 data-i18n="f7Title">Rapports et tableaux de bord</h3>
-      <p data-i18n="f7Text">Visualisation des indicateurs et analyse de l'activité.</p>
-    </article>
-  </div>
+    <div class="section-title">
+
+        <h2 data-i18n="featuresTitle">
+            Une gestion centralisée
+        </h2>
+
+        <p data-i18n="featuresSubtitle">
+            Les outils essentiels pour suivre votre activité.
+        </p>
+
+    </div>
+
+    <div class="features">
+
+        <article class="feature">
+
+            <div class="symbol">🏭</div>
+
+            <h3 data-i18n="f1Title">
+                Activité et production
+            </h3>
+
+            <p data-i18n="f1Text">
+                Suivi de l'activité quotidienne et de la production de béton.
+            </p>
+
+        </article>
+
+        <article class="feature">
+
+            <div class="symbol">🧪</div>
+
+            <h3 data-i18n="f2Title">Recettes</h3>
+
+            <p data-i18n="f2Text">
+                Organisation et consultation des formulations de béton.
+            </p>
+
+        </article>
+
+        <article class="feature">
+
+            <div class="symbol">📦</div>
+
+            <h3 data-i18n="f3Title">
+                Approvisionnements
+            </h3>
+
+            <p data-i18n="f3Text">
+                Suivi des achats, fournitures et services.
+            </p>
+
+        </article>
+
+        <article class="feature">
+
+            <div class="symbol">💰</div>
+
+            <h3 data-i18n="f4Title">
+                Dépenses et recettes
+            </h3>
+
+            <p data-i18n="f4Text">
+                Suivi financier et contrôle des mouvements.
+            </p>
+
+        </article>
+
+        <article class="feature">
+
+            <div class="symbol">🤝</div>
+
+            <h3 data-i18n="f5Title">
+                Clients et fournisseurs
+            </h3>
+
+            <p data-i18n="f5Text">
+                Gestion des contacts et suivi des situations.
+            </p>
+
+        </article>
+
+        <article class="feature">
+
+            <div class="symbol">👷</div>
+
+            <h3 data-i18n="f6Title">
+                Personnel et matériel
+            </h3>
+
+            <p data-i18n="f6Text">
+                Gestion des équipes et des équipements.
+            </p>
+
+        </article>
+
+        <article class="feature">
+
+            <div class="symbol">📊</div>
+
+            <h3 data-i18n="f7Title">
+                Rapports et tableaux de bord
+            </h3>
+
+            <p data-i18n="f7Text">
+                Visualisation des indicateurs et analyse de l'activité.
+            </p>
+
+        </article>
+
+        <article class="feature">
+
+            <div class="symbol">📄</div>
+
+            <h3 data-i18n="f8Title">
+                Facturation et documents
+            </h3>
+
+            <p data-i18n="f8Text">
+                Suivi des documents commerciaux et des opérations.
+            </p>
+
+        </article>
+
+    </div>
+
 </section>
+
+<!-- SCREENSHOTS -->
+
+<section class="screenshots" id="screenshots">
+
+    <div class="section-title">
+
+        <h2 data-i18n="screenshotsTitle">
+            Captures d'écran
+        </h2>
+
+        <p data-i18n="screenshotsSubtitle">
+            Découvrez l'interface de CBPManagement.
+        </p>
+
+    </div>
+
+    <div class="screenshot-container">
+
+        <img
+            src="capture-cbpmanagement.png"
+            alt="Interface de CBPManagement"
+            loading="lazy">
+
+        <p class="screenshot-caption"
+           data-i18n="screenshotCaption">
+            Interface principale de CBPManagement.
+        </p>
+
+    </div>
+
+</section>
+
+<!-- DOWNLOAD -->
 
 <section class="download" id="download">
-  <div class="section-title">
-    <h2 data-i18n="downloadTitle">Télécharger CBPManagement</h2>
-    <p data-i18n="downloadSubtitle">Choisissez votre système d'exploitation.</p>
-  </div>
 
-  <div class="download-card">
-    <h3>Windows</h3>
-    <p class="status" data-i18n="available">Disponible</p>
-    <p>Setup_CBPManagement.exe</p>
-    <a class="btn"
-       href="https://github.com/redak125/CBPManagement/releases/latest/download/Setup_CBPManagement.exe"
-       data-i18n="downloadNow">Télécharger maintenant</a>
+    <div class="section-title">
 
-    <hr style="border:0;border-top:1px solid #dce3ed;margin:28px 0">
-    <h3>Linux</h3>
-    <p data-i18n="comingSoon">Bientôt disponible</p>
-    <span>DEB</span>
-  </div>
+        <h2 data-i18n="downloadTitle">
+            Télécharger CBPManagement
+        </h2>
+
+        <p data-i18n="downloadSubtitle">
+            Choisissez votre système d'exploitation.
+        </p>
+
+    </div>
+
+    <div class="download-card">
+
+        <h3>Windows</h3>
+
+        <p class="status" data-i18n="available">
+            Disponible
+        </p>
+
+        <p>Setup_CBPManagement.exe</p>
+
+        <a class="btn"
+           href="https://github.com/redak125/CBPManagement/releases/latest/download/Setup_CBPManagement.exe"
+           data-i18n="downloadNow">
+            Télécharger maintenant
+        </a>
+
+        <hr class="download-divider">
+
+        <h3>Linux</h3>
+
+        <p class="coming-soon" data-i18n="comingSoon">
+            Bientôt disponible
+        </p>
+
+        <span>DEB</span>
+
+    </div>
+
 </section>
+
 </main>
 
+<!-- FOOTER -->
+
 <footer>
-  <p>© <span id="year"></span> CBPManagement — Concrete Batch Plant Management</p>
-  <p data-i18n="footerText">Conçu pour la gestion des centrales à béton.</p>
+
+    <p>
+        © <span id="year"></span>
+        <strong>CBPManagement</strong>
+        — Concrete Batch Plant Management
+    </p>
+
+    <p data-i18n="footerText">
+        Conçu pour la gestion des centrales à béton.
+    </p>
+
 </footer>
 
+<!-- TRANSLATIONS -->
+
 <script>
+
 const translations = {
+
 fr: {
- navHome:"Accueil", navFeatures:"Fonctionnalités", navDownload:"Téléchargement",
- heroTitle:"Pilotez votre centrale à béton avec précision",
- heroText:"CBPManagement est une application de gestion conçue pour accompagner les professionnels du béton prêt à l'emploi dans le suivi de leur activité.",
- downloadWindows:"Télécharger pour Windows", discover:"Découvrir l'application",
- featuresTitle:"Une gestion centralisée",
- featuresSubtitle:"Les outils essentiels pour suivre votre activité.",
- f1Title:"Activité et production", f1Text:"Suivi de l'activité quotidienne et de la production de béton.",
- f2Title:"Recettes", f2Text:"Organisation et consultation des formulations de béton.",
- f3Title:"Approvisionnements", f3Text:"Suivi des achats, fournitures et services.",
- f4Title:"Dépenses et recettes", f4Text:"Suivi financier et contrôle des mouvements.",
- f5Title:"Clients et fournisseurs", f5Text:"Gestion des contacts et suivi des situations.",
- f6Title:"Personnel et matériel", f6Text:"Gestion des équipes et des équipements.",
- f7Title:"Rapports et tableaux de bord", f7Text:"Visualisation des indicateurs et analyse de l'activité.",
- downloadTitle:"Télécharger CBPManagement", downloadSubtitle:"Choisissez votre système d'exploitation.",
- available:"Disponible", downloadNow:"Télécharger maintenant",
- comingSoon:"Bientôt disponible", footerText:"Conçu pour la gestion des centrales à béton."
+
+    navHome: "Accueil",
+    navFeatures: "Fonctionnalités",
+    navScreenshots: "Captures d'écran",
+    navDownload: "Téléchargement",
+
+    heroTitle: "Pilotez votre centrale à béton avec précision",
+
+    heroText:
+    "CBPManagement est une application de gestion conçue pour accompagner les professionnels du béton prêt à l'emploi dans le suivi de leur activité.",
+
+    downloadWindows: "Télécharger pour Windows",
+    discover: "Découvrir l'application",
+
+    featuresTitle: "Une gestion centralisée",
+    featuresSubtitle: "Les outils essentiels pour suivre votre activité.",
+
+    f1Title: "Activité et production",
+    f1Text: "Suivi de l'activité quotidienne et de la production de béton.",
+
+    f2Title: "Recettes",
+    f2Text: "Organisation et consultation des formulations de béton.",
+
+    f3Title: "Approvisionnements",
+    f3Text: "Suivi des achats, fournitures et services.",
+
+    f4Title: "Dépenses et recettes",
+    f4Text: "Suivi financier et contrôle des mouvements.",
+
+    f5Title: "Clients et fournisseurs",
+    f5Text: "Gestion des contacts et suivi des situations.",
+
+    f6Title: "Personnel et matériel",
+    f6Text: "Gestion des équipes et des équipements.",
+
+    f7Title: "Rapports et tableaux de bord",
+    f7Text: "Visualisation des indicateurs et analyse de l'activité.",
+
+    f8Title: "Facturation et documents",
+    f8Text: "Suivi des documents commerciaux et des opérations.",
+
+    screenshotsTitle: "Captures d'écran",
+    screenshotsSubtitle: "Découvrez l'interface de CBPManagement.",
+    screenshotCaption: "Interface principale de CBPManagement.",
+
+    downloadTitle: "Télécharger CBPManagement",
+    downloadSubtitle: "Choisissez votre système d'exploitation.",
+
+    available: "Disponible",
+    downloadNow: "Télécharger maintenant",
+    comingSoon: "Bientôt disponible",
+
+    footerText: "Conçu pour la gestion des centrales à béton."
+
 },
+
 en: {
- navHome:"Home", navFeatures:"Features", navDownload:"Downloads",
- heroTitle:"Manage your concrete plant with precision",
- heroText:"CBPManagement is a management application designed to help ready-mix concrete professionals monitor their operations.",
- downloadWindows:"Download for Windows", discover:"Discover the application",
- featuresTitle:"Centralized management",
- featuresSubtitle:"Essential tools to monitor your operations.",
- f1Title:"Operations and production", f1Text:"Track daily operations and concrete production.",
- f2Title:"Mix designs", f2Text:"Organize and review concrete mix designs.",
- f3Title:"Procurement", f3Text:"Track purchases, supplies and services.",
- f4Title:"Income and expenses", f4Text:"Monitor finances and transactions.",
- f5Title:"Customers and suppliers", f5Text:"Manage contacts and account balances.",
- f6Title:"Staff and equipment", f6Text:"Manage teams and equipment.",
- f7Title:"Reports and dashboards", f7Text:"View indicators and analyze business activity.",
- downloadTitle:"Download CBPManagement", downloadSubtitle:"Choose your operating system.",
- available:"Available", downloadNow:"Download now",
- comingSoon:"Coming soon", footerText:"Designed for concrete plant management."
+
+    navHome: "Home",
+    navFeatures: "Features",
+    navScreenshots: "Screenshots",
+    navDownload: "Downloads",
+
+    heroTitle: "Manage your concrete plant with precision",
+
+    heroText:
+    "CBPManagement is a management application designed to help ready-mix concrete professionals monitor their operations.",
+
+    downloadWindows: "Download for Windows",
+    discover: "Discover the application",
+
+    featuresTitle: "Centralized management",
+    featuresSubtitle: "Essential tools to monitor your operations.",
+
+    f1Title: "Operations and production",
+    f1Text: "Track daily operations and concrete production.",
+
+    f2Title: "Mix designs",
+    f2Text: "Organize and review concrete mix designs.",
+
+    f3Title: "Procurement",
+    f3Text: "Track purchases, supplies and services.",
+
+    f4Title: "Income and expenses",
+    f4Text: "Monitor finances and transactions.",
+
+    f5Title: "Customers and suppliers",
+    f5Text: "Manage contacts and account balances.",
+
+    f6Title: "Staff and equipment",
+    f6Text: "Manage teams and equipment.",
+
+    f7Title: "Reports and dashboards",
+    f7Text: "View indicators and analyze business activity.",
+
+    f8Title: "Invoicing and documents",
+    f8Text: "Track commercial documents and operations.",
+
+    screenshotsTitle: "Screenshots",
+    screenshotsSubtitle: "Discover the CBPManagement interface.",
+    screenshotCaption: "CBPManagement main interface.",
+
+    downloadTitle: "Download CBPManagement",
+    downloadSubtitle: "Choose your operating system.",
+
+    available: "Available",
+    downloadNow: "Download now",
+    comingSoon: "Coming soon",
+
+    footerText: "Designed for concrete plant management."
+
 },
+
 ar: {
- navHome:"الرئيسية", navFeatures:"الميزات", navDownload:"التنزيل",
- heroTitle:"أدر محطة الخرسانة الخاصة بك بدقة",
- heroText:"CBPManagement تطبيق لإدارة ومتابعة نشاط المؤسسات المتخصصة في الخرسانة الجاهزة.",
- downloadWindows:"تحميل لنظام Windows", discover:"اكتشف التطبيق",
- featuresTitle:"إدارة مركزية",
- featuresSubtitle:"الأدوات الأساسية لمتابعة نشاطك.",
- f1Title:"النشاط والإنتاج", f1Text:"متابعة النشاط اليومي وإنتاج الخرسانة.",
- f2Title:"الخلطات", f2Text:"تنظيم ومراجعة تركيبات الخرسانة.",
- f3Title:"التموين", f3Text:"متابعة المشتريات واللوازم والخدمات.",
- f4Title:"الإيرادات والمصاريف", f4Text:"متابعة الوضعية المالية والحركات.",
- f5Title:"العملاء والموردون", f5Text:"إدارة جهات الاتصال ومتابعة الحسابات.",
- f6Title:"الموظفون والمعدات", f6Text:"إدارة الفرق والمعدات.",
- f7Title:"التقارير ولوحات القيادة", f7Text:"عرض المؤشرات وتحليل النشاط.",
- downloadTitle:"تحميل CBPManagement", downloadSubtitle:"اختر نظام التشغيل.",
- available:"متوفر", downloadNow:"تحميل الآن",
- comingSoon:"قريباً", footerText:"مصمم لإدارة محطات الخرسانة."
+
+    navHome: "الرئيسية",
+    navFeatures: "الميزات",
+    navScreenshots: "لقطات الشاشة",
+    navDownload: "التنزيل",
+
+    heroTitle: "أدر محطة الخرسانة الخاصة بك بدقة",
+
+    heroText:
+    "CBPManagement تطبيق لإدارة ومتابعة نشاط المؤسسات المتخصصة في الخرسانة الجاهزة.",
+
+    downloadWindows: "تحميل لنظام Windows",
+    discover: "اكتشف التطبيق",
+
+    featuresTitle: "إدارة مركزية",
+    featuresSubtitle: "الأدوات الأساسية لمتابعة نشاطك.",
+
+    f1Title: "النشاط والإنتاج",
+    f1Text: "متابعة النشاط اليومي وإنتاج الخرسانة.",
+
+    f2Title: "الخلطات",
+    f2Text: "تنظيم ومراجعة تركيبات الخرسانة.",
+
+    f3Title: "التموين",
+    f3Text: "متابعة المشتريات واللوازم والخدمات.",
+
+    f4Title: "الإيرادات والمصاريف",
+    f4Text: "متابعة الوضعية المالية والحركات.",
+
+    f5Title: "العملاء والموردون",
+    f5Text: "إدارة جهات الاتصال ومتابعة الحسابات.",
+
+    f6Title: "الموظفون والمعدات",
+    f6Text: "إدارة الفرق والمعدات.",
+
+    f7Title: "التقارير ولوحات القيادة",
+    f7Text: "عرض المؤشرات وتحليل النشاط.",
+
+    f8Title: "الفواتير والمستندات",
+    f8Text: "متابعة المستندات التجارية والعمليات.",
+
+    screenshotsTitle: "لقطات الشاشة",
+    screenshotsSubtitle: "اكتشف واجهة CBPManagement.",
+    screenshotCaption: "الواجهة الرئيسية للتطبيق.",
+
+    downloadTitle: "تحميل CBPManagement",
+    downloadSubtitle: "اختر نظام التشغيل.",
+
+    available: "متوفر",
+    downloadNow: "تحميل الآن",
+    comingSoon: "قريباً",
+
+    footerText: "مصمم لإدارة محطات الخرسانة."
+
 }
+
 };
+
+/* LANGUAGE MANAGEMENT */
 
 const languageSelect = document.getElementById("language");
 
 function setLanguage(lang) {
-  const t = translations[lang] || translations.fr;
-  document.documentElement.lang = lang;
-  document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
-  document.querySelectorAll("[data-i18n]").forEach(el => {
-    const key = el.getAttribute("data-i18n");
-    if (t[key]) el.textContent = t[key];
-  });
-  languageSelect.value = lang;
+
+    const t = translations[lang] || translations.fr;
+
+    document.documentElement.lang = lang;
+
+    document.documentElement.dir =
+        lang === "ar" ? "rtl" : "ltr";
+
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+
+        const key = el.getAttribute("data-i18n");
+
+        if (t[key]) {
+            el.textContent = t[key];
+        }
+
+    });
+
+    languageSelect.value = lang;
+
 }
-languageSelect.addEventListener("change", e => setLanguage(e.target.value));
-document.getElementById("year").textContent = new Date().getFullYear();
+
+languageSelect.addEventListener("change", function(e) {
+
+    setLanguage(e.target.value);
+
+});
+
+/* FOOTER YEAR */
+
+document.getElementById("year").textContent =
+    new Date().getFullYear();
+
+/* DEFAULT LANGUAGE */
+
 setLanguage("fr");
+
 </script>
+
 </body>
 </html>
