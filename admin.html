@@ -123,7 +123,8 @@ dialog h3{margin:0;font-size:19px}.g2{display:grid;grid-template-columns:1fr 1fr
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import{getAuth,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendPasswordResetEmail,deleteUser,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import{getFirestore,doc,getDoc,collection,addDoc,setDoc,getDocs,updateDoc,writeBatch,query,orderBy,limit,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import{getFirestore,doc,getDoc,collection,addDoc,setDoc,getDocs,updateDoc,writeBatch,query,orderBy,limit,where,deleteDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import{getStorage,ref,listAll,deleteObject}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-storage.js";
 
 const cfg={apiKey:"AIzaSyAifzXsjpvftlxi3RGAVd0g8zznpzCLAf0",authDomain:"cbpm-8ac0e.firebaseapp.com",projectId:"cbpm-8ac0e",storageBucket:"cbpm-8ac0e.firebasestorage.app",messagingSenderId:"14440101768",appId:"1:14440101768:web:61d42ef693721443cfac3d"};
 const app=initializeApp(cfg),app2=initializeApp(cfg,"secondaire"),auth=getAuth(app),auth2=getAuth(app2),db=getFirestore(app);
@@ -132,6 +133,24 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const fmt=t=>t&&t.toDate?t.toDate().toLocaleString("fr-FR",{dateStyle:"short",timeStyle:"short"}):"—";
 const empty=n=>`<tr><td colspan="${n}" class="em">Aucun résultat.</td></tr>`;
 let E=[],U=[],J=[],editId=null;
+
+/* ===== DONNÉES LIÉES À SUPPRIMER AVEC UNE ENTREPRISE — À ADAPTER À VOTRE BASE =====
+   SOUS    : sous-collections de entreprises/{id}            ex. ["sauvegardes"]
+   LIEES   : collections racine dont les documents portent l'id de l'entreprise
+             ex. [{col:"sauvegardes",champ:"entrepriseId"}]
+   STORAGE : dossier Firebase Storage de l'entreprise (ou null) ex. id=>"sauvegardes/"+id */
+const SOUS=[];
+const LIEES=[];
+const STORAGE=null;
+const PURGE=SOUS.length+LIEES.length>0||!!STORAGE;
+async function delDir(r){const l=await listAll(r);let n=0;for(const i of l.items){await deleteObject(i);n++}for(const p of l.prefixes)n+=await delDir(p);return n}
+async function purge(id){
+  let n=0;
+  for(const c of SOUS){const s=await getDocs(collection(db,"entreprises",id,c));for(const d of s.docs){await deleteDoc(d.ref);n++}}
+  for(const l of LIEES){const s=await getDocs(query(collection(db,l.col),where(l.champ,"==",id)));for(const d of s.docs){await deleteDoc(d.ref);n++}}
+  if(STORAGE)n+=await delDir(ref(getStorage(app),STORAGE(id)));
+  return n;
+}
 const count=id=>U.filter(u=>u.entrepriseId===id).length;
 const entName=id=>(E.find(e=>e.id===id)||{}).nom||"Entreprise supprimée";
 
@@ -215,8 +234,8 @@ document.addEventListener("click",async ev=>{
     if(!s&&!await ask("Suspendre "+e.nom+" ?","Les "+count(id)+" compte(s) de cette entreprise perdront l’accès à l’application. Vous pourrez la réactiver à tout moment."))return;
     run(async()=>{await updateDoc(doc(db,"entreprises",id),{etat:s?"active":"suspendue",modifieLe:serverTimestamp()});await log(s?"Entreprise réactivée":"Entreprise suspendue",e.nom)},s?"Entreprise réactivée.":"Entreprise suspendue.")}
   else if(a==="del"){
-    if(!await ask("Supprimer "+e.nom+" ?","Action définitive : l’entreprise et les "+count(id)+" fiche(s) utilisateur associées seront supprimées. Pour la désactiver sans perte, préférez la suspension.",e.nom))return;
-    run(async()=>{const w=writeBatch(db);U.filter(x=>x.entrepriseId===id).forEach(x=>w.delete(doc(db,"utilisateurs",x.id)));w.delete(doc(db,"entreprises",id));await w.commit();await log("Entreprise supprimée",e.nom)},"Entreprise supprimée.")}
+    if(!await ask("Supprimer "+e.nom+" ?","Action définitive : l’entreprise, ses "+count(id)+" fiche(s) utilisateur"+(PURGE?" et toutes ses données (sauvegardes, fichiers)":"")+" seront supprimées. Les comptes Authentication restent à supprimer dans la console Firebase. Pour désactiver sans perte, préférez la suspension.",e.nom))return;
+    run(async()=>{const n=await purge(id);const w=writeBatch(db);U.filter(x=>x.entrepriseId===id).forEach(x=>w.delete(doc(db,"utilisateurs",x.id)));w.delete(doc(db,"entreprises",id));await w.commit();await log("Entreprise supprimée",e.nom+(n?" ("+n+" élément(s) lié(s))":""))},"Entreprise supprimée.")}
   else if(a==="utog"){const s=u.etat==="suspendue";
     if(!s&&!await ask("Suspendre "+u.email+" ?","Cet utilisateur ne pourra plus accéder à l’application tant qu’il n’est pas réactivé."))return;
     run(async()=>{await updateDoc(doc(db,"utilisateurs",id),{etat:s?"active":"suspendue"});await log(s?"Utilisateur réactivé":"Utilisateur suspendu",u.email)},s?"Utilisateur réactivé.":"Utilisateur suspendu.")}
