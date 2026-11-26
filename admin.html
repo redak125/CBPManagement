@@ -110,6 +110,7 @@ dialog h3{margin:0;font-size:19px}.g2{display:grid;grid-template-columns:1fr 1fr
 <dialog id="uD"><form id="uForm"><h3>Nouvel utilisateur</h3>
 <div><label for="uEnt">Entreprise</label><select id="uEnt" required></select></div>
 <div><label for="uEmail">Adresse e-mail</label><input id="uEmail" type="email" autocomplete="off" required></div>
+<div><label for="uNomC">Nom complet</label><input id="uNomC" maxlength="80"></div>
 <div class="g2"><div><label for="uRole">Rôle</label><select id="uRole"><option value="admin">Administrateur</option><option value="utilisateur">Utilisateur</option></select></div>
 <div><label for="uPwd">Mot de passe provisoire</label><div class="pw"><input id="uPwd" type="text" minlength="8" autocomplete="off" dir="ltr" required><button class="btn s" id="uGen" type="button">Générer</button></div></div></div>
 <p class="hint">8 caractères minimum. Communiquez-le à l’utilisateur : il pourra le remplacer avec « Mot de passe oublié ».</p>
@@ -139,14 +140,14 @@ let E=[],U=[],J=[],editId=null;
    LIEES   : collections racine dont les documents portent l'id de l'entreprise
              ex. [{col:"sauvegardes",champ:"entrepriseId"}]
    STORAGE : dossier Firebase Storage de l'entreprise (ou null) ex. id=>"sauvegardes/"+id */
-const SOUS=[];
+const SOUS=["client","fournisseur","appro","prod","recette","prod_appro","prod_fini","silo","personnel","materiel","parametres","depense","transfert","facture","regstock","affect","sousaff","journal","app_meta"];
 const LIEES=[];
 const STORAGE=null;
 const PURGE=SOUS.length+LIEES.length>0||!!STORAGE;
 async function delDir(r){const l=await listAll(r);let n=0;for(const i of l.items){await deleteObject(i);n++}for(const p of l.prefixes)n+=await delDir(p);return n}
 async function purge(id){
   let n=0;
-  for(const c of SOUS){const s=await getDocs(collection(db,"entreprises",id,c));for(const d of s.docs){await deleteDoc(d.ref);n++}}
+  for(const c of SOUS){const s=await getDocs(collection(db,"entreprises",id,c));for(let i=0;i<s.docs.length;i+=400){const w=writeBatch(db);s.docs.slice(i,i+400).forEach(d=>w.delete(d.ref));await w.commit()}n+=s.size}
   for(const l of LIEES){const s=await getDocs(query(collection(db,l.col),where(l.champ,"==",id)));for(const d of s.docs){await deleteDoc(d.ref);n++}}
   if(STORAGE)n+=await delDir(ref(getStorage(app),STORAGE(id)));
   return n;
@@ -188,9 +189,9 @@ function rE(){
 function rU(){
   const q=$("uQ").value.trim().toLowerCase(),f=$("uF").value;
   const r=U.filter(u=>(!f||u.entrepriseId===f)&&(u.email||"").toLowerCase().includes(q)).sort((a,b)=>(a.email||"").localeCompare(b.email||""));
-  $("uB").innerHTML=r.map(u=>{const s=u.etat==="suspendue",es=(E.find(e=>e.id===u.entrepriseId)||{}).etat==="suspendue";
-    return`<tr><td dir="ltr">${esc(u.email)}</td><td>${esc(entName(u.entrepriseId))}${es?"<small>Entreprise suspendue</small>":""}</td><td><span class="b r">${u.role==="admin"?"Administrateur":"Utilisateur"}</span></td>
-<td><span class="b ${s?"off":"ok"}">${s?"Suspendu":"Actif"}</span></td><td>${fmt(u.creeLe)}</td>
+  $("uB").innerHTML=r.map(u=>{const s=u.actif===false,es=(E.find(e=>e.id===u.entrepriseId)||{}).etat==="suspendue";
+    return`<tr><td><span dir="ltr">${esc(u.email)}</span><small>${esc(u.nomComplet||"")}</small></td><td>${esc(entName(u.entrepriseId))}${es?"<small>Entreprise suspendue</small>":""}</td><td><span class="b r">${u.role==="admin"?"Administrateur":"Utilisateur"}</span></td>
+<td><span class="b ${s?"off":"ok"}">${s?"Suspendu":"Actif"}</span></td><td>${fmt(u.createdAt||u.creeLe)}</td>
 <td class="ac"><button class="btn s" data-a="utog" data-id="${esc(u.id)}">${s?"Réactiver":"Suspendre"}</button><button class="btn s" data-a="reset" data-id="${esc(u.id)}">Mot de passe</button><button class="btn s d" data-a="udel" data-id="${esc(u.id)}">Supprimer</button></td></tr>`}).join("")||empty(6);
 }
 ["eQ","eF"].forEach(i=>$(i).addEventListener("input",rE));["uQ","uF"].forEach(i=>$(i).addEventListener("input",rU));
@@ -221,7 +222,7 @@ $("uForm").addEventListener("submit",async ev=>{ev.preventDefault();
   if(count(eid)>=e.maxComptes)return toast("Limite de comptes atteinte pour cette entreprise.",1);
   $("uSave").disabled=true;
   try{const c=await createUserWithEmailAndPassword(auth2,em,$("uPwd").value);
-    try{await setDoc(doc(db,"utilisateurs",c.user.uid),{entrepriseId:eid,role:$("uRole").value,email:c.user.email,etat:"active",creeLe:serverTimestamp()})}catch(x){await deleteUser(c.user);throw x}
+    try{await setDoc(doc(db,"utilisateurs",c.user.uid),{entrepriseId:eid,role:$("uRole").value,email:c.user.email,nomComplet:$("uNomC").value.trim(),actif:true,createdAt:serverTimestamp(),modifiedAt:serverTimestamp(),createdBy:auth.currentUser.email})}catch(x){await deleteUser(c.user);throw x}
     await signOut(auth2);$("uD").close();await log("Utilisateur créé",em+" — "+e.nom);await load();toast("Utilisateur créé.")}
   catch(x){toast(x.code==="auth/email-already-in-use"?"Cette adresse e-mail est déjà utilisée.":x.code==="auth/weak-password"?"Mot de passe trop court (8 caractères minimum).":"Création impossible.",1)}
   finally{$("uSave").disabled=false}});
@@ -236,15 +237,15 @@ document.addEventListener("click",async ev=>{
   else if(a==="del"){
     if(!await ask("Supprimer "+e.nom+" ?","Action définitive : l’entreprise, ses "+count(id)+" fiche(s) utilisateur"+(PURGE?" et toutes ses données (sauvegardes, fichiers)":"")+" seront supprimées. Les comptes Authentication restent à supprimer dans la console Firebase. Pour désactiver sans perte, préférez la suspension.",e.nom))return;
     run(async()=>{const n=await purge(id);const w=writeBatch(db);U.filter(x=>x.entrepriseId===id).forEach(x=>w.delete(doc(db,"utilisateurs",x.id)));w.delete(doc(db,"entreprises",id));await w.commit();await log("Entreprise supprimée",e.nom+(n?" ("+n+" élément(s) lié(s))":""))},"Entreprise supprimée.")}
-  else if(a==="utog"){const s=u.etat==="suspendue";
+  else if(a==="utog"){const s=u.actif===false;
     if(!s&&!await ask("Suspendre "+u.email+" ?","Cet utilisateur ne pourra plus accéder à l’application tant qu’il n’est pas réactivé."))return;
-    run(async()=>{await updateDoc(doc(db,"utilisateurs",id),{etat:s?"active":"suspendue"});await log(s?"Utilisateur réactivé":"Utilisateur suspendu",u.email)},s?"Utilisateur réactivé.":"Utilisateur suspendu.")}
+    run(async()=>{await updateDoc(doc(db,"utilisateurs",id),{actif:s,modifiedAt:serverTimestamp()});await log(s?"Utilisateur réactivé":"Utilisateur suspendu",u.email)},s?"Utilisateur réactivé.":"Utilisateur suspendu.")}
   else if(a==="reset"){
     if(!await ask("Réinitialiser le mot de passe ?","Un e-mail de réinitialisation sera envoyé à "+u.email+"."))return;
     run(async()=>{await sendPasswordResetEmail(auth,u.email);await log("Réinitialisation du mot de passe",u.email)},"E-mail de réinitialisation envoyé.")}
   else if(a==="udel"){
     if(!await ask("Supprimer "+u.email+" ?","La fiche est supprimée et l’accès à CBPManagement retiré. Le compte reste listé dans Firebase > Authentication, où vous pouvez aussi le supprimer."))return;
-    run(async()=>{await updateDoc(doc(db,"utilisateurs",id),{etat:"suspendue"}).catch(()=>{});const w=writeBatch(db);w.delete(doc(db,"utilisateurs",id));await w.commit();await log("Utilisateur supprimé",u.email)},"Utilisateur supprimé.")}
+    run(async()=>{const w=writeBatch(db);w.delete(doc(db,"utilisateurs",id));await w.commit();await log("Utilisateur supprimé",u.email)},"Utilisateur supprimé.")}
 });
 
 const lerr=t=>$("lerr").textContent=t||"";
