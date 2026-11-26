@@ -175,13 +175,19 @@ dialog:has(#adminPanel.on){width:min(1100px,96vw);max-height:92vh;overflow:auto}
 
 <!-- Fenêtre de connexion (ajout) -->
 <dialog id="loginDlg" aria-labelledby="lgTitle"><div class="dlg">
-<h2 id="lgTitle" data-i="lgTitle">Espace propriétaire</h2>
+<h2 id="lgTitle" data-i="lgTitle">Espace CBPManagement</h2>
 <form id="lgForm">
 <div><label for="lgEmail" data-i="emailLabel">Adresse e-mail</label><input id="lgEmail" type="email" autocomplete="username" required></div>
 <div><label for="lgPwd" data-i="lgPwdLabel">Mot de passe</label><input id="lgPwd" type="password" autocomplete="current-password" required></div>
 <button class="btn" id="lgSubmit" type="submit" data-i="lgBtn">Se connecter</button>
 </form>
-<div id="lgIn" hidden><p class="lgok" data-i="lgOk">Connexion réussie : vous êtes le propriétaire.</p><p id="lgUser" dir="ltr"></p>
+<div id="lgIn" hidden><p class="lgok" data-i="lgOk">Connexion réussie.</p><p id="lgUser" dir="ltr"></p>
+<div id="companyPanel" hidden style="background:#fff;border:1px solid var(--line);border-radius:6px;padding:16px;margin:14px 0">
+ <h3 style="margin:0 0 8px">Espace utilisateur</h3>
+ <p id="companyWelcome" style="margin:0 0 6px;font-weight:700"></p>
+ <p id="companyInfo" class="ad-muted" style="margin:0"></p>
+ <p class="ad-muted" style="margin:10px 0 0">Compte authentifié et associé à une entreprise. L'accès aux fonctions de l'application de gestion sera intégré dans une prochaine étape.</p>
+</div>
 <div id="adminPanel">
  <div class="ad-head"><h3>Administration CBPManagement</h3><span class="ad-muted">Espace propriétaire</span></div>
  <div class="ad-stats"><div class="ad-stat"><b id="stCompanies">0</b><span>Entreprises</span></div><div class="ad-stat"><b id="stUsers">0</b><span>Comptes utilisateurs</span></div><div class="ad-stat"><b id="stActive">0</b><span>Entreprises actives</span></div><div class="ad-stat"><b id="stSubs">0</b><span>Abonnements</span></div></div>
@@ -215,7 +221,7 @@ setLanguage(L==='en'||L==='ar'?L:'fr');
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, collection, getDocs, addDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, collection, getDocs, query, where, addDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 // Configuration du projet Firebase CBPM (ces valeurs ne sont pas secrètes)
 const app = initializeApp({
@@ -233,9 +239,9 @@ const $ = (id) => document.getElementById(id);
 
 // Messages de la fenêtre de connexion (fr, en, ar)
 const M = {
-  fr: { bad: 'Adresse e-mail ou mot de passe incorrect.', many: 'Trop de tentatives. Réessayez dans quelques minutes.', net: 'Pas de connexion Internet.', notOwner: 'Ce compte n’est pas un compte propriétaire.', fail: 'Connexion impossible.' },
-  en: { bad: 'Incorrect email address or password.', many: 'Too many attempts. Try again in a few minutes.', net: 'No Internet connection.', notOwner: 'This account is not an owner account.', fail: 'Sign-in failed.' },
-  ar: { bad: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.', many: 'محاولات كثيرة. أعد المحاولة بعد بضع دقائق.', net: 'لا يوجد اتصال بالإنترنت.', notOwner: 'هذا الحساب ليس حساب مالك.', fail: 'تعذر تسجيل الدخول.' }
+  fr: { bad: 'Adresse e-mail ou mot de passe incorrect.', many: 'Trop de tentatives. Réessayez dans quelques minutes.', net: 'Pas de connexion Internet.', notOwner: 'Ce compte ne possède aucun profil utilisateur CBPManagement.', inactive: 'Ce compte utilisateur est désactivé.', fail: 'Connexion impossible.' },
+  en: { bad: 'Incorrect email address or password.', many: 'Too many attempts. Try again in a few minutes.', net: 'No Internet connection.', notOwner: 'This account has no CBPManagement user profile.', inactive: 'This user account is disabled.', fail: 'Sign-in failed.' },
+  ar: { bad: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.', many: 'محاولات كثيرة. أعد المحاولة بعد بضع دقائق.', net: 'لا يوجد اتصال بالإنترنت.', notOwner: 'لا يوجد ملف مستخدم لهذا الحساب في CBPManagement.', inactive: 'هذا الحساب معطل.', fail: 'تعذر تسجيل الدخول.' }
 };
 const m = (k) => (M[document.documentElement.lang] || M.fr)[k];
 const msg = (k) => { $("lgMsg").textContent = k ? m(k) : ""; };
@@ -255,22 +261,67 @@ $("lgForm").addEventListener("submit", async (e) => {
   } finally { $("lgSubmit").disabled = false; }
 });
 
-// Adresse du compte propriétaire principal
-const OWNER_EMAIL = "idir29@gmail.com";
-
-// Après chaque connexion ou déconnexion : vérifier que le compte est propriétaire
+// Après connexion : distinguer le propriétaire des utilisateurs d'entreprise
 onAuthStateChanged(auth, async (user) => {
-  if (!user) { $("lgForm").hidden = false; $("lgIn").hidden = true; $("adminPanel").classList.remove("on"); $("lgPwd").value = ""; return; }
+  if (!user) {
+    $("lgForm").hidden = false;
+    $("lgIn").hidden = true;
+    $("adminPanel").classList.remove("on");
+    $("companyPanel").hidden = true;
+    $("lgPwd").value = "";
+    return;
+  }
+
   try {
+    // 1) Vérification du propriétaire
     const fiche = await getDoc(doc(db, "proprietaires", user.uid));
-    if (fiche.exists() && fiche.data().role === "proprietaire" && (user.email || "").toLowerCase() === OWNER_EMAIL) {
-      $("lgUser").textContent = user.email; $("lgForm").hidden = true; $("lgIn").hidden = false; $("adminPanel").classList.add("on"); msg("");
-      try { await loadAdmin(); } catch (e) { adminMsg("Lecture Firestore impossible. Vérifie les règles de sécurité : " + e.message); }
-    } else { await signOut(auth); msg("notOwner"); }
-  } catch (err) { await signOut(auth); msg("fail"); }
+    if (fiche.exists() && fiche.data().role === "proprietaire" &&
+        (user.email || "").toLowerCase() === OWNER_EMAIL) {
+      $("lgUser").textContent = user.email;
+      $("lgForm").hidden = true;
+      $("lgIn").hidden = false;
+      $("companyPanel").hidden = true;
+      $("adminPanel").classList.add("on");
+      msg("");
+      try { await loadAdmin(); }
+      catch (e) { adminMsg("Lecture Firestore impossible. Vérifie les règles de sécurité : " + e.message); }
+      return;
+    }
+
+    // 2) Recherche du profil utilisateur lié à cet UID Firebase
+    const qUser = query(collection(db, "utilisateurs"), where("uid", "==", user.uid));
+    const result = await getDocs(qUser);
+    if (result.empty) {
+      await signOut(auth);
+      msg("notOwner");
+      return;
+    }
+
+    const profil = result.docs[0].data();
+    if (profil.actif === false) {
+      await signOut(auth);
+      msg("inactive");
+      return;
+    }
+
+    $("lgUser").textContent = user.email || profil.email || "";
+    $("companyWelcome").textContent = "Bienvenue " + (profil.nom || user.email || "");
+    $("companyInfo").textContent = "Entreprise associée : " + (profil.entrepriseId || "non renseignée") +
+      " · Rôle : " + (profil.role || "utilisateur");
+    $("lgForm").hidden = true;
+    $("lgIn").hidden = false;
+    $("adminPanel").classList.remove("on");
+    $("companyPanel").hidden = false;
+    msg("");
+  } catch (err) {
+    await signOut(auth);
+    msg("fail");
+    console.error("Erreur de vérification du compte :", err);
+  }
 });
 
 // Administration : seul le propriétaire authentifié peut charger les données.
+const OWNER_EMAIL = "idir29@gmail.com";
 let companiesCache = [], usersCache = [], subsCache = [];
 const adminMsg = (t) => { $("adMsg").textContent = t || ""; };
 const esc = (v) => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -292,7 +343,7 @@ $("companiesRows").addEventListener("click",async e=>{
  const edit=e.target.closest("[data-company-edit]");
  if(edit){const c=companiesCache.find(x=>x.id===edit.dataset.companyEdit);if(!c)return;const name=prompt("Raison sociale :",c.raisonSociale||"");if(!name||!name.trim())return;const wilaya=prompt("Wilaya :",c.wilaya||"");const quota=parseInt(prompt("Quota de comptes :",String(c.quotaComptes||1)),10);if(!Number.isInteger(quota)||quota<1){adminMsg("Quota invalide.");return;}try{await updateDoc(doc(db,"entreprises",c.id),{raisonSociale:name.trim(),wilaya:(wilaya||"").trim(),quotaComptes:quota,updatedAt:serverTimestamp()});await loadAdmin();}catch(err){adminMsg("Modification refusée : "+err.message);}return;}
  const b=e.target.closest("[data-company-toggle]");if(!b)return;const c=companiesCache.find(x=>x.id===b.dataset.companyToggle);if(!c)return;try{await updateDoc(doc(db,"entreprises",c.id),{statut:c.statut==="suspendue"?"active":"suspendue",updatedAt:serverTimestamp()});await loadAdmin();}catch(err){adminMsg("Modification refusée : "+err.message);}});
-$("addUser").addEventListener("click",async()=>{if(!companiesCache.length){adminMsg("Crée d’abord une entreprise.");return;}const email=prompt("Adresse e-mail du nouvel utilisateur :");if(!email)return;const nom=prompt("Nom de l’utilisateur :")||"";const companyChoices=companiesCache.map((c,i)=>(i+1)+". "+c.raisonSociale+" (quota "+c.quotaComptes+")").join("\n");const n=parseInt(prompt("Choisis l’entreprise :\n"+companyChoices,"1"),10)-1;const c=companiesCache[n];if(!c)return;const used=usersCache.filter(u=>u.entrepriseId===c.id).length;if(used>=Number(c.quotaComptes||1)){adminMsg("Quota de comptes atteint pour cette entreprise.");return;}const password=prompt("Mot de passe provisoire (au moins 6 caractères) :");if(!password||password.length<6){adminMsg("Mot de passe trop court.");return;}let compteCree=false;try{const cred=await createUserWithEmailAndPassword(creatorAuth,email.trim(),password);compteCree=true;await addDoc(collection(db,"utilisateurs"),{uid:cred.user.uid,email:email.trim(),nom:nom.trim(),entrepriseId:c.id,role:"utilisateur",actif:true,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});adminMsg("Compte créé. Communique les identifiants à l’utilisateur de manière sécurisée.");await loadAdmin();}catch(e){adminMsg((compteCree?"Compte Auth créé, mais fiche Firestore non enregistrée : ":"Création impossible : ")+e.message);}finally{try{if(creatorAuth.currentUser)await signOut(creatorAuth);}catch(_){}}});
+$("addUser").addEventListener("click",async()=>{if(!companiesCache.length){adminMsg("Crée d’abord une entreprise.");return;}const email=prompt("Adresse e-mail du nouvel utilisateur :");if(!email)return;const nom=prompt("Nom de l’utilisateur :")||"";const companyChoices=companiesCache.map((c,i)=>(i+1)+". "+c.raisonSociale+" (quota "+c.quotaComptes+")").join("\n");const n=parseInt(prompt("Choisis l’entreprise :\n"+companyChoices,"1"),10)-1;const c=companiesCache[n];if(!c)return;const used=usersCache.filter(u=>u.entrepriseId===c.id).length;if(used>=Number(c.quotaComptes||1)){adminMsg("Quota de comptes atteint pour cette entreprise.");return;}const password=prompt("Mot de passe provisoire (au moins 6 caractères) :");if(!password||password.length<6){adminMsg("Mot de passe trop court.");return;}try{const cred=await createUserWithEmailAndPassword(creatorAuth,email.trim(),password);await addDoc(collection(db,"utilisateurs"),{uid:cred.user.uid,email:email.trim(),nom:nom.trim(),entrepriseId:c.id,role:"utilisateur",actif:true,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});await signOut(creatorAuth);adminMsg("Compte créé. Communique les identifiants à l’utilisateur de manière sécurisée.");await loadAdmin();}catch(e){adminMsg("Création impossible : "+e.message);}});
 $("addSub").addEventListener("click",async()=>{if(!companiesCache.length){adminMsg("Crée d’abord une entreprise.");return;}const choices=companiesCache.map((c,i)=>(i+1)+". "+c.raisonSociale).join("\n");const n=parseInt(prompt("Entreprise concernée :\n"+choices,"1"),10)-1;const c=companiesCache[n];if(!c)return;const offre=prompt("Nom de l’offre (Essentiel, Pro, Premium…) :","Standard");if(!offre)return;const debut=prompt("Date de début (AAAA-MM-JJ) :",new Date().toISOString().slice(0,10));const expiration=prompt("Date d’expiration (AAAA-MM-JJ) :");if(!debut||!expiration)return;try{await addDoc(collection(db,"abonnements"),{entrepriseId:c.id,offre:offre.trim(),debut,expiration,statut:"actif",createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});await loadAdmin();}catch(e){adminMsg("Enregistrement impossible : "+e.message);}});
 
 </script>
