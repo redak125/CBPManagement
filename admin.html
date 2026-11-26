@@ -143,11 +143,11 @@ $("cW").addEventListener("input",()=>{$("cOk").disabled=$("cW").value.trim()!==$
 document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>b.closest("dialog").close()));
 
 async function load(){
-  try{
-    const[a,b,c]=await Promise.all([getDocs(collection(db,"entreprises")),getDocs(collection(db,"utilisateurs")),getDocs(query(collection(db,"journal"),orderBy("le","desc"),limit(100)))]);
-    E=a.docs.map(d=>({id:d.id,...d.data()})).sort((x,y)=>(x.nom||"").localeCompare(y.nom||"","fr"));
-    U=b.docs.map(d=>({id:d.id,...d.data()}));J=c.docs.map(d=>d.data());render();
-  }catch(e){toast("Chargement impossible. Vérifiez votre connexion et vos règles Firestore.",1)}
+  let err=null;const ok=p=>p.catch(e=>{err=err||e;console.error(e);return null});
+  const[a,b,c]=await Promise.all([ok(getDocs(collection(db,"entreprises"))),ok(getDocs(collection(db,"utilisateurs"))),getDocs(query(collection(db,"journal"),orderBy("le","desc"),limit(100))).catch(e=>{console.warn("Journal illisible :",e);return null})]);
+  E=a?a.docs.map(d=>({id:d.id,...d.data()})).sort((x,y)=>(x.nom||"").localeCompare(y.nom||"","fr")):[];
+  U=b?b.docs.map(d=>({id:d.id,...d.data()})):[];J=c?c.docs.map(d=>d.data()):[];render();
+  if(err)toast(err.code==="permission-denied"?"Lecture refusée par les règles Firestore (entreprises ou utilisateurs).":"Chargement impossible : "+(err.code||err.message),1);
 }
 const logRow=j=>`<tr><td>${fmt(j.le)}</td><td>${esc(j.par)}</td><td>${esc(j.action)}</td><td>${esc(j.cible)}</td></tr>`;
 function render(){
