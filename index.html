@@ -88,6 +88,19 @@ footer{background:#0f1822;color:#9fb0c0;padding:30px 0;font-size:13px}
 @media(max-width:560px){.callbar .w{padding:10px 0;gap:8px}.callbar .lbl{font-size:13px;width:100%;text-align:center}.callbar a.num{width:100%;justify-content:center;font-size:28px;padding:10px 16px}.fg,.dg,form{grid-template-columns:1fr}.st{grid-template-columns:1fr}.row{grid-template-columns:78px 1fr 64px}.tr{font-size:12px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar i{animation:none}.callbar .ico,.callbar a.num,.callbar:before{animation:none}}
 html[dir=rtl] .btns{justify-content:flex-start}
+/* ===== Fenêtre de connexion (ajout) ===== */
+[hidden]{display:none!important}
+dialog{border:0;border-radius:8px;padding:0;width:min(380px,92vw);background:var(--pap);color:var(--ink);box-shadow:0 24px 50px -20px rgba(23,34,45,.6)}
+dialog::backdrop{background:rgba(23,34,45,.6)}
+.dlg{display:grid;gap:14px;padding:26px}
+.dlg h2{margin:0;font-size:20px}
+.dlg form{grid-template-columns:1fr}
+.dlg .btn{width:100%;border:0;cursor:pointer;text-align:center;font-family:inherit}
+.dlg form .btn{justify-self:stretch}
+.dlg .btn.x{background:transparent;color:var(--steel);border:1px solid var(--line)}
+.dlg .lgok{margin:0;font-weight:700;color:var(--acc)}
+#lgUser{margin:0;color:var(--mut);font-size:14px}
+#lgMsg{margin:0;min-height:1.3em;font-size:14px;color:#b3261e}
 </style>
 </head>
 <body>
@@ -98,7 +111,7 @@ html[dir=rtl] .btns{justify-content:flex-start}
 </div></div>
 <header><div class="w h">
 <a class="brand" href="#home"><span class="mark"></span>CBPManagement</a>
-<nav class="nav"><a href="#home" data-i="navHome">Accueil</a><a href="#features" data-i="navFeatures">Fonctionnalités</a><a href="#mobile" data-i="navMobile">Application mobile</a><a href="#screenshots" data-i="navShots">Captures</a><a href="#contact" data-i="navContact">Contact</a><a href="#download" class="cta" data-i="navDownload">Téléchargement</a><select id="language" aria-label="Language"><option value="fr">FR</option><option value="en">EN</option><option value="ar">AR</option></select></nav>
+<nav class="nav"><a href="#home" data-i="navHome">Accueil</a><a href="#features" data-i="navFeatures">Fonctionnalités</a><a href="#mobile" data-i="navMobile">Application mobile</a><a href="#screenshots" data-i="navShots">Captures</a><a href="#contact" data-i="navContact">Contact</a><a href="#" id="btnLogin" data-i="navLogin">Connexion</a><a href="#download" class="cta" data-i="navDownload">Téléchargement</a><select id="language" aria-label="Language"><option value="fr">FR</option><option value="en">EN</option><option value="ar">AR</option></select></nav>
 </div></header>
 </div>
 <main>
@@ -145,10 +158,24 @@ html[dir=rtl] .btns{justify-content:flex-start}
 </main>
 <footer><div class="w ft"><div>© <span id="year"></span> <strong>CBPManagement</strong> — Concrete Batch Plant Management<br><span data-i="footerText">Conçu pour la gestion des centrales à béton prêt à l’emploi.</span></div>
 <div><strong>Sarl CBPSoftware</strong> — <span data-i="pubAddr">Ouled Moussa, Boumerdes, Algérie</span><br><span data-i="madeBy">Conception :</span> <strong>Redak Ledba</strong> · <a href="https://github.com/redak125/CBPManagement">GitHub</a></div></div></footer>
+
+<!-- Fenêtre de connexion (ajout) -->
+<dialog id="loginDlg" aria-labelledby="lgTitle"><div class="dlg">
+<h2 id="lgTitle" data-i="lgTitle">Espace propriétaire</h2>
+<form id="lgForm">
+<div><label for="lgEmail" data-i="emailLabel">Adresse e-mail</label><input id="lgEmail" type="email" autocomplete="username" required></div>
+<div><label for="lgPwd" data-i="lgPwdLabel">Mot de passe</label><input id="lgPwd" type="password" autocomplete="current-password" required></div>
+<button class="btn" id="lgSubmit" type="submit" data-i="lgBtn">Se connecter</button>
+</form>
+<div id="lgIn" hidden><p class="lgok" data-i="lgOk">Connexion réussie : vous êtes le propriétaire.</p><p id="lgUser" dir="ltr"></p><button class="btn" id="lgOut" type="button" data-i="lgOutBtn">Se déconnecter</button></div>
+<p id="lgMsg" role="alert"></p>
+<button class="btn x" id="lgClose" type="button" data-i="lgClose">Fermer</button>
+</div></dialog>
+
 <script>
 const T={
-en:{callLabel:'Call us now',navHome:'Home',navFeatures:'Features',navMobile:'Mobile app',navShots:'Screenshots',navDownload:'Downloads',navContact:'Contact',heroTitle:'Your concrete plant. Under control.',heroText:'CBPManagement brings operations, production, inventory, finances and commercial tracking together in one management solution designed for ready-mix concrete professionals.',heroWindows:'↓ Download for Windows',heroAndroid:'Android app ↗',heroNote:'Desktop management with mobile access to your backups.',mixTitle:'Today’s production',mixSub:'Sample tracking by strength class, in m³.',mixTot:'Total',trust1:'Ready-mix concrete plants',trust2:'Dashboards and monitoring',trust3:'Backup and restore',trust4:'Multilingual interface',featuresTitle:'All essential modules, in one place',featuresSub:'A clear way to monitor every stage of your plant operations.',f1t:'Dashboard & operations',f1p:'A business overview to quickly monitor key indicators.',f2t:'Production & mix designs',f2p:'Organize production and manage finished-product compositions.',f3t:'Procurement & inventory',f3p:'Track raw-material receipts, purchases and services.',f4t:'Finance & cash flow',f4p:'Centralize financial movements and review account positions.',f5t:'Customers, suppliers & debts',f5p:'Keep a clear view of business contacts and their balances.',f6t:'Invoicing & documents',f6p:'Prepare and track commercial documents related to your operations.',f7t:'Staff & equipment',f7p:'Centralize information about your plant resources.',f8t:'Reports & management control',f8p:'Analyze data and review operational reports.',f9t:'Backups & settings',f9p:'Protect your data and adapt the application to your organization.',flowTitle:'From raw materials to financial monitoring.',flowText:'CBPManagement brings your plant’s key information into one environment, without scattering your data.',s1t:'Record operations',s1p:'Customers, suppliers, procurement and production.',s2t:'Monitor stock and transactions',s2p:'Review raw materials, mix designs, income and expenses.',s3t:'Analyze and decide',s3p:'Dashboards, reports, debts and management control.',s4t:'Back up your data',s4p:'Keep copies and restore your data when needed.',mobTitle:'Your backups, within reach.',mobText:'The Android app complements the desktop application by providing access to backups associated with your CBPManagement account.',mob1:'Dedicated CBPManagement mobile app',mob2:'Access to cloud backups',mob3:'Review saved data',mob4:'Light and dark interface themes',apkBtn:'↓ Download CBPManagement for Android',apkNote:'APK file — allow installation from this source if Android asks.',darkCap:'Dark theme',lightCap:'Light theme',deskTitle:'An interface designed for everyday monitoring',deskSub:'Access your key indicators and management modules from one workspace.',deskCap:'Example of the desktop application dashboard.',dlTitle:'Choose your version',dlSub:'Download CBPManagement for your device.',winDesc:'Management application for Windows computers. Installer available through GitHub Releases.',winBtn:'↓ Download for Windows',androidDesc:'Companion Android app to access CBPManagement backups.',androidBtn:'↓ Download Android APK',contactTitle:'Let’s talk about your plant',contactSub:'Have a question about CBPManagement? Send us a message.',nameLabel:'Name',emailLabel:'Email address',messageLabel:'Your message',sendBtn:'Send message',phoneLabel:'Phone',footerText:'Designed for ready-mix concrete plant management.',pubAddr:'Ouled Moussa, Boumerdes, Algeria',madeBy:'Created by:'},
-ar:{callLabel:'اتصل بنا الآن',navHome:'الرئيسية',navFeatures:'الميزات',navMobile:'تطبيق الهاتف',navShots:'لقطات الشاشة',navDownload:'التنزيلات',navContact:'اتصل بنا',heroTitle:'محطة الخرسانة الخاصة بك، تحت السيطرة.',heroText:'يجمع CBPManagement الإنتاج والتموين والمخزون والمالية والمتابعة التجارية في حل واحد مصمم لمهنيي الخرسانة الجاهزة.',heroWindows:'↓ تحميل نسخة Windows',heroAndroid:'تطبيق Android ↗',heroNote:'إدارة عبر الحاسوب مع إمكانية الوصول إلى النسخ الاحتياطية من الهاتف.',mixTitle:'إنتاج اليوم',mixSub:'مثال على المتابعة حسب فئة المقاومة، بالمتر المكعب.',mixTot:'المجموع',trust1:'محطات الخرسانة الجاهزة',trust2:'لوحات القيادة والمتابعة',trust3:'النسخ الاحتياطي والاستعادة',trust4:'واجهة متعددة اللغات',featuresTitle:'جميع وحدات التسيير الأساسية في مكان واحد',featuresSub:'تنظيم واضح لمتابعة مختلف مراحل نشاط محطة الخرسانة.',f1t:'لوحة القيادة والنشاط',f1p:'ملخص للنشاط لمتابعة أهم المؤشرات بسرعة.',f2t:'الإنتاج والتركيبات',f2p:'تنظيم الإنتاج وإدارة تركيبات المنتجات النهائية.',f3t:'التموين والمخزون',f3p:'متابعة دخول المواد الأولية والمشتريات والخدمات.',f4t:'المالية والخزينة',f4p:'تجميع الحركات المالية والاطلاع على الوضعيات.',f5t:'العملاء والموردون والديون',f5p:'متابعة واضحة للمتعاملين وأرصدتهم.',f6t:'الفوترة والمستندات',f6p:'إعداد ومتابعة الوثائق التجارية المرتبطة بالنشاط.',f7t:'الموظفون والمعدات',f7p:'تجميع المعلومات الخاصة بموارد المحطة.',f8t:'التقارير ومراقبة التسيير',f8p:'تحليل البيانات والاطلاع على تقارير المتابعة.',f9t:'النسخ الاحتياطي والإعدادات',f9p:'حماية بياناتك وتكييف التطبيق مع طريقة عملك.',flowTitle:'من المواد الأولية إلى المتابعة المالية.',flowText:'يجمع CBPManagement المعلومات المهمة لمحطتك في بيئة واحدة، دون تشتيت بياناتك.',s1t:'تسجيل العمليات',s1p:'العملاء والموردون والتموين والإنتاج.',s2t:'متابعة المخزون والحركات',s2p:'المواد الأولية والتركيبات والإيرادات والمصاريف.',s3t:'التحليل واتخاذ القرار',s3p:'لوحات القيادة والتقارير والديون ومراقبة التسيير.',s4t:'حفظ بياناتك',s4p:'الاحتفاظ بنسخ واستعادة البيانات عند الحاجة.',mobTitle:'نسخك الاحتياطية في متناول يدك.',mobText:'يكمل تطبيق Android تطبيق الحاسوب ويتيح الوصول إلى النسخ الاحتياطية المرتبطة بحساب CBPManagement.',mob1:'تطبيق مخصص لـ CBPManagement',mob2:'الوصول إلى النسخ السحابية',mob3:'الاطلاع على البيانات المحفوظة',mob4:'واجهة بالمظهر الفاتح والداكن',apkBtn:'↓ تحميل CBPManagement لنظام Android',apkNote:'ملف APK — اسمح بالتثبيت من هذا المصدر إذا طلب Android ذلك.',darkCap:'المظهر الداكن',lightCap:'المظهر الفاتح',deskTitle:'واجهة مصممة للمتابعة اليومية',deskSub:'اطلع على مؤشراتك ووحدات التسيير من مساحة عمل واحدة.',deskCap:'مثال على لوحة قيادة تطبيق الحاسوب.',dlTitle:'اختر نسختك',dlSub:'حمّل CBPManagement لجهازك.',winDesc:'تطبيق تسيير لأجهزة Windows. ملف التثبيت متاح عبر GitHub Releases.',winBtn:'↓ تحميل Windows',androidDesc:'تطبيق Android مرافق للوصول إلى نسخ CBPManagement الاحتياطية.',androidBtn:'↓ تحميل APK لنظام Android',contactTitle:'لنتحدث عن محطتك',contactSub:'هل لديك سؤال حول CBPManagement؟ أرسل لنا رسالة.',nameLabel:'الاسم',emailLabel:'البريد الإلكتروني',messageLabel:'رسالتك',sendBtn:'إرسال الرسالة',phoneLabel:'الهاتف',footerText:'مصمم لتسيير محطات الخرسانة الجاهزة.',pubAddr:'أولاد موسى، بومرداس، الجزائر',madeBy:'التصميم:'}
+en:{callLabel:'Call us now',navHome:'Home',navFeatures:'Features',navMobile:'Mobile app',navShots:'Screenshots',navDownload:'Downloads',navContact:'Contact',heroTitle:'Your concrete plant. Under control.',heroText:'CBPManagement brings operations, production, inventory, finances and commercial tracking together in one management solution designed for ready-mix concrete professionals.',heroWindows:'↓ Download for Windows',heroAndroid:'Android app ↗',heroNote:'Desktop management with mobile access to your backups.',mixTitle:'Today’s production',mixSub:'Sample tracking by strength class, in m³.',mixTot:'Total',trust1:'Ready-mix concrete plants',trust2:'Dashboards and monitoring',trust3:'Backup and restore',trust4:'Multilingual interface',featuresTitle:'All essential modules, in one place',featuresSub:'A clear way to monitor every stage of your plant operations.',f1t:'Dashboard & operations',f1p:'A business overview to quickly monitor key indicators.',f2t:'Production & mix designs',f2p:'Organize production and manage finished-product compositions.',f3t:'Procurement & inventory',f3p:'Track raw-material receipts, purchases and services.',f4t:'Finance & cash flow',f4p:'Centralize financial movements and review account positions.',f5t:'Customers, suppliers & debts',f5p:'Keep a clear view of business contacts and their balances.',f6t:'Invoicing & documents',f6p:'Prepare and track commercial documents related to your operations.',f7t:'Staff & equipment',f7p:'Centralize information about your plant resources.',f8t:'Reports & management control',f8p:'Analyze data and review operational reports.',f9t:'Backups & settings',f9p:'Protect your data and adapt the application to your organization.',flowTitle:'From raw materials to financial monitoring.',flowText:'CBPManagement brings your plant’s key information into one environment, without scattering your data.',s1t:'Record operations',s1p:'Customers, suppliers, procurement and production.',s2t:'Monitor stock and transactions',s2p:'Review raw materials, mix designs, income and expenses.',s3t:'Analyze and decide',s3p:'Dashboards, reports, debts and management control.',s4t:'Back up your data',s4p:'Keep copies and restore your data when needed.',mobTitle:'Your backups, within reach.',mobText:'The Android app complements the desktop application by providing access to backups associated with your CBPManagement account.',mob1:'Dedicated CBPManagement mobile app',mob2:'Access to cloud backups',mob3:'Review saved data',mob4:'Light and dark interface themes',apkBtn:'↓ Download CBPManagement for Android',apkNote:'APK file — allow installation from this source if Android asks.',darkCap:'Dark theme',lightCap:'Light theme',deskTitle:'An interface designed for everyday monitoring',deskSub:'Access your key indicators and management modules from one workspace.',deskCap:'Example of the desktop application dashboard.',dlTitle:'Choose your version',dlSub:'Download CBPManagement for your device.',winDesc:'Management application for Windows computers. Installer available through GitHub Releases.',winBtn:'↓ Download for Windows',androidDesc:'Companion Android app to access CBPManagement backups.',androidBtn:'↓ Download Android APK',contactTitle:'Let’s talk about your plant',contactSub:'Have a question about CBPManagement? Send us a message.',nameLabel:'Name',emailLabel:'Email address',messageLabel:'Your message',sendBtn:'Send message',phoneLabel:'Phone',footerText:'Designed for ready-mix concrete plant management.',pubAddr:'Ouled Moussa, Boumerdes, Algeria',madeBy:'Created by:',navLogin:'Sign in',lgTitle:'Owner area',lgPwdLabel:'Password',lgBtn:'Sign in',lgOk:'Signed in: you are the owner.',lgOutBtn:'Sign out',lgClose:'Close'},
+ar:{callLabel:'اتصل بنا الآن',navHome:'الرئيسية',navFeatures:'الميزات',navMobile:'تطبيق الهاتف',navShots:'لقطات الشاشة',navDownload:'التنزيلات',navContact:'اتصل بنا',heroTitle:'محطة الخرسانة الخاصة بك، تحت السيطرة.',heroText:'يجمع CBPManagement الإنتاج والتموين والمخزون والمالية والمتابعة التجارية في حل واحد مصمم لمهنيي الخرسانة الجاهزة.',heroWindows:'↓ تحميل نسخة Windows',heroAndroid:'تطبيق Android ↗',heroNote:'إدارة عبر الحاسوب مع إمكانية الوصول إلى النسخ الاحتياطية من الهاتف.',mixTitle:'إنتاج اليوم',mixSub:'مثال على المتابعة حسب فئة المقاومة، بالمتر المكعب.',mixTot:'المجموع',trust1:'محطات الخرسانة الجاهزة',trust2:'لوحات القيادة والمتابعة',trust3:'النسخ الاحتياطي والاستعادة',trust4:'واجهة متعددة اللغات',featuresTitle:'جميع وحدات التسيير الأساسية في مكان واحد',featuresSub:'تنظيم واضح لمتابعة مختلف مراحل نشاط محطة الخرسانة.',f1t:'لوحة القيادة والنشاط',f1p:'ملخص للنشاط لمتابعة أهم المؤشرات بسرعة.',f2t:'الإنتاج والتركيبات',f2p:'تنظيم الإنتاج وإدارة تركيبات المنتجات النهائية.',f3t:'التموين والمخزون',f3p:'متابعة دخول المواد الأولية والمشتريات والخدمات.',f4t:'المالية والخزينة',f4p:'تجميع الحركات المالية والاطلاع على الوضعيات.',f5t:'العملاء والموردون والديون',f5p:'متابعة واضحة للمتعاملين وأرصدتهم.',f6t:'الفوترة والمستندات',f6p:'إعداد ومتابعة الوثائق التجارية المرتبطة بالنشاط.',f7t:'الموظفون والمعدات',f7p:'تجميع المعلومات الخاصة بموارد المحطة.',f8t:'التقارير ومراقبة التسيير',f8p:'تحليل البيانات والاطلاع على تقارير المتابعة.',f9t:'النسخ الاحتياطي والإعدادات',f9p:'حماية بياناتك وتكييف التطبيق مع طريقة عملك.',flowTitle:'من المواد الأولية إلى المتابعة المالية.',flowText:'يجمع CBPManagement المعلومات المهمة لمحطتك في بيئة واحدة، دون تشتيت بياناتك.',s1t:'تسجيل العمليات',s1p:'العملاء والموردون والتموين والإنتاج.',s2t:'متابعة المخزون والحركات',s2p:'المواد الأولية والتركيبات والإيرادات والمصاريف.',s3t:'التحليل واتخاذ القرار',s3p:'لوحات القيادة والتقارير والديون ومراقبة التسيير.',s4t:'حفظ بياناتك',s4p:'الاحتفاظ بنسخ واستعادة البيانات عند الحاجة.',mobTitle:'نسخك الاحتياطية في متناول يدك.',mobText:'يكمل تطبيق Android تطبيق الحاسوب ويتيح الوصول إلى النسخ الاحتياطية المرتبطة بحساب CBPManagement.',mob1:'تطبيق مخصص لـ CBPManagement',mob2:'الوصول إلى النسخ السحابية',mob3:'الاطلاع على البيانات المحفوظة',mob4:'واجهة بالمظهر الفاتح والداكن',apkBtn:'↓ تحميل CBPManagement لنظام Android',apkNote:'ملف APK — اسمح بالتثبيت من هذا المصدر إذا طلب Android ذلك.',darkCap:'المظهر الداكن',lightCap:'المظهر الفاتح',deskTitle:'واجهة مصممة للمتابعة اليومية',deskSub:'اطلع على مؤشراتك ووحدات التسيير من مساحة عمل واحدة.',deskCap:'مثال على لوحة قيادة تطبيق الحاسوب.',dlTitle:'اختر نسختك',dlSub:'حمّل CBPManagement لجهازك.',winDesc:'تطبيق تسيير لأجهزة Windows. ملف التثبيت متاح عبر GitHub Releases.',winBtn:'↓ تحميل Windows',androidDesc:'تطبيق Android مرافق للوصول إلى نسخ CBPManagement الاحتياطية.',androidBtn:'↓ تحميل APK لنظام Android',contactTitle:'لنتحدث عن محطتك',contactSub:'هل لديك سؤال حول CBPManagement؟ أرسل لنا رسالة.',nameLabel:'الاسم',emailLabel:'البريد الإلكتروني',messageLabel:'رسالتك',sendBtn:'إرسال الرسالة',phoneLabel:'الهاتف',footerText:'مصمم لتسيير محطات الخرسانة الجاهزة.',pubAddr:'أولاد موسى، بومرداس، الجزائر',madeBy:'التصميم:',navLogin:'تسجيل الدخول',lgTitle:'فضاء المالك',lgPwdLabel:'كلمة المرور',lgBtn:'دخول',lgOk:'تم تسجيل الدخول: أنت المالك.',lgOutBtn:'تسجيل الخروج',lgClose:'إغلاق'}
 };
 const els=[...document.querySelectorAll('[data-i]')],sel=document.getElementById('language');
 els.forEach(e=>e.dataset.fr=e.textContent);
@@ -159,6 +186,60 @@ document.getElementById('year').textContent=new Date().getFullYear();
 let L=null;try{L=localStorage.getItem('lang')}catch(_){}
 if(!L){const nav=(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||'fr']).map(x=>x.slice(0,2).toLowerCase());L=nav.find(x=>x==='fr'||x==='en'||x==='ar')||'fr'}
 setLanguage(L==='en'||L==='ar'?L:'fr');
+</script>
+
+<!-- Connexion Firebase (ajout) -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+// Configuration du projet Firebase CBPM (ces valeurs ne sont pas secrètes)
+const app = initializeApp({
+  apiKey: "AIzaSyAifzXsjpvftlxi3RGAVd0g8zznpzCLAf0",
+  authDomain: "cbpm-8ac0e.firebaseapp.com",
+  projectId: "cbpm-8ac0e",
+  storageBucket: "cbpm-8ac0e.firebasestorage.app",
+  messagingSenderId: "14440101768",
+  appId: "1:14440101768:web:61d42ef693721443cfac3d"
+});
+const auth = getAuth(app), db = getFirestore(app);
+const $ = (id) => document.getElementById(id);
+
+// Messages de la fenêtre de connexion (fr, en, ar)
+const M = {
+  fr: { bad: 'Adresse e-mail ou mot de passe incorrect.', many: 'Trop de tentatives. Réessayez dans quelques minutes.', net: 'Pas de connexion Internet.', notOwner: 'Ce compte n’est pas un compte propriétaire.', fail: 'Connexion impossible.' },
+  en: { bad: 'Incorrect email address or password.', many: 'Too many attempts. Try again in a few minutes.', net: 'No Internet connection.', notOwner: 'This account is not an owner account.', fail: 'Sign-in failed.' },
+  ar: { bad: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.', many: 'محاولات كثيرة. أعد المحاولة بعد بضع دقائق.', net: 'لا يوجد اتصال بالإنترنت.', notOwner: 'هذا الحساب ليس حساب مالك.', fail: 'تعذر تسجيل الدخول.' }
+};
+const m = (k) => (M[document.documentElement.lang] || M.fr)[k];
+const msg = (k) => { $("lgMsg").textContent = k ? m(k) : ""; };
+
+$("btnLogin").addEventListener("click", (e) => { e.preventDefault(); msg(""); $("loginDlg").showModal(); });
+$("lgClose").addEventListener("click", () => $("loginDlg").close());
+$("lgOut").addEventListener("click", () => signOut(auth));
+
+$("lgForm").addEventListener("submit", async (e) => {
+  e.preventDefault(); msg(""); $("lgSubmit").disabled = true;
+  try {
+    await signInWithEmailAndPassword(auth, $("lgEmail").value.trim(), $("lgPwd").value);
+  } catch (err) {
+    const c = err.code;
+    msg(["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found", "auth/invalid-email"].includes(c) ? "bad"
+      : c === "auth/too-many-requests" ? "many" : c === "auth/network-request-failed" ? "net" : "fail");
+  } finally { $("lgSubmit").disabled = false; }
+});
+
+// Après chaque connexion ou déconnexion : vérifier que le compte est propriétaire
+onAuthStateChanged(auth, async (user) => {
+  if (!user) { $("lgForm").hidden = false; $("lgIn").hidden = true; $("lgPwd").value = ""; return; }
+  try {
+    const fiche = await getDoc(doc(db, "proprietaires", user.uid));
+    if (fiche.exists() && fiche.data().role === "proprietaire") {
+      $("lgUser").textContent = user.email; $("lgForm").hidden = true; $("lgIn").hidden = false; msg("");
+    } else { await signOut(auth); msg("notOwner"); }
+  } catch (err) { await signOut(auth); msg("fail"); }
+});
 </script>
 </body>
 </html>
