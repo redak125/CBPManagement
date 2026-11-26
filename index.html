@@ -312,7 +312,12 @@ onAuthStateChanged(auth, async (user) => {
     const fiche = await getDoc(doc(db, "proprietaires", user.uid));
     if (fiche.exists() && fiche.data().role === "proprietaire") {
       $("lgUser").textContent = user.email; $("lgForm").hidden = true; $("lgIn").hidden = false; msg(""); chargerEntreprises();
-    } else { await signOut(auth); msg("notOwner"); }
+    } else {
+      // Compte d'entreprise : ouvrir l'application ; sinon refuser
+      const u = await getDoc(doc(db, "utilisateurs", user.uid));
+      if (u.exists()) { location.href = "app/"; return; }
+      await signOut(auth); msg("notOwner");
+    }
   } catch (err) { await signOut(auth); msg("fail"); }
 });
 </script>
