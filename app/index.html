@@ -5,54 +5,64 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CBPManagement — Application</title>
 <style>
-:root{--ink:#17222d;--steel:#2f4a5f;--acc:#0b7c99;--sig:#0a6fd6;--bg:#e6e8ea;--pap:#f4f5f6;--line:#cfd4d9;--mut:#566574;--err:#b3261e;--ok:#1f8a5b}
+:root{--ink:#17222d;--steel:#2f4a5f;--sig:#0a6fd6;--bg:#eceff2;--card:#fff;--line:#d5dbe1;--mut:#566574;--err:#b3261e;--ok:#1f8a5b;--grn:#2e9e5b;--teal:#0b7c99;--blue:#2f6fcf;--red:#c0392b}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;display:grid;grid-template-columns:210px 1fr;font:15px/1.5 "Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+body{margin:0;min-height:100vh;display:grid;grid-template-columns:210px 1fr;font:14px/1.45 "Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
 aside{background:var(--ink);color:#c3ced8;padding:16px 0}
 .logo{display:flex;align-items:center;gap:10px;padding:0 18px 16px;color:#fff;font-weight:700;font-size:17px}
 .mark{width:22px;height:22px;background:#fff;position:relative}.mark:after{content:"";position:absolute;inset:6px;background:var(--sig)}
 #menu button{display:block;width:100%;text-align:start;padding:11px 18px;border:0;border-inline-start:4px solid transparent;background:none;color:inherit;font:inherit;cursor:pointer}
-#menu button:hover{background:#22303d}#menu button.on{background:#22303d;color:#fff;border-color:var(--sig)}
-main{padding:18px 24px;min-width:0;display:flex;flex-direction:column;gap:14px}
-.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;border-radius:8px;padding:10px 16px}
+#menu button:hover,#menu button.on{background:#22303d}#menu button.on{color:#fff;border-color:var(--sig)}
+main{padding:14px 20px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;border-radius:10px;padding:8px 16px}
 .bar small{display:block;color:var(--mut)}.bd{display:flex;align-items:center;gap:14px}
 #sync{font-size:13px;color:var(--ok)}#sync.p{color:var(--mut)}#sync.e{color:var(--err)}
-.tete{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.tete h2{margin:0;flex:1;font-size:22px}
-input,select{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--ink);width:100%}
-.tete input{width:240px}
-button{font:inherit;cursor:pointer;border-radius:4px;padding:8px 14px;border:1px solid var(--line);background:#fff;color:var(--steel)}
-button.pri{background:var(--sig);border-color:var(--sig);color:#fff;font-weight:600}button.danger{color:var(--err);border-color:var(--err)}
-:focus-visible{outline:3px solid var(--sig);outline-offset:2px}
-.tab{background:#fff;border-radius:8px;overflow-x:auto}
-table{border-collapse:collapse;width:100%}th,td{text-align:start;padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
-th{font-size:13px;color:var(--mut);background:var(--pap)}tbody tr{cursor:pointer}tbody tr:hover{background:#eef4fb}
-#vide,#info{color:var(--mut)}#info.e{color:var(--err)}
-dialog{border:0;border-radius:8px;padding:0;width:min(640px,94vw);background:var(--pap);color:var(--ink)}
+#info{color:var(--mut);margin:0}#info.e{color:var(--err)}
+#vue{display:flex;flex-direction:column;gap:10px}
+.card{background:var(--card);border-radius:10px;padding:12px 14px;box-shadow:0 1px 3px rgba(23,34,45,.08)}
+.fiche h3{margin:0 0 8px;font-size:14px;color:var(--steel)}
+.grille{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px 10px}
+.champ.full{grid-column:1/-1}
+.champ label{display:block;font-size:12px;color:var(--steel);margin-bottom:2px}.req{color:#5fa3ec}
+.champ input,.champ select,.champ textarea{width:100%;height:30px;padding:4px 8px;border:1px solid var(--line);border-radius:6px;font:inherit;background:#fff;color:var(--ink)}
+.champ textarea{height:auto;resize:vertical}
+.champ input[type=checkbox]{width:18px;height:18px;margin-top:6px}
+.champ input[type=number]{text-align:right}
+.champ input[readonly]{background:#eef2f6;font-weight:700;text-align:right}
+.champ :disabled{background:#f0f2f4}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;cursor:pointer;border:0;border-radius:6px;padding:7px 16px;color:#fff;font-weight:600}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--sig);outline-offset:1px}
+.b-grn{background:var(--grn)}.b-teal{background:var(--teal)}.b-blue{background:var(--blue)}.b-red{background:var(--red)}.b-navy{background:var(--steel)}
+.msg{margin:0;min-height:1.3em;font-size:13px;color:var(--err)}.msg.ok{color:var(--ok)}
+.filt{display:flex;flex-wrap:wrap;gap:8px 18px;align-items:center;font-size:12px;color:var(--steel)}
+.filt .g{display:flex;align-items:center;gap:5px}
+.filt input,.filt select{height:28px;padding:2px 6px;border:1px solid var(--line);border-radius:6px;font:inherit;width:auto;max-width:150px;background:#fff;color:var(--ink)}
+.filt input[type=number]{width:80px}
+.tcard{padding:6px;min-height:45vh}.tw{overflow:auto;max-height:62vh}
+table{border-collapse:collapse;width:100%}
+th,td{text-align:start;padding:8px 10px;border-bottom:1px solid #e6eaee;white-space:nowrap}
+th{position:sticky;top:0;background:#eaf0f6;font-size:12px;color:var(--steel);cursor:pointer;user-select:none}
+tbody tr{cursor:pointer}tbody tr:nth-child(even) td{background:#f7f9fb}tbody tr:hover td{background:#eaf3fd}tbody tr.sel td{background:#d3e6fb}
+td.n,th.n{text-align:right}
+.tot{display:flex;flex-wrap:wrap;padding:6px 4px}.tot span{padding:2px 16px;border-inline-end:1px solid var(--line);color:var(--mut);font-size:12px}
+.tot span:last-child{border:0}.tot b{color:var(--steel);font-size:13px;margin-inline-start:6px}
+dialog{border:0;border-radius:10px;padding:14px;width:min(820px,95vw);background:var(--bg);color:var(--ink)}
 dialog::backdrop{background:rgba(23,34,45,.6)}
-.fiche{padding:22px;display:grid;gap:14px}.fiche h3{margin:0}
-.grille{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-label{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
-.actions{display:flex;gap:10px;align-items:center}.esp{flex:1}#dMsg{margin:0;min-height:1.3em;color:var(--err);font-size:14px}
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.sh h3{margin:0}
 [hidden]{display:none!important}
-@media(max-width:760px){body{grid-template-columns:1fr}aside{padding:8px 0}.logo{padding-bottom:8px}#menu{display:flex;overflow-x:auto}#menu button{width:auto;white-space:nowrap}.grille{grid-template-columns:1fr}.tete input{width:100%}}
+@media(max-width:760px){body{grid-template-columns:1fr}aside{padding:8px 0}.logo{padding-bottom:8px}#menu{display:flex;overflow-x:auto}#menu button{width:auto;white-space:nowrap}}
 </style>
 </head>
 <body>
 <aside><div class="logo"><span class="mark"></span>CBPManagement</div><nav id="menu"></nav></aside>
 <main>
   <div class="bar"><div><strong id="entNom">…</strong><small id="userInfo"></small></div>
-    <div class="bd"><span id="sync" class="p">● …</span><button id="btnOut" type="button">Déconnexion</button></div></div>
+    <div class="bd"><span id="sync" class="p">● …</span><button id="btnOut" class="b-navy" type="button">Déconnexion</button></div></div>
   <p id="info">Chargement…</p>
-  <div id="vue" hidden>
-    <div class="tete"><h2 id="titre"></h2><input id="recherche" type="search" placeholder="Rechercher…" aria-label="Rechercher"><button id="btnNew" class="pri" type="button">+ Nouveau</button></div>
-    <div class="tab"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
-    <p id="vide"></p>
-  </div>
+  <div id="vue" hidden></div>
 </main>
-<dialog id="dlg"><form id="frm" class="fiche">
-  <h3 id="dTitre"></h3><div id="champs" class="grille"></div><p id="dMsg" role="alert"></p>
-  <div class="actions"><button type="button" id="dSupp" class="danger">Supprimer</button><span class="esp"></span><button type="button" id="dFerm">Fermer</button><button type="submit" id="dOk" class="pri">Enregistrer</button></div>
-</form></dialog>
+<dialog id="dlgSub"><div class="sh"><h3 id="subTitre"></h3><button id="subFerm" class="b-navy" type="button">Fermer</button></div><div id="subBody"></div></dialog>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
@@ -65,43 +75,329 @@ const app = initializeApp({
 });
 const auth = getAuth(app), db = getFirestore(app);
 const $ = (id) => document.getElementById(id);
+const el = (tag, cls) => { const e = document.createElement(tag); if (cls) e.className = cls; return e; };
 
-// Modules : champs = [clé, libellé, type, obligatoire, valeur par défaut]
-// Types : texte (défaut), tel, email, date, num, sel:A|B, ref:module:champ (lien vers un autre module)
-const TIERS = [["nom","Nom / raison sociale"],["adresse","Adresse"],["tel","Téléphone","tel"],["mobile","Mobile","tel"],["email","E-mail","email"],["rc","RC"],["nif","NIF"],["nis","NIS"],["rib","RIB"],["art","N° article d’imposition"],["categorie","Catégorie"]];
-const r2 = (x) => Math.round((x + Number.EPSILON) * 100) / 100;
-const nb = (x) => Number(x) || 0;
-const fmt = (x) => Number(x).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const MODULES = {
-  appros: { titre: "Appros et services", tri: "date", desc: true, somme: ["ttc"],
-    cols: ["date","fournisseur","bl","produit","qte","pu","ttc"],
-    champs: [["date","Date","date",true,"today"],["nature","Nature","sel:Approvisionnement|Service"],["fournisseur","Fournisseur","ref:fournisseurs:nom",true],["bl","N° BL"],["produit","Produit","ref:produits:designation",true],["silo","Silo","ref:silos:designation"],["qte","Quantité","num",true],["pu","Prix unitaire","num",true],["tva","TVA (%)","num",false,"19"],["obs","Observation"]],
-    calc: { ht: ["Total HT", (r) => r2(nb(r.qte) * nb(r.pu))], ttc: ["Total TTC", (r) => r2(nb(r.qte) * nb(r.pu) * (1 + nb(r.tva) / 100))] } },
-  clients:      { titre: "Clients",      champs: TIERS, cols: ["nom","tel","email","categorie"] },
-  fournisseurs: { titre: "Fournisseurs", champs: TIERS, cols: ["nom","tel","email","categorie"] },
-  produits: { titre: "Produits", cols: ["designation","type","unite"],
-    champs: [["designation","Désignation"],["type","Type","sel:Matière première|Service|Produit fini"],["unite","Unité","sel:T|kg|m³|L|U"]] },
-  silos: { titre: "Silos", cols: ["designation","produit","capacite"],
-    champs: [["designation","Désignation"],["produit","Produit","ref:produits:designation"],["capacite","Capacité","num"]] },
-  personnel: { titre: "Personnel", cols: ["nom","prenom","poste","statut"],
-    champs: [["nom","Nom"],["prenom","Prénom"],["poste","Poste"],["embauche","Date d’embauche","date"],["secu","N° sécurité sociale"],["statut","Statut","sel:Actif|Inactif"],["tel","Téléphone","tel"],["email","E-mail","email"]] },
-  materiels: { titre: "Matériels", cols: ["designation","immat"],
-    champs: [["designation","Désignation"],["immat","Immatriculation"]] }
-};
+// ===== Outils =====
+const MP = "Matière première", SERV = "Service";
+const r2 = (x) => Math.round((x + Number.EPSILON) * 100) / 100, nb = (x) => Number(x) || 0;
+const fmt = (x) => nb(x).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const frDate = (s) => (s ? String(s).split("-").reverse().join("/") : "");
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const aujourdhui = () => new Date(Date.now() - new Date().getTimezoneOffset() * 6e4).toISOString().slice(0, 10);
+const maintenant = () => new Date().toTimeString().slice(0, 5);
+const F = (k, l, t, o = {}) => ({ k, l, t, ...o });   // t : tx, dt, nm, ro (calculé), cb (liste), ce (liste modifiable), ck, ar
 
-let user, ent, role, cle, edition = null;
-const tous = {};   // tous[module] = Map(id -> enregistrement), suppressions comprises (pour garder l'historique)
+let user, ent, role, vueCourante = null, sousVue = null;
+const tous = {};            // tous[table] = Map(id -> enregistrement), suppressions comprises
+const vues = new Set();     // écrans ouverts, à rafraîchir à chaque synchronisation
 const peutEcrire = () => role === "admin";
-const info = (t, err) => { $("info").textContent = t; $("info").className = err ? "e" : ""; $("info").hidden = !t; };
+const actifs = (t) => [...(tous[t] || new Map()).values()].filter((r) => !r.deleted);
+const nomDe = (t, id, ch) => { const x = tous[t] && tous[t].get(id); return x ? x[ch] || "" : ""; };
+const refs = (t, ch) => () => actifs(t).map((r) => ({ v: r.id, l: r[ch] || "" })).sort((a, b) => a.l.localeCompare(b.l));
+const distinct = (t, k) => () => [...new Set(actifs(t).map((r) => r[k]).filter(Boolean))].sort((a, b) => a.localeCompare(b)).map((s) => ({ v: s, l: s }));
+const tauxTVA = () => { const p = tous.parametres && tous.parametres.get("general"); return p && p.tva != null && p.tva !== "" ? nb(p.tva) : 19; };
+const chemin = (t, id) => ["entreprises", ent.id, t, ...(id ? [id] : [])];
 const synchro = (cls, t) => { $("sync").className = cls; $("sync").textContent = "● " + t; };
-const chemin = (id) => ["entreprises", ent.id, cle, ...(id ? [id] : [])];
-const actifs = (k) => [...(tous[k] || new Map()).values()].filter((r) => !r.deleted);
+const info = (t, err) => { $("info").textContent = t; $("info").className = err ? "e" : ""; $("info").hidden = !t; };
 
+// Valeur affichée d'un champ (nom au lieu de l'identifiant, date française, nombre formaté…)
+function show(f, r) {
+  const v = r[f.k];
+  if (f.ref) return nomDe(f.ref[0], v, f.ref[1]);
+  if (f.t === "dt") return frDate(v);
+  if (f.t === "nm" || f.t === "ro") return v == null || v === "" ? "" : fmt(v);
+  if (f.t === "ck") return v ? "Oui" : "Non";
+  return v == null ? "" : String(v);
+}
+
+// Écriture protégée : refuse si quelqu'un d'autre a modifié l'enregistrement entre-temps
+async function ecrire(table, id, base, fabrique) {
+  await runTransaction(db, async (tx) => {
+    const ref = doc(db, ...chemin(table, id)), s = await tx.get(ref);
+    if ((s.exists() ? s.data().version || 0 : 0) !== base) throw new Error("conflit");
+    tx.set(ref, { ...fabrique(s.exists() ? s.data() : {}), version: base + 1, majPar: user.email, majLe: serverTimestamp() });
+  });
+}
+const erreur = (e) => e.message === "conflit"
+  ? "Cette ligne a été modifiée par un autre utilisateur. Sélectionnez-la de nouveau pour voir la version à jour."
+  : "Opération impossible. Vérifiez votre connexion et vos droits.";
+
+// ===== Panneau de gestion : fiche en haut, boutons, filtres, tableau, totaux (comme l'application Java) =====
+let uid = 0;
+class Crud {
+  constructor(host, cfg) {
+    this.host = host; this.cfg = cfg; this.id = ++uid; this.sel = null; this.loading = 0; this.dirty = false;
+    this.comp = {}; this.fl = []; this.optRef = []; this.sort = { k: cfg.sort || null, d: 1 };
+    this.build(); vues.add(this);
+  }
+  q(s) { return this.host.querySelector(s); }
+  get fields() { return this.cfg.fields; }
+  fk(k) { return this.fields.find((f) => f.k === k); }
+  v(k) { return this.get(this.fk(k)); }
+  msg(t, ok) { const m = this.q(".msg"); m.textContent = t || ""; m.className = "msg" + (ok ? " ok" : ""); }
+  destroy() { vues.delete(this); }
+
+  build() {
+    const c = this.cfg, titre = c.titre.replace(/^Gestion (des |du |de la |de l'|d'|de )?/i, "") || "Détails";
+    this.host.innerHTML = `<section class="card fiche"><h3>Fiche ${esc(titre)}</h3><div class="grille"></div></section>
+      <div class="btns"></div><p class="msg" role="alert"></p>` + (c.single ? "" :
+      `<section class="card filt"></section><section class="card tcard"><div class="tw"><table><thead></thead><tbody></tbody></table></div></section><section class="card tot"></section>`);
+    const g = this.q(".grille");
+    this.fields.forEach((f) => {
+      const w = el("div", "champ" + (f.t === "ar" ? " full" : "")), lb = el("label"); let x;
+      lb.innerHTML = esc(f.l) + (f.req ? ' <b class="req">*</b>' : "");
+      if (f.t === "cb") x = el("select");
+      else if (f.t === "ar") { x = el("textarea"); x.rows = 2; }
+      else {
+        x = el("input");
+        x.type = f.t === "dt" ? "date" : f.t === "nm" ? "number" : f.t === "ck" ? "checkbox" : "text";
+        if (f.t === "nm") { x.step = "any"; x.min = "0"; }
+        if (f.t === "ro") x.readOnly = true;
+        if (f.t === "ce") { const dl = el("datalist"); dl.id = `dl${this.id}_${f.k}`; x.setAttribute("list", dl.id); w.append(dl); }
+      }
+      x.id = `f${this.id}_${f.k}`; lb.htmlFor = x.id; this.comp[f.k] = x;
+      const ch = () => this.chg(f.k); x.addEventListener("input", ch); x.addEventListener("change", ch);
+      w.prepend(lb); w.append(x); g.append(w);
+    });
+    this.fields.forEach((f) => this.refreshOptions(f.k));
+    // Boutons
+    const b = this.q(".btns"), bt = (t, cls, fn) => { const x = el("button", cls); x.type = "button"; x.textContent = t; x.onclick = fn; b.append(x); return x; };
+    if (c.single) { if (peutEcrire()) bt("Enregistrer", "b-teal", () => this.saveSingle()); }
+    else {
+      if (peutEcrire()) { bt("Nouveau", "b-grn", () => { this.clearForm(); this.msg(""); }); bt("Enregistrer", "b-teal", () => this.add());
+        bt("Modifier", "b-blue", () => this.update()); bt("Supprimer", "b-red", () => this.remove()); }
+      bt("Imprimer la liste", "b-navy", () => this.printList());
+      (c.extra || []).forEach((e) => bt(e.t, "b-navy", e.f));
+      this.buildFilters();
+      this.q("thead").addEventListener("click", (e) => { const th = e.target.closest("th"); if (!th) return; const k = th.dataset.k; this.sort = { k, d: this.sort.k === k ? -this.sort.d : 1 }; this.refresh(); });
+    }
+    if (!peutEcrire()) Object.values(this.comp).forEach((x) => { x.disabled = true; });
+    this.clearForm(); this.reload();
+  }
+
+  // ---- Champs de la fiche ----
+  opts(f) { return (this.cfg.options && this.cfg.options(f, this)) || (f.opts ? f.opts.map((s) => ({ v: s, l: s })) : f.src ? f.src() : []); }
+  refreshOptions(k) {
+    const f = this.fk(k), c = this.comp[k]; if (!f || (f.t !== "cb" && f.t !== "ce")) return;
+    const list = this.opts(f);
+    if (f.t === "ce") { c.parentNode.querySelector("datalist").replaceChildren(...list.map((o) => new Option(o.l, o.l))); return; }
+    const cur = c.value; this.loading++;
+    c.replaceChildren(new Option("", ""), ...list.map((o) => new Option(o.l, o.v)));
+    if (cur && !list.some((o) => o.v === cur) && f.ref && tous[f.ref[0]] && tous[f.ref[0]].has(cur)) c.add(new Option(nomDe(f.ref[0], cur, f.ref[1]), cur));
+    c.value = [...c.options].some((o) => o.value === cur) ? cur : ""; this.loading--;
+  }
+  get(f) {
+    const c = this.comp[f.k];
+    if (f.t === "ck") return c.checked;
+    if (f.t === "ro") return c.dataset.raw === "" || c.dataset.raw == null ? null : Number(c.dataset.raw);
+    const v = c.value.trim(); return f.t === "nm" ? (v === "" ? null : Number(v)) : v;
+  }
+  set(k, val) {
+    const f = this.fk(k), c = this.comp[k]; this.loading++;
+    try {
+      if (f.t === "ck") c.checked = !!val;
+      else if (f.t === "ro") { c.dataset.raw = val ?? ""; c.value = val == null || val === "" ? "" : fmt(val); }
+      else if (f.t === "cb") { if (val && ![...c.options].some((o) => o.value === val)) c.add(new Option(f.ref ? nomDe(f.ref[0], val, f.ref[1]) : val, val)); c.value = val ?? ""; }
+      else c.value = val ?? "";
+    } finally { this.loading--; }
+  }
+  enable(k, on) { this.comp[k].disabled = !on || !peutEcrire(); }
+  dep(k, user) { if (this.cfg.dependent) this.cfg.dependent(this, k, user); }
+  chg(k) { if (this.loading) return; this.dirty = true; this.dep(k, true); }
+  clearForm() {
+    this.loading++;
+    try {
+      this.fields.forEach((f) => { let d = f.def; if (d === "@today") d = aujourdhui(); else if (d === "@now") d = maintenant(); this.set(f.k, d ?? (f.t === "ck" ? false : "")); });
+      this.fields.forEach((f) => this.dep(f.k, false));
+    } finally { this.loading--; }
+    this.sel = null; this.dirty = false; this.markSel();
+  }
+  loadRec(r) {
+    this.loading++;
+    try { this.fields.forEach((f) => this.set(f.k, r[f.k])); this.fields.forEach((f) => this.dep(f.k, false)); } finally { this.loading--; }
+    this.dirty = false;
+  }
+  read() { const r = {}; this.fields.forEach((f) => { r[f.k] = this.get(f); }); return r; }
+  check(r, ed) {
+    for (const f of this.fields) {
+      const x = r[f.k];
+      if (f.req && (x === "" || x == null)) return `Le champ « ${f.l} » est obligatoire.`;
+      if (f.t === "nm" && x != null && (!isFinite(x) || x < 0)) return `Valeur numérique invalide pour « ${f.l} ».`;
+    }
+    const u = this.cfg.unique, val = u ? String(r[u] || "").toLowerCase() : "";
+    if (val && actifs(this.cfg.table).some((o) => o.id !== (ed && ed.id) && String(o[u] || "").toLowerCase() === val)) return `« ${r[u]} » existe déjà.`;
+    return null;
+  }
+
+  // ---- Enregistrer / Modifier / Supprimer ----
+  async enregistrer(id, base, r, apres) {
+    try { await ecrire(this.cfg.table, id, base, () => r); this.msg("Enregistré.", true); if (apres) apres(); }
+    catch (e) { this.msg(erreur(e)); }
+  }
+  async add() {
+    const r = this.read(), e = this.check(r, null); if (e) return this.msg(e);
+    if (this.cfg.beforeSave) this.cfg.beforeSave(r);
+    await this.enregistrer(doc(collection(db, ...chemin(this.cfg.table))).id, 0, r, () => this.clearForm());
+  }
+  async update() {
+    if (!this.sel) return this.msg("Sélectionnez d’abord une ligne dans le tableau.");
+    const r = this.read(), e = this.check(r, this.sel); if (e) return this.msg(e);
+    if (this.cfg.beforeSave) this.cfg.beforeSave(r);
+    await this.enregistrer(this.sel.id, this.sel.version || 0, r);
+  }
+  async remove() {
+    if (!this.sel) return this.msg("Sélectionnez d’abord une ligne dans le tableau.");
+    if (!confirm("Supprimer définitivement la ligne sélectionnée ?")) return;
+    const m = this.cfg.deleteCheck && this.cfg.deleteCheck(this.sel); if (m) return this.msg(m);
+    try { await ecrire(this.cfg.table, this.sel.id, this.sel.version || 0, (a) => ({ ...a, deleted: true })); this.clearForm(); this.msg("Ligne supprimée.", true); }
+    catch (e) { this.msg(erreur(e)); }
+  }
+  async saveSingle() {   // fiche unique (Paramètres)
+    const r = this.read(), e = this.check(r, null); if (e) return this.msg(e);
+    const cur = tous[this.cfg.table].get("general");
+    await this.enregistrer("general", cur ? cur.version || 0 : 0, r, () => { this.dirty = false; });
+  }
+
+  // ---- Filtres ----
+  buildFilters() {
+    const box = this.q(".filt"), grp = (...xs) => { const g = el("div", "g"); g.append(...xs); box.append(g); return g; };
+    const lab = (t) => { const s = el("span"); s.textContent = t; return s; }, fire = () => { if (!this.loading) this.refresh(); };
+    (this.cfg.filtres || []).forEach((fl) => {
+      const f = this.fk(fl.k);
+      if (fl.t === "dates") {
+        const ck = el("input"); ck.type = "checkbox"; const a = el("input"), b = el("input"); a.type = b.type = "date"; a.value = b.value = aujourdhui();
+        [ck, a, b].forEach((x) => x.addEventListener("change", fire));
+        grp(ck, lab("Période du"), a, lab("au"), b);
+        this.fl.push(() => (!ck.checked ? () => true : (r) => (r[fl.k] || "") >= a.value && (r[fl.k] || "") <= b.value));
+      } else if (fl.t === "cb") {
+        const s = el("select"); s.addEventListener("change", fire); grp(lab(fl.l + " :"), s);
+        const fill = () => { const cur = s.value, vals = [...new Set(actifs(this.cfg.table).map((r) => r[fl.k]).filter((x) => x != null && x !== ""))];
+          s.replaceChildren(new Option("(Tous)", ""), ...vals.map((x) => new Option(show(f, { [fl.k]: x }), x)).sort((p, q) => p.text.localeCompare(q.text)));
+          s.value = [...s.options].some((o) => o.value === cur) ? cur : ""; };
+        this.optRef.push(fill); this.fl.push(() => (s.value === "" ? () => true : (r) => String(r[fl.k]) === s.value));
+      } else if (fl.t === "yn") {
+        const s = el("select"); s.append(new Option("(Tous)", ""), new Option("Oui", "1"), new Option("Non", "0")); s.addEventListener("change", fire);
+        grp(lab(fl.l + " :"), s); this.fl.push(() => (s.value === "" ? () => true : (r) => !!r[fl.k] === (s.value === "1")));
+      } else if (fl.t === "range") {
+        const a = el("input"), b = el("input"); a.type = b.type = "number"; a.step = b.step = "any"; a.addEventListener("input", fire); b.addEventListener("input", fire);
+        grp(lab(fl.l + " de"), a, lab("à"), b);
+        this.fl.push(() => (r) => (a.value === "" || nb(r[fl.k]) >= Number(a.value)) && (b.value === "" || nb(r[fl.k]) <= Number(b.value)));
+      }
+    });
+    const bf = el("button", "b-navy"); bf.type = "button"; bf.textContent = "Filtrer"; bf.onclick = () => this.refresh();
+    const s = el("input"); s.type = "search"; s.setAttribute("aria-label", "Recherche"); s.addEventListener("input", fire); this.search = s;
+    grp(bf); grp(lab("Recherche :"), s);
+  }
+
+  // ---- Tableau et totaux ----
+  reload() {
+    this.fields.forEach((f) => this.refreshOptions(f.k)); this.optRef.forEach((f) => f());
+    const cur = tous[this.cfg.table] && this.sel ? tous[this.cfg.table].get(this.sel.id) : null;
+    this.sel = cur && !cur.deleted ? cur : null;
+    if (this.cfg.single) { const r = tous[this.cfg.table] && tous[this.cfg.table].get("general"); if (r && !this.dirty) this.loadRec(r); return; }
+    this.refresh();
+  }
+  markSel() { this.host.querySelectorAll("tbody tr").forEach((t) => t.classList.toggle("sel", !!this.sel && t.dataset.id === this.sel.id)); }
+  refresh() {
+    if (this.cfg.single) return;
+    const cols = this.fields.filter((f) => !f.hide), preds = this.fl.map((f) => f()), qs = this.search.value.trim().toLowerCase();
+    let view = actifs(this.cfg.table).filter((r) => preds.every((p) => p(r)) && (!qs || cols.some((f) => show(f, r).toLowerCase().includes(qs))));
+    const sf = this.fk(this.sort.k);
+    if (sf) view.sort((a, b) => this.sort.d * ((sf.t === "nm" || sf.t === "ro") ? nb(a[sf.k]) - nb(b[sf.k]) : (sf.t === "dt" ? String(a[sf.k] || "").localeCompare(String(b[sf.k] || "")) : show(sf, a).localeCompare(show(sf, b)))));
+    this.view = view;
+    const tr = el("tr"); cols.forEach((f) => { const th = el("th", f.t === "nm" || f.t === "ro" ? "n" : ""); th.dataset.k = f.k; th.textContent = f.l + (this.sort.k === f.k ? (this.sort.d > 0 ? " ▲" : " ▼") : ""); tr.append(th); });
+    this.q("thead").replaceChildren(tr);
+    this.q("tbody").replaceChildren(...view.map((r) => {
+      const t = el("tr"); t.dataset.id = r.id;
+      cols.forEach((f) => { const td = el("td", f.t === "nm" || f.t === "ro" ? "n" : ""); td.textContent = show(f, r); t.append(td); });
+      t.onclick = () => { this.sel = r; this.loadRec(r); this.markSel(); this.msg(""); };
+      return t;
+    }));
+    this.markSel();
+    const it = [["Lignes", String(view.length)], ...(this.cfg.totals || []).map((k) => [this.fk(k).l, fmt(r2(view.reduce((s, r) => s + nb(r[k]), 0)))])];
+    this.q(".tot").replaceChildren(...it.map(([a, v]) => { const s = el("span"); s.textContent = a + " :"; const b = el("b"); b.textContent = v; s.append(b); return s; }));
+  }
+  printList() {
+    const cols = this.fields.filter((f) => !f.hide), tot = this.cfg.totals || [];
+    const rows = this.view.map((r) => "<tr>" + cols.map((f) => `<td class="${f.t === "nm" || f.t === "ro" ? "n" : ""}">${esc(show(f, r))}</td>`).join("") + "</tr>").join("");
+    const pied = tot.length ? "<tr class='t'>" + cols.map((f, i) => `<td class="n">${i === 0 ? "TOTAL" : tot.includes(f.k) ? fmt(r2(this.view.reduce((s, r) => s + nb(r[f.k]), 0))) : ""}</td>`).join("") + "</tr>" : "";
+    const w = window.open("", "_blank"); if (!w) return this.msg("Autorisez les fenêtres pop-up pour imprimer.");
+    w.document.write(`<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>${esc(this.cfg.titre)}</title><style>body{font:12px "Segoe UI",sans-serif;margin:16px}h1{font-size:16px;margin:0}p{margin:2px 0 10px;color:#555}table{border-collapse:collapse;width:100%}th,td{border:1px solid #bbb;padding:4px 6px;text-align:left}th{background:#eee}td.n{text-align:right}tr.t td{font-weight:700;background:#f3f3f3}</style></head><body><h1>${esc(ent.nom)} — ${esc(this.cfg.titre.toUpperCase())}</h1><p>Imprimé le ${frDate(aujourdhui())} — ${this.view.length} ligne(s)</p><table><thead><tr>${cols.map((f) => `<th>${esc(f.l)}</th>`).join("")}</tr></thead><tbody>${rows}${pied}</tbody></table></body></html>`);
+    w.document.close(); w.focus(); w.print();
+  }
+}
+
+// ===== Définition des modules (mêmes champs que l'application Java) =====
+const fParty = (t) => [F("nom", "Nom / Raison sociale", "tx", { req: 1 }), F("adr", "Adresse", "tx"), F("tel", "Téléphone", "tx"), F("mob", "Mobile", "tx"), F("email", "E-mail", "tx"),
+  F("rc", "RC", "tx"), F("nif", "NIF", "tx"), F("nis", "NIS", "tx"), F("rib", "RIB", "tx"), F("art", "N° article d’imposition", "tx"), F("cat", "Catégorie", "ce", { src: distinct(t, "cat") })];
+const montants = (r) => { const ht = r2(nb(r.qte) * nb(r.pu)), taux = r.tva ? tauxTVA() : 0, tvam = r2(ht * taux / 100); return { taux, ht, tvam, ttc: r2(ht + tvam) }; };
+
+const cfgProduitsAppro = () => ({ table: "prod_appro", titre: "Gestion des produits d’approvisionnement", unique: "nom", sort: "nom", filtres: [{ t: "cb", l: "Nature", k: "nature" }],
+  fields: [F("nature", "Nature", "cb", { req: 1, opts: [MP, SERV], def: MP }), F("nom", "Nom du produit", "tx", { req: 1 })],
+  deleteCheck: (r) => (actifs("appro").some((x) => x.produit === r.id) ? "Ce produit est utilisé dans des approvisionnements." : null) });
+const cfgSilos = () => ({ table: "silo", titre: "Gestion des silos", unique: "nom", sort: "nom", fields: [F("nom", "Nom du silo", "tx", { req: 1 })],
+  deleteCheck: (r) => (actifs("appro").some((x) => x.silo === r.id) ? "Ce silo est utilisé dans des opérations enregistrées." : null) });
+
+const MODULES = [
+  ["clients", "Clients", () => ({ table: "client", titre: "Gestion des clients", fields: fParty("client"), unique: "nom", sort: "nom", filtres: [{ t: "cb", l: "Catégorie", k: "cat" }] })],
+  ["fournisseurs", "Fournisseurs", () => ({ table: "fournisseur", titre: "Gestion des fournisseurs", fields: fParty("fournisseur"), unique: "nom", sort: "nom", filtres: [{ t: "cb", l: "Catégorie", k: "cat" }] })],
+  ["appro", "Appros et service", () => ({
+    table: "appro", titre: "Approvisionnements et services", sort: "date", totals: ["ht", "tvam", "ttc"],
+    fields: [F("date", "Date", "dt", { req: 1, def: "@today" }), F("nature", "Nature", "cb", { opts: [MP, SERV], def: MP }),
+      F("fournisseur", "Fournisseur", "cb", { req: 1, src: refs("fournisseur", "nom"), ref: ["fournisseur", "nom"] }), F("bl", "N° BL", "tx"),
+      F("produit", "Produit", "cb", { req: 1, ref: ["prod_appro", "nom"] }), F("silo", "Silo", "cb", { src: refs("silo", "nom"), ref: ["silo", "nom"] }),
+      F("qte", "Quantité", "nm", { req: 1 }), F("pu", "Prix unitaire", "nm", { req: 1 }), F("tva", "Soumis à la TVA", "ck", { hide: 1 }), F("taux", "Taux TVA %", "ro"),
+      F("ht", "Montant HT", "ro"), F("tvam", "Montant TVA", "ro"), F("ttc", "Montant TTC", "ro"), F("obs", "Observation", "ar", { hide: 1 })],
+    filtres: [{ t: "dates", k: "date" }, { t: "cb", l: "Nature", k: "nature" }, { t: "cb", l: "Fournisseur", k: "fournisseur" }, { t: "cb", l: "Produit", k: "produit" },
+      { t: "cb", l: "Silo", k: "silo" }, { t: "yn", l: "TVA", k: "tva" }, { t: "range", l: "Prix unitaire", k: "pu" }],
+    // Les produits proposés dépendent de la nature ; le silo n'existe que pour les matières premières ; les montants se calculent seuls
+    options: (f, c) => (f.k === "produit" ? actifs("prod_appro").filter((r) => r.nature === c.v("nature")).map((r) => ({ v: r.id, l: r.nom })).sort((a, b) => a.l.localeCompare(b.l)) : null),
+    dependent: (c, k, user) => {
+      if (k === "nature") { const mp = c.v("nature") === MP; if (user) c.set("produit", ""); c.refreshOptions("produit"); if (!mp) c.set("silo", ""); c.enable("silo", mp); }
+      else if (user && ["qte", "pu", "tva"].includes(k)) { const m = montants({ qte: c.v("qte"), pu: c.v("pu"), tva: c.v("tva") }); for (const x in m) c.set(x, m[x]); }
+    },
+    beforeSave: (r) => Object.assign(r, montants(r)),
+    extra: [{ t: "Gestion des produits", f: () => ouvrirSous(cfgProduitsAppro) }, { t: "Gestion des silos", f: () => ouvrirSous(cfgSilos) }]
+  })],
+  ["personnel", "Personnel", () => ({ table: "personnel", titre: "Gestion du personnel", sort: "nom", filtres: [{ t: "cb", l: "Statut", k: "statut" }],
+    fields: [F("nom", "Nom", "tx", { req: 1 }), F("prenom", "Prénom", "tx", { req: 1 }), F("poste", "Poste", "tx"), F("dateemb", "Date d’embauche", "dt", { def: "@today" }),
+      F("secu", "N° sécurité sociale", "tx"), F("statut", "Statut", "cb", { req: 1, opts: ["Actif", "Inactif"], def: "Actif" }), F("tel", "Téléphone", "tx"), F("email", "E-mail", "tx")] })],
+  ["materiels", "Matériels", () => ({ table: "materiel", titre: "Gestion des matériels", unique: "immat", sort: "designation",
+    fields: [F("designation", "Désignation", "tx", { req: 1 }), F("type", "Type", "ce", { opts: ["Camion malaxeur", "Centrale à béton", "Chargeur", "Pompe à béton", "Groupe électrogène", "Véhicule", "Autre"] }),
+      F("immat", "Immatriculation", "tx"), F("obs", "Observation", "tx")] })],
+  ["parametres", "Paramètres", () => ({ table: "parametres", titre: "Paramètres", single: true,
+    fields: [F("nom", "Raison sociale", "tx"), F("adr", "Adresse", "tx"), F("desc", "Description", "tx"), F("tel", "Téléphone", "tx"), F("email", "E-mail", "tx"), F("rc", "RC", "tx"),
+      F("nif", "NIF", "tx"), F("nis", "NIS", "tx"), F("rib", "RIB", "tx"), F("art", "N° article d’imposition", "tx"), F("tva", "Taux TVA %", "nm", { def: "19" })] })]
+];
+
+function ouvrir(k) {
+  document.querySelectorAll("#menu button").forEach((b) => b.classList.toggle("on", b.dataset.k === k));
+  if (vueCourante) vueCourante.destroy();
+  const m = MODULES.find((x) => x[0] === k); $("vue").replaceChildren(); $("vue").hidden = false; info("");
+  vueCourante = new Crud($("vue"), m[2]());
+}
+function ouvrirSous(fabrique) {
+  if (sousVue) sousVue.destroy();
+  const cfg = fabrique(); $("subTitre").textContent = cfg.titre; $("subBody").replaceChildren(); sousVue = new Crud($("subBody"), cfg); $("dlgSub").showModal();
+}
+$("subFerm").onclick = () => $("dlgSub").close();
+$("dlgSub").addEventListener("close", () => { if (sousVue) { sousVue.destroy(); sousVue = null; } if (vueCourante) vueCourante.reload(); });
 $("btnOut").onclick = () => signOut(auth);
 window.addEventListener("offline", () => synchro("e", "Hors ligne"));
 window.addEventListener("online", () => synchro("", "Synchronisé"));
 
-// ---- Démarrage : compte -> entreprise -> modules ----
+// ===== Démarrage : compte -> entreprise -> synchronisation en temps réel =====
+const TABLES = ["client", "fournisseur", "appro", "prod_appro", "silo", "personnel", "materiel", "parametres"];
+function demarrerSynchro() {
+  TABLES.forEach((t) => {
+    tous[t] = new Map();
+    onSnapshot(collection(db, "entreprises", ent.id, t), (s) => {
+      tous[t] = new Map(s.docs.map((d) => [d.id, { id: d.id, ...d.data() }]));
+      synchro(s.metadata.hasPendingWrites ? "p" : "", s.metadata.hasPendingWrites ? "Envoi…" : "Synchronisé");
+      vues.forEach((v) => v.reload());
+    }, () => synchro("e", "Erreur de synchronisation"));
+  });
+}
 onAuthStateChanged(auth, async (u) => {
   if (!u) { location.replace("../"); return; }
   user = u; $("userInfo").textContent = u.email;
@@ -114,106 +410,10 @@ onAuthStateChanged(auth, async (u) => {
     ent = { id: e.id, ...e.data() }; $("entNom").textContent = ent.nom;
     if (ent.etat === "suspendue") { synchro("e", "Suspendue"); info("Cette entreprise est suspendue. Contactez le fournisseur de l’application.", true); return; }
     $("menu").textContent = "";
-    for (const k in MODULES) { const b = document.createElement("button"); b.textContent = MODULES[k].titre; b.dataset.k = k; b.onclick = () => ouvrir(k); $("menu").append(b); }
-    demarrerSynchro(); ouvrir(Object.keys(MODULES)[0]);
+    MODULES.forEach(([k, t]) => { const b = el("button"); b.textContent = t; b.dataset.k = k; b.onclick = () => ouvrir(k); $("menu").append(b); });
+    demarrerSynchro(); ouvrir("clients");
   } catch (err) { info(err.message || "Accès refusé.", true); }
 });
-
-// ---- Synchronisation en temps réel de tous les modules (les liens entre modules en ont besoin) ----
-function demarrerSynchro() {
-  for (const k in MODULES) {
-    tous[k] = new Map();
-    onSnapshot(collection(db, "entreprises", ent.id, k), (s) => {
-      tous[k] = new Map(s.docs.map((d) => [d.id, { id: d.id, ...d.data() }]));
-      synchro(s.metadata.hasPendingWrites ? "p" : "", s.metadata.hasPendingWrites ? "Envoi…" : "Synchronisé");
-      if (cle) afficher();
-    }, () => synchro("e", "Erreur de synchronisation"));
-  }
-}
-
-function ouvrir(k) {
-  cle = k;
-  document.querySelectorAll("#menu button").forEach((b) => b.classList.toggle("on", b.dataset.k === k));
-  $("titre").textContent = MODULES[k].titre; $("recherche").value = ""; $("btnNew").hidden = !peutEcrire();
-  $("vue").hidden = false; info(""); afficher();
-}
-
-// Valeur affichée d'une colonne : calcul, lien vers un autre module, nombre ou texte
-function valeur(M, r, k) {
-  if (M.calc && M.calc[k]) return fmt(M.calc[k][1](r));
-  const c = M.champs.find((x) => x[0] === k), t = (c && c[2]) || "";
-  if (t.startsWith("ref:")) { const [, mod, ch] = t.split(":"), x = tous[mod] && tous[mod].get(r[k]); return x ? x[ch] || "" : ""; }
-  if (t === "num") return r[k] == null || r[k] === "" ? "" : fmt(r[k]);
-  return r[k] || "";
-}
-
-function afficher() {
-  const M = MODULES[cle], lib = Object.fromEntries(M.champs.map((c) => [c[0], c[1]]));
-  if (M.calc) for (const k in M.calc) lib[k] = M.calc[k][0];
-  const tr = document.createElement("tr"); M.cols.forEach((c) => { const th = document.createElement("th"); th.textContent = lib[c]; tr.append(th); });
-  $("thead").replaceChildren(tr);
-  const q = $("recherche").value.trim().toLowerCase(), tri = M.tri || M.cols[0], sens = M.desc ? -1 : 1;
-  const vis = actifs(cle).filter((r) => !q || M.cols.some((c) => String(valeur(M, r, c)).toLowerCase().includes(q)))
-    .sort((a, b) => sens * String(valeur(M, a, tri)).localeCompare(String(valeur(M, b, tri))));
-  $("tbody").replaceChildren(...vis.map((r) => {
-    const t = document.createElement("tr"); t.onclick = () => fiche(r);
-    M.cols.forEach((c) => { const td = document.createElement("td"); td.textContent = valeur(M, r, c); t.append(td); });
-    return t;
-  }));
-  $("vide").textContent = !vis.length ? "Aucun enregistrement."
-    : (M.somme || []).map((k) => lib[k] + " : " + fmt(r2(vis.reduce((s, r) => s + M.calc[k][1](r), 0)))).join("     ");
-}
-$("recherche").oninput = afficher;
-$("btnNew").onclick = () => fiche(null);
-
-// ---- Fiche (création / modification / suppression) ----
-const aujourdhui = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-function fiche(r) {
-  edition = r; const M = MODULES[cle];
-  $("dTitre").textContent = (r ? "Modifier" : "Nouveau") + " — " + M.titre; $("dMsg").textContent = "";
-  $("champs").replaceChildren(...M.champs.map(([k, l, t = "", req, def], i) => {
-    const w = document.createElement("div"), lb = document.createElement("label"); lb.htmlFor = "f_" + k; lb.textContent = l;
-    let inp;
-    if (t.startsWith("sel:")) { inp = document.createElement("select"); t.slice(4).split("|").forEach((o) => inp.add(new Option(o, o))); }
-    else if (t.startsWith("ref:")) {
-      const [, mod, ch] = t.split(":"); inp = document.createElement("select"); inp.add(new Option("—", ""));
-      const liste = actifs(mod); const cur = r && tous[mod] && tous[mod].get(r[k]);
-      if (cur && cur.deleted) liste.push(cur);   // garder le lien d'une fiche liée à un élément supprimé
-      liste.sort((a, b) => String(a[ch]).localeCompare(String(b[ch]))).forEach((x) => inp.add(new Option(x[ch], x.id)));
-    } else { inp = document.createElement("input"); inp.type = t === "num" ? "number" : t || "text"; if (t === "num") { inp.step = "any"; inp.min = "0"; } }
-    inp.id = "f_" + k; inp.name = k;
-    inp.value = r ? (r[k] ?? "") : def === "today" ? aujourdhui() : (def ?? "");
-    inp.required = req === true || (i === 0 && req !== false); inp.disabled = !peutEcrire(); w.append(lb, inp); return w;
-  }));
-  $("dOk").hidden = !peutEcrire(); $("dSupp").hidden = !(r && peutEcrire());
-  $("dlg").showModal();
-}
-$("dFerm").onclick = () => $("dlg").close();
-
-// Écriture protégée : refuse si quelqu'un d'autre a modifié l'enregistrement entre-temps
-async function ecrire(id, base, fabrique) {
-  await runTransaction(db, async (tx) => {
-    const ref = doc(db, ...chemin(id)), s = await tx.get(ref);
-    if ((s.exists() ? s.data().version || 0 : 0) !== base) throw new Error("conflit");
-    tx.set(ref, { ...fabrique(s.exists() ? s.data() : {}), version: base + 1, majPar: user.email, majLe: serverTimestamp() });
-  });
-}
-const erreur = (e) => e.message === "conflit"
-  ? "Cet enregistrement a été modifié par un autre utilisateur. Fermez la fiche et rouvrez-la pour voir la version à jour."
-  : "Opération impossible. Vérifiez votre connexion et vos droits.";
-
-$("frm").onsubmit = async (ev) => {
-  ev.preventDefault(); $("dOk").disabled = true; $("dMsg").textContent = "";
-  const d = {}; MODULES[cle].champs.forEach(([k, , t = ""]) => { const v = $("f_" + k).value.trim(); d[k] = t === "num" ? (v === "" ? null : Number(v)) : v; });
-  const id = edition ? edition.id : doc(collection(db, ...chemin())).id;
-  try { await ecrire(id, edition ? edition.version || 0 : 0, () => d); $("dlg").close(); }
-  catch (e) { $("dMsg").textContent = erreur(e); } finally { $("dOk").disabled = false; }
-};
-$("dSupp").onclick = async () => {
-  if (!confirm("Supprimer cet enregistrement ?")) return;
-  try { await ecrire(edition.id, edition.version || 0, (ancien) => ({ ...ancien, deleted: true })); $("dlg").close(); }
-  catch (e) { $("dMsg").textContent = erreur(e); }
-};
 </script>
 </body>
 </html>
