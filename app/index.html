@@ -91,7 +91,7 @@ dialog::backdrop{background:rgba(23,34,45,.6)}
 
 @media(max-width:760px){body{grid-template-columns:1fr}aside{padding:8px 0}.logo{padding-bottom:8px}#menu{display:flex;overflow-x:auto}#menu button{width:auto;white-space:nowrap}}
 
-/* Modules avancés : tableau de bord, stocks, factures, dettes et rapports */
+/* Modules avancés : stocks, factures, dettes, trésorerie et rapports */
 #menu .nav-section{padding:14px 18px 5px;color:#91a2b2;font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
 #menu button{border-inline-start-width:4px}
 .advanced-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
@@ -111,11 +111,6 @@ dialog::backdrop{background:rgba(23,34,45,.6)}
 .advanced-table tr.selected{background:#d3e6fb}
 .advanced-actions{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}
 .advanced-actions button{padding:7px 12px}
-.chart-bars{display:flex;align-items:end;gap:8px;height:170px;padding:12px 5px 3px;border-bottom:1px solid var(--line)}
-.chart-bars .bar-item{flex:1;min-width:18px;display:flex;flex-direction:column;align-items:center;justify-content:end;height:100%;gap:5px}
-.chart-bars .bar-fill{width:min(100%,32px);border-radius:5px 5px 0 0;background:var(--sig);min-height:2px}
-.chart-bars .bar-item small{font-size:10px;color:var(--mut)}
-.chart-bars .bar-item b{font-size:10px;color:var(--steel);font-weight:600}
 .stock-entry-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:9px;align-items:end}
 .stock-entry-grid label{font-size:12px;color:var(--steel);display:flex;flex-direction:column;gap:3px}
 .stock-entry-grid input,.stock-entry-grid select{height:32px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;font:inherit;background:#fff}
@@ -126,11 +121,8 @@ dialog::backdrop{background:rgba(23,34,45,.6)}
 .status-pill.bad{background:#fbe9e7;color:#9e2d26}.status-pill.good{background:#e4f3eb;color:#1f704b}
 .two-panels{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
 .empty-note{padding:20px;text-align:center;color:var(--mut)}
+.journal-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.journal-table{min-width:1450px}.journal-table td{vertical-align:top;white-space:nowrap}.journal-table td.journal-values{white-space:pre-wrap;overflow-wrap:anywhere;min-width:260px;max-width:420px}
 @media(max-width:760px){.advanced-grid{grid-template-columns:repeat(auto-fit,minmax(145px,1fr))}.kpi strong{font-size:18px}.advanced-table td,.advanced-table th{padding:7px}}
-body.cbpm-dark{--ink:#e8edf3;--steel:#c0d0df;--bg:#131d27;--card:#1b2935;--line:#354554;--mut:#9aabba;--err:#ff8f86;--ok:#65c69a;--grn:#268a5a;--teal:#146b82;--blue:#2c64b6;--red:#aa3c35;background:var(--bg);color:var(--ink)}
-body.cbpm-dark aside{background:#0c141c}body.cbpm-dark .bar,body.cbpm-dark .card,body.cbpm-dark .advanced-card,body.cbpm-dark .kpi,body.cbpm-dark .cbpm-conflict{background:#1b2935;color:var(--ink)}
-body.cbpm-dark .champ input,body.cbpm-dark .champ select,body.cbpm-dark .champ textarea,body.cbpm-dark .filt input,body.cbpm-dark .filt select,body.cbpm-dark .advanced-toolbar input,body.cbpm-dark .advanced-toolbar select,body.cbpm-dark .stock-entry-grid input,body.cbpm-dark .stock-entry-grid select{background:#14212c;color:var(--ink);border-color:#405263}
-body.cbpm-dark th{background:#2a3b4a;color:#d8e3ec}body.cbpm-dark td{border-color:#304250}body.cbpm-dark tbody tr:nth-child(even) td{background:#1e2e3b}body.cbpm-dark tbody tr:hover td{background:#263d50}body.cbpm-dark .comp-editor,body.cbpm-dark .logo-editor{background:#1b2935}
 
 </style>
 </head>
@@ -139,15 +131,15 @@ body.cbpm-dark th{background:#2a3b4a;color:#d8e3ec}body.cbpm-dark td{border-colo
 <main>
   <div class="bar"><div><strong id="entNom">…</strong><small id="userInfo"></small></div>
     <div class="bd"><span id="sync" class="p">● …</span>
-      <div class="cbpm-savebar"><button id="btnUndo" class="b-navy" type="button" disabled title="Annuler la dernière opération">↶ Annuler</button><button id="btnRedo" class="b-navy" type="button" disabled title="Rétablir l'opération">↷ Rétablir</button><button id="btnSaveAll" type="button" disabled>Enregistrer</button><span id="saveCount">Aucune modification en attente</span><button id="btnConflicts" type="button" hidden>Voir les conflits</button><button id="btnExportCbpm" class="b-blue" type="button">Exporter .cbpm</button><button id="btnImportCbpm" class="b-blue" type="button">Importer .cbpm</button><button id="btnExportXlsx" class="b-blue" type="button">Exporter Excel</button><button id="btnImportXlsx" class="b-blue" type="button">Importer Excel</button><input id="inputCbpm" type="file" accept=".cbpm" hidden><input id="inputXlsx" type="file" accept=".xlsx,.xls" hidden></div>
-      <button id="btnTheme" class="b-navy" type="button" title="Changer le thème">Thème</button><button id="btnQuit" class="b-red" type="button">Quitter</button><button id="btnOut" class="b-navy" type="button">Déconnexion</button></div></div>
+      <div class="cbpm-savebar"><button id="btnSaveAll" type="button" disabled>Enregistrer</button><span id="saveCount">Aucune modification en attente</span><button id="btnConflicts" type="button" hidden>Voir les conflits</button><button id="btnExportXlsx" class="b-blue" type="button">Exporter Excel</button><button id="btnImportXlsx" class="b-blue" type="button">Importer Excel</button><input id="inputXlsx" type="file" accept=".xlsx,.xls" hidden></div>
+      <button id="btnQuit" class="b-red" type="button">Quitter</button><button id="btnOut" class="b-navy" type="button">Déconnexion</button></div></div>
   <p id="info">Chargement…</p>
   <div id="vue" hidden></div>
 </main>
 <dialog id="dlgSub"><div class="sh"><h3 id="subTitre"></h3><button id="subFerm" class="b-navy" type="button">Fermer</button></div><div id="subBody"></div></dialog>
 <dialog id="dlgExit" class="cbpm-dialog"><h2>Modifications non enregistrées</h2><p>Des modifications sont en attente. Voulez-vous les enregistrer avant de quitter l'application ?</p><p class="cbpm-status">« Enregistrer et quitter » transmet les modifications à l'entreprise. « Quitter sans enregistrer » abandonne les modifications en attente.</p><div class="cbpm-actions"><button id="exitSave" class="b-grn" type="button">Enregistrer et quitter</button><button id="exitLocal" class="b-red" type="button">Quitter sans enregistrer</button><button id="exitCancel" class="b-blue" type="button">Continuer</button></div><p id="exitStatus" class="msg" role="status"></p></dialog>
 <dialog id="dlgConflicts" class="cbpm-dialog"><div class="sh"><h3>Résolution des conflits Firebase</h3><button id="conflictClose" class="b-navy" type="button">Fermer</button></div><div id="conflictBody"></div></dialog>
-<dialog id="dlgImport" class="cbpm-dialog"><div class="sh"><h3>Importation d'une sauvegarde</h3><button id="importClose" class="b-navy" type="button">Fermer</button></div><p id="importStatus" class="cbpm-status">Choisissez un fichier .cbpm ou Excel. L'analyse est effectuée avant toute modification.</p><div id="importSummary"></div><div class="cbpm-actions"><button id="btnStageImport" class="b-grn" type="button" disabled>Ajouter les nouvelles données</button></div></dialog>
+<dialog id="dlgImport" class="cbpm-dialog"><div class="sh"><h3>Importation Excel</h3><button id="importClose" class="b-navy" type="button">Fermer</button></div><p id="importStatus" class="cbpm-status">Choisissez un classeur Excel (.xlsx). L'analyse est effectuée avant toute modification.</p><div id="importSummary"></div><div class="cbpm-actions"><button id="btnStageImport" class="b-grn" type="button" disabled>Ajouter les nouvelles données</button></div></dialog>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
@@ -309,20 +301,15 @@ const changeKey = (table,id) => `${table}\u0000${id}`;
 const cloneChange = (v) => v == null ? v : JSON.parse(JSON.stringify(v));
 
 class ChangeManager {
-  constructor({store,scopeKey}) { if(!store||!scopeKey) throw new TypeError("store et scopeKey sont obligatoires."); this.store=store; this.scopeKey=scopeKey; this.remote=new Map(); this.changes=new Map(); this.listeners=new Set(); this.persistQueue=Promise.resolve(); this.saving=false; this.undoStack=[]; this.redoStack=[]; this.maxUndo=80; this.replaying=false; }
+  constructor({store,scopeKey}) { if(!store||!scopeKey) throw new TypeError("store et scopeKey sont obligatoires."); this.store=store; this.scopeKey=scopeKey; this.remote=new Map(); this.changes=new Map(); this.listeners=new Set(); this.persistQueue=Promise.resolve(); this.saving=false; }
   subscribe(fn) { this.listeners.add(fn); return ()=>this.listeners.delete(fn); }
-  notify() { const s={dirty:this.isDirty(),count:this.pendingCount(),conflicts:this.conflicts(),canUndo:this.undoStack.length>0,canRedo:this.redoStack.length>0}; for(const fn of this.listeners) { try{fn(s);}catch(e){console.error(e);} } }
-  snapshotChanges(){return [...this.changes.values()].map(cloneChange);}
-  checkpoint(){if(this.replaying)return;this.undoStack.push(this.snapshotChanges());if(this.undoStack.length>this.maxUndo)this.undoStack.shift();this.redoStack=[];}
-  restoreHistory(snapshot){this.replaying=true;try{this.changes=new Map((snapshot||[]).map(row=>[changeKey(row.table,row.id),cloneChange(row)]));}finally{this.replaying=false;}void this.persist().catch(e=>console.error(e));this.notify();}
-  undo(){if(!this.undoStack.length||this.saving)return false;const current=this.snapshotChanges(),previous=this.undoStack.pop();this.redoStack.push(current);this.restoreHistory(previous);return true;}
-  redo(){if(!this.redoStack.length||this.saving)return false;const current=this.snapshotChanges(),next=this.redoStack.pop();this.undoStack.push(current);this.restoreHistory(next);return true;}
-  discardAll(){this.changes.clear();this.undoStack=[];this.redoStack=[];this.notify();return this.persist();}
+  notify() { const s={dirty:this.isDirty(),count:this.pendingCount(),conflicts:this.conflicts()}; for(const fn of this.listeners) { try{fn(s);}catch(e){console.error(e);} } }
+  discardAll(){this.changes.clear();this.notify();return this.persist();}
   isDirty(){return this.changes.size>0;}
   pendingCount(){return this.changes.size;}
   conflicts(){return [...this.changes.values()].filter(x=>x.conflicts?.length||x.conflictReason);}
   persist(){const snap=[...this.changes.values()].map(cloneChange);this.persistQueue=this.persistQueue.then(()=>this.store.write(this.scopeKey,snap));return this.persistQueue;}
-  async restoreDraft(){const rows=await this.store.read(this.scopeKey);this.changes.clear();this.undoStack=[];this.redoStack=[];for(const row of rows)this.changes.set(changeKey(row.table,row.id),row);this.notify();return rows.length;}
+  async restoreDraft(){const rows=await this.store.read(this.scopeKey);this.changes.clear();for(const row of rows)this.changes.set(changeKey(row.table,row.id),row);this.notify();return rows.length;}
   record(table,id){return this.rows(table,{includeDeleted:true}).find(r=>r.id===id)||null;}
   setRemoteTable(table,docs){
     const tableMap=new Map(); for(const [id,data] of docs)tableMap.set(id,{id,...data}); this.remote.set(table,tableMap);
@@ -343,18 +330,16 @@ class ChangeManager {
     for(const op of this.changes.values())if(op.table===table){if(op.local===null)rows.delete(op.id);else rows.set(op.id,{id:op.id,...op.local,version:op.baseVersion??0,_pending:true,_conflict:Boolean(op.conflicts?.length||op.conflictReason)});}
     const out=[...rows.values()];return includeDeleted?out:out.filter(r=>!r.deleted);
   }
-  create(table,id,data,recordHistory=true){const k=changeKey(table,id);if(this.remote.get(table)?.has(id)||this.changes.has(k))throw new Error("Identifiant déjà utilisé.");if(recordHistory)this.checkpoint();this.changes.set(k,{table,id,base:null,baseVersion:null,local:cleanFirestoreDocument(data),conflicts:[],conflictReason:null});void this.persist().catch(console.error);this.notify();}
+  create(table,id,data){const k=changeKey(table,id);if(this.remote.get(table)?.has(id)||this.changes.has(k))throw new Error("Identifiant déjà utilisé.");this.changes.set(k,{table,id,base:null,baseVersion:null,local:cleanFirestoreDocument(data),conflicts:[],conflictReason:null});void this.persist().catch(console.error);this.notify();}
   createMany(entries){
     const seen=new Set();
     for(const x of entries){const k=changeKey(x.table,x.id);if(seen.has(k)||this.remote.get(x.table)?.has(x.id)||this.changes.has(k))throw new Error(`Identifiant déjà utilisé dans ${x.table} : ${x.id}`);seen.add(k);}
-    if(entries.length)this.checkpoint();
     for(const x of entries){const k=changeKey(x.table,x.id);this.changes.set(k,{table:x.table,id:x.id,base:null,baseVersion:null,local:cleanFirestoreDocument(x.data),conflicts:[],conflictReason:null});}
     void this.persist().catch(console.error);this.notify();
   }
   update(table,id,patch){
     const k=changeKey(table,id),old=this.changes.get(k),raw=this.remote.get(table)?.get(id);
     if(!old&&!raw)throw new Error("Enregistrement introuvable dans la copie de travail.");
-    this.checkpoint();
     const base=old?old.base:cleanFirestoreDocument(raw);
     if(base===null){this.changes.set(k,{...old,local:{...old.local,...cleanFirestoreDocument(patch)}});}
     else this.changes.set(k,{table,id,base,baseVersion:old?.baseVersion??(Number(raw?.version)||0),local:{...(old?.local??base),...cleanFirestoreDocument(patch)},conflicts:old?.conflicts??[],conflictReason:old?.conflictReason??null,conflictRemote:old?.conflictRemote??null});
@@ -362,18 +347,17 @@ class ChangeManager {
   }
   softDelete(table,id){
     const k=changeKey(table,id),old=this.changes.get(k);
-    this.checkpoint();
     if(old?.base===null)this.changes.delete(k);
     else{const raw=this.remote.get(table)?.get(id);if(!old&&!raw)throw new Error("Enregistrement introuvable.");const base=old?.base??cleanFirestoreDocument(raw);this.changes.set(k,{table,id,base,baseVersion:old?.baseVersion??(Number(raw?.version)||0),local:{...(old?.local??base),deleted:true},conflicts:old?.conflicts??[],conflictReason:old?.conflictReason??null,conflictRemote:old?.conflictRemote??null});}
     void this.persist().catch(console.error);this.notify();
   }
   resolveConflict(table,id,choices={}){
     const k=changeKey(table,id),op=this.changes.get(k);if(!op||!op.conflictRemote)throw new Error("Aucun conflit distant disponible.");
-    this.checkpoint();const remote=op.conflictRemote,m=mergeThreeWay(op.base??{},op.local??{},remote),local={...m.merged};
+    const remote=op.conflictRemote,m=mergeThreeWay(op.base??{},op.local??{},remote),local={...m.merged};
     for(const c of op.conflicts||[]){const choice=choices[c.field];if(choice==="remote"){if(Object.prototype.hasOwnProperty.call(remote,c.field))local[c.field]=remote[c.field];else delete local[c.field];}else if(choice==="local"){if(c.local===undefined)delete local[c.field];else local[c.field]=c.local;}else throw new Error(`Choisissez une valeur pour « ${c.field} ».`);}
     op.base=remote;op.baseVersion=Number(this.remote.get(table)?.get(id)?.version)||0;op.local=local;op.conflicts=[];op.conflictReason=null;op.conflictRemote=null;this.changes.set(k,op);void this.persist().catch(console.error);this.notify();
   }
-  resolveStructuralConflict(table,id,choice){const k=changeKey(table,id),op=this.changes.get(k);if(!op?.conflictReason)throw new Error("Aucun conflit structurel à résoudre.");this.checkpoint();
+  resolveStructuralConflict(table,id,choice){const k=changeKey(table,id),op=this.changes.get(k);if(!op?.conflictReason)throw new Error("Aucun conflit structurel à résoudre.");
     if(choice==="use-remote")this.changes.delete(k);
     else if(choice==="restore-local"&&op.conflictReason.includes("supprimé à distance")){if(op.conflictRemote?.deleted===true){op.base=op.conflictRemote;op.baseVersion=Number(this.remote.get(table)?.get(id)?.version)||0;op.local={...op.local,deleted:false};}else{op.base=null;op.baseVersion=null;}op.conflicts=[];op.conflictReason=null;op.conflictRemote=null;}
     else throw new Error("Choix incompatible avec ce conflit.");void this.persist().catch(console.error);this.notify();
@@ -407,9 +391,6 @@ class ChangeManager {
         }catch(e){summary.errors.push({table:op.table,id:op.id,message:e?.message||String(e)});}
       }
       await this.persistQueue;await this.persist();
-      // Une fois toutes les opérations enregistrées, l'historique local ne doit plus
-      // permettre d'annuler un état antérieur à une sauvegarde déjà confirmée.
-      if(!this.isDirty()){this.undoStack=[];this.redoStack=[];}
       this.notify();return summary;
     }finally{this.saving=false;this.notify();}
   }
@@ -417,7 +398,7 @@ class ChangeManager {
 
 
 
-// ===== Outils de calcul et import CBPM Java embarqués dans index.html =====
+// ===== Outils de calcul financier et de gestion des données =====
 /**
  * Règles financières recopiées de CBPManagement.java.
  * Les calculs sont faits en centimes BigInt afin de reproduire BigDecimal
@@ -531,7 +512,7 @@ function calculateSupplierDebts({ suppliers = [], purchases = [], expenses = [] 
   })).sort((a, b) => b.balance - a.balance);
 }
 
-/** Équivalent de DashboardPanel.dispoAt : recettes nettes - dépenses, jusqu'à la date incluse. */
+/** Disponibilité : recettes nettes moins dépenses, jusqu'à la date incluse. */
 function calculateAvailability(dateISO, receipts = [], expenses = []) {
   const income = sumCents(receipts.filter((r) => String(r.date ?? "") <= dateISO), "net");
   const outgoing = sumCents(expenses.filter((r) => String(r.date ?? "") <= dateISO), "montant");
@@ -543,118 +524,6 @@ function validateTransfer({ source, destination, montant }) {
   if (source === destination) return "Les comptes source et destination doivent être différents.";
   if (toCents(montant) <= 0n) return "Le montant du transfert doit être supérieur à zéro.";
   return null;
-}
-
-const LIMITS = { bytes: 256 * 1024 * 1024, expandedBytes: 512 * 1024 * 1024, tables: 10000, records: 10000000, fields: 10000, stringBytes: 200 * 1024 * 1024 };
-
-function decodeEscaped(value) {
-  return value.replace(/\\(t|n|r|\\)/g, (_, code) => ({ t: "\t", n: "\n", r: "\r", "\\": "\\" })[code]);
-}
-
-function parseLegacyText(text) {
-  const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/);
-  if (!lines[0]?.startsWith("#CBPM")) throw new Error("En-tête .cbpm texte non reconnu.");
-  const tables = {};
-  for (const line of lines.slice(1)) {
-    if (!line) continue;
-    const parts = line.split("\t");
-    const table = parts.shift();
-    if (!table) continue;
-    const row = {};
-    for (const part of parts) {
-      const i = part.indexOf("=");
-      if (i > 0) row[part.slice(0, i)] = decodeEscaped(part.slice(i + 1));
-    }
-    (tables[table] ??= []).push(row);
-  }
-  return { format: "CBPM-text", version: 1, tables };
-}
-
-async function gunzip(buffer) {
-  if (typeof DecompressionStream !== "function") throw new Error("Ce navigateur ne prend pas en charge la décompression gzip requise pour les fichiers .cbpm.");
-  const stream = new Blob([buffer]).stream().pipeThrough(new DecompressionStream("gzip"));
-  const reader = stream.getReader();
-  const chunks = [];
-  let total = 0;
-  try {
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      total += value.byteLength;
-      if (total > LIMITS.expandedBytes) {
-        await reader.cancel();
-        throw new Error("Le fichier .cbpm décompressé dépasse la limite de sécurité.");
-      }
-      chunks.push(value);
-    }
-  } finally { reader.releaseLock(); }
-  const output = new Uint8Array(total);
-  let offset = 0;
-  for (const chunk of chunks) { output.set(chunk, offset); offset += chunk.byteLength; }
-  return output.buffer;
-}
-
-function parseBinary(buffer) {
-  const view = new DataView(buffer);
-  let offset = 0;
-  const need = (count) => {
-    if (!Number.isSafeInteger(count) || count < 0 || offset + count > view.byteLength) throw new Error("Fichier .cbpm tronqué ou corrompu.");
-  };
-  const readInt = () => { need(4); const value = view.getInt32(offset, false); offset += 4; return value; };
-  const readString = () => {
-    const length = readInt();
-    if (length < 0 || length > LIMITS.stringBytes) throw new Error(`Longueur de chaîne invalide : ${length}.`);
-    need(length);
-    const bytes = new Uint8Array(buffer, offset, length);
-    offset += length;
-    return new TextDecoder("utf-8", { fatal: false }).decode(bytes);
-  };
-
-  need(5);
-  const magic = String.fromCharCode(view.getUint8(0), view.getUint8(1), view.getUint8(2), view.getUint8(3));
-  offset = 4;
-  if (magic !== "CBPM") throw new Error("Signature binaire CBPM invalide.");
-  const version = view.getUint8(offset++);
-  if (version !== 2) throw new Error(`Version .cbpm non prise en charge : ${version}. La version attendue est 2.`);
-  const tableCount = readInt();
-  if (tableCount < 0 || tableCount > LIMITS.tables) throw new Error("Nombre de tables invalide.");
-
-  const tables = {};
-  for (let t = 0; t < tableCount; t++) {
-    const name = readString();
-    if (!name || Object.prototype.hasOwnProperty.call(tables, name)) throw new Error("Nom de table vide ou dupliqué dans le fichier .cbpm.");
-    const recordCount = readInt();
-    if (recordCount < 0 || recordCount > LIMITS.records) throw new Error(`Nombre d'enregistrements invalide dans ${name}.`);
-    const rows = [];
-    for (let r = 0; r < recordCount; r++) {
-      const fieldCount = readInt();
-      if (fieldCount < 0 || fieldCount > LIMITS.fields) throw new Error(`Nombre de champs invalide dans ${name}.`);
-      const row = {};
-      for (let f = 0; f < fieldCount; f++) {
-        const key = readString();
-        if (!key || new TextEncoder().encode(key).byteLength > 4096 || Object.prototype.hasOwnProperty.call(row, key)) {
-          throw new Error(`Clé de champ vide, trop longue ou dupliquée dans ${name}.`);
-        }
-        row[key] = readString();
-      }
-      rows.push(row);
-    }
-    tables[name] = rows;
-  }
-  if (offset !== view.byteLength) throw new Error("Le fichier contient des données supplémentaires non reconnues.");
-  return { format: "CBPM-binary", version, tables };
-}
-
-async function readLegacyCbpm(file) {
-  if (!(file instanceof Blob)) throw new TypeError("Un fichier .cbpm est attendu.");
-  if (file.size <= 0 || file.size > LIMITS.bytes) throw new Error("Taille du fichier .cbpm invalide ou supérieure à la limite d'importation.");
-  const raw = await file.arrayBuffer();
-  const bytes = new Uint8Array(raw, 0, Math.min(4, raw.byteLength));
-  if (bytes[0] === 0x1f && bytes[1] === 0x8b) {
-    const expanded = await gunzip(raw);
-    return parseBinary(expanded);
-  }
-  return parseLegacyText(new TextDecoder("utf-8").decode(raw));
 }
 
 const norm = (value) => String(value ?? "").trim().normalize("NFKC").toLocaleLowerCase("fr");
@@ -847,7 +716,7 @@ async function buildLegacyMigrationPlan(parsed, existingByTable = new Map()) {
       continue;
     }
     if (table === "param") {
-      warnings.push("Les paramètres Java sont exclus du .cbpm récent et stockés dans les préférences locales. Une fiche paramétrage devra être vérifiée séparément.");
+      warnings.push("Les paramètres sont exclus du classeur importé et stockés dans les préférences de l’application.");
       continue;
     }
     const seenSourceKeys = new Map();
@@ -911,7 +780,7 @@ function mapMigrationPlanReferences(plan, parsed, existingByTable = new Map()) {
 function toFirestoreMigrationDocument(item) {
   if (item.action !== "create" || !item.id) throw new Error("Seules les nouvelles lignes confirmées peuvent être converties en documents.");
   if (item.referenceReview?.length) throw new Error("Des références liées doivent être résolues manuellement avant l'importation.");
-  return { ...(item.sourceMapped ?? item.source), origineMigration: "CBPM-Java", migrationId: item.id };
+  return { ...(item.sourceMapped ?? item.source), origineMigration: "Importation", migrationId: item.id };
 }
 
 let draftStore=null, changeManager=null, draftScopeKey=null;
@@ -966,7 +835,6 @@ function updateSaveUI(state){
   const b=$("btnSaveAll");if(b)b.disabled=!peutEcrire()||!dirty||changeManager.saving;
   const c=$("saveCount");if(c)c.textContent=dirty?`${count} opération(s) en attente${forms?` · ${forms} formulaire(s) modifié(s)`:""}`:"Aucune modification en attente";
   const cb=$("btnConflicts");if(cb){const n=changeManager.conflicts().length;cb.hidden=!n;cb.textContent=`Voir les conflits (${n})`;}
-  const undo=$("btnUndo"),redo=$("btnRedo");if(undo)undo.disabled=!peutEcrire()||!changeManager.undoStack?.length||hasFormChanges();if(redo)redo.disabled=!peutEcrire()||!changeManager.redoStack?.length||hasFormChanges();
   if(state?.dirty)synchro("p","Modifications locales non envoyées");else if(!dirty)synchro("","Synchronisé");
 }
 function saveAllToFirebase(){return changeManager.saveAll({db,companyId:ent.id,userEmail:user?.email||"",firestore:{doc,runTransaction,serverTimestamp,getDoc}});}
@@ -975,16 +843,27 @@ function saveAllToFirebase(){return changeManager.saveAll({db,companyId:ent.id,u
 
 
 // ===== Journal d'audit : chaque opération métier est tracée =====
-function auditSnapshot(row){
+function auditSnapshot(table,row){
   if(!row)return "";
-  const out={};for(const [k,v] of Object.entries(row)){if(["id","version","majPar","majLe","logo","compo"].includes(k))continue;if(typeof v==="string"&&v.length>500)out[k]=v.slice(0,500)+"…";else out[k]=v;}
-  return JSON.stringify(out);
+  const source=typeof toLegacyExportRow==="function"?toLegacyExportRow(table,row):row;
+  const text=Object.entries(source).filter(([key,value])=>! ["id","version","majPar","majLe","deleted"].includes(key)&&!key.startsWith("_")&&value!==undefined)
+    .map(([key,value])=>`${key}=${value&&typeof value==="object"?JSON.stringify(value):String(value??"")}`).join(";");
+  return text.length>3500?text.slice(0,3500)+"…":text;
+}
+function journalTimestamp(value){
+  const s=String(value||"");
+  const m=s.match(/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})$/);
+  if(m)return new Date(Number(m[3]),Number(m[2])-1,Number(m[1]),Number(m[4]),Number(m[5]),Number(m[6])).getTime();
+  const n=Date.parse(s);return Number.isFinite(n)?n:0;
 }
 function journaliser(table,operation,id,before,after){
   if(!changeManager||table==="journal"||!peutEcrire())return;
-  const record=after||before||{},label=record.nom||record.numero||record.bl||id;
-  const entry={date_heure:new Date().toISOString(),utilisateur:user?.email||"",module:table,operation,element:String(label||id||""),description:`${operation} — ${table} — ${label||id||""}`,anciennes_valeurs:auditSnapshot(before),nouvelles_valeurs:auditSnapshot(after)};
-  try{changeManager.create("journal",doc(collection(db,...chemin("journal"))).id,entry,false);}catch(e){console.error("Journal d'audit :",e);}
+  const record=after||before||{},display=typeof toLegacyExportRow==="function"?toLegacyExportRow(table,record):record;
+  const keys=["num","nom","produit","client","fournisseur","date","debiteur","aff","silo"];
+  const label=keys.map(k=>String(display[k]??"").trim()).find(Boolean)||`#${actifs("journal").length+1}`;
+  const now=new Date(),pad=n=>String(n).padStart(2,"0"),date_heure=`${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  const entry={utilisateur:user?.email||"",date_heure,module:table,operation,element:String(label||id||""),description:`${operation} — ${table}`,anciennes_valeurs:auditSnapshot(table,before),nouvelles_valeurs:auditSnapshot(table,after)};
+  try{changeManager.create("journal",doc(collection(db,...chemin("journal"))).id,entry);}catch(e){console.error("Journal d'audit :",e);}
 }
 function recordId(table){return doc(collection(db,...chemin(table))).id;}
 
@@ -1110,7 +989,11 @@ class Crud {
       else if (f.t === "cb") {
         if (val && ![...c.options].some((o) => o.value === val)) {
           let label = f.ref ? nomDe(f.ref[0], val, f.ref[1]) : val;
-          if (f.k === "sousaff") label = nomDe("sousaff", val, "nom") || nomDe("fournisseur", val, "nom") || nomDe("client", val, "nom") || val;
+          if (f.k === "sousaff") {
+            const affectation=nomDe("affect",this.v("aff"),"nom");
+            const linkedTable=affectation==="Fournisseur"?"fournisseur":affectation==="Remboursement client"?"client":"sousaff";
+            label=nomDe(linkedTable,val,"nom")||val;
+          }
           c.add(new Option(label, val));
         }
         c.value = val ?? "";
@@ -1268,11 +1151,13 @@ const fParty = (t) => [F("nom", "Nom / Raison sociale", "tx", { req: 1 }), F("ad
 const montants = (r) => calculateLineAmounts(r, tauxTVA());
 
 
+const PROTECTED_AFFECTATIONS=new Set([norm("Fournisseur"),norm("Remboursement client"),norm("Charges du personnel")]);
 const cfgAffect = () => ({table:"affect",titre:"Gestion des affectations",unique:"nom",sort:"nom",fields:[F("nom","Affectation","tx",{req:1})],
-  deleteCheck:r=>actifs("depense").some(x=>x.aff===r.id)?"Cette affectation est utilisée dans des dépenses.":null});
+  validate:(r,editing)=>PROTECTED_AFFECTATIONS.has(norm(editing?.nom))||PROTECTED_AFFECTATIONS.has(norm(r.nom))?"Cette affectation est réservée au fonctionnement de CBPManagement et ne peut pas être renommée.":null,
+  deleteCheck:r=>PROTECTED_AFFECTATIONS.has(norm(r.nom))?"Cette affectation système ne peut pas être supprimée.":actifs("depense").some(x=>x.aff===r.id)?"Cette affectation est utilisée dans des dépenses.":null});
 const cfgSousAff = () => ({table:"sousaff",titre:"Gestion des sous-affectations",sort:"nom",fields:[F("aff","Affectation","cb",{req:1,src:refs("affect","nom"),ref:["affect","nom"]}),F("nom","Sous-affectation","tx",{req:1})],
-  unique:null,validate:r=>actifs("sousaff").some(x=>x.id!==sousVue?.sel?.id&&x.aff===r.aff&&norm(x.nom)===norm(r.nom))?"Cette sous-affectation existe déjà pour cette affectation.":null,
-  deleteCheck:r=>actifs("depense").some(x=>x.sousaff===r.id)?"Cette sous-affectation est utilisée dans des dépenses.":null});
+  unique:null,validate:r=>{const parent=nomDe("affect",r.aff,"nom");if(["Fournisseur","Remboursement client"].includes(parent))return "Les sous-affectations de cette catégorie sont automatiques et proviennent des fiches fournisseurs ou clients.";if(actifs("sousaff").some(x=>x.id!==sousVue?.sel?.id&&x.aff===r.aff&&norm(x.nom)===norm(r.nom)))return "Cette sous-affectation existe déjà pour cette affectation.";return null;},
+  deleteCheck:r=>["Fournisseur","Remboursement client"].includes(nomDe("affect",r.aff,"nom"))?"Cette sous-affectation automatique ne peut pas être supprimée ici.":actifs("depense").some(x=>x.sousaff===r.id)?"Cette sous-affectation est utilisée dans des dépenses.":null});
 function imprimerBonPaiementWeb(){
   const r=vueCourante?.cfg?.table==="depense"?vueCourante.sel:null;if(!r){alert("Sélectionnez une dépense dans le tableau.");return;}
   const aff=nomDe("affect",r.aff,"nom"),benef=nomDe("personnel",r.benef,"nom");
@@ -1318,12 +1203,11 @@ function supplierPaymentName(row) {
   const affect = tous.affect?.get(affectation);
   if (affect) affectation = affect.nom || "";
   if (norm(affectation) !== norm("Fournisseur")) return "";
-  let sub = row.sousaff || "";
-  const subRecord = tous.sousaff?.get(sub);
-  if (subRecord) sub = subRecord.nom || "";
-  else if (tous.fournisseur?.has(sub)) sub = tous.fournisseur.get(sub).nom || "";
-  if (!sub) sub = row.benef || "";
-  return String(sub);
+  const id = String(row.sousaff || "");
+  const supplier = tous.fournisseur?.get(id);
+  if (supplier) return String(supplier.nom || "");
+  const subRecord = tous.sousaff?.get(id);
+  return String(subRecord?.nom || row.benef || "");
 }
 
 function statementMatchesParty(value, party) {
@@ -1336,11 +1220,12 @@ function expenseMatchesParty(row, affectationName, table, party) {
   const affect = tous.affect?.get(affectation);
   if (affect) affectation = affect.nom || "";
   if (norm(affectation) !== norm(affectationName)) return false;
-  let sub = row.sousaff || "";
-  const subRecord = tous.sousaff?.get(sub);
-  if (subRecord) sub = subRecord.nom || "";
-  else if (tous[table]?.has(sub)) sub = tous[table].get(sub).nom || "";
-  if (!sub) sub = row.benef || "";
+  const id = String(row.sousaff || "");
+  // Pour les affectations spéciales, Java référence directement le client/fournisseur.
+  const linkedParty = tous[table]?.get(id);
+  if (linkedParty) return statementMatchesParty(linkedParty.nom || id, party);
+  const subRecord = tous.sousaff?.get(id);
+  const sub = subRecord?.nom || row.benef || id;
   return statementMatchesParty(sub, party);
 }
 
@@ -1651,14 +1536,29 @@ const MODULES = [
     options:(f,c)=>{
       if(f.k!=="sousaff")return null;
       const aff=nomDe("affect",c.v("aff"),"nom");
-      const table=aff==="Fournisseur"?"fournisseur":aff==="Remboursement client"?"client":"sousaff";
-      return actifs(table).filter(x=>table!=="sousaff"||!x.aff||x.aff===c.v("aff")).map(x=>({v:x.id,l:table==="sousaff"?(x.nom||""):(x.nom||"")})).sort((a,b)=>a.l.localeCompare(b.l,"fr"));
+      if(aff==="Fournisseur")return actifs("fournisseur").map(x=>({v:x.id,l:x.nom||""})).sort((a,b)=>a.l.localeCompare(b.l,"fr"));
+      if(aff==="Remboursement client")return actifs("client").map(x=>({v:x.id,l:x.nom||""})).sort((a,b)=>a.l.localeCompare(b.l,"fr"));
+      return actifs("sousaff").filter(x=>x.aff===c.v("aff")).map(x=>({v:x.id,l:x.nom||""})).sort((a,b)=>a.l.localeCompare(b.l,"fr"));
     },
     dependent:(c,k,userChange)=>{
-      if(k==="aff"){c.refreshOptions("sousaff");const aff=nomDe("affect",c.v("aff"),"nom");const isPersonnel=norm(aff)===norm("Charges du personnel");c.enable("benef",isPersonnel);if(!isPersonnel&&userChange)c.set("benef","");if(userChange)c.set("sousaff","");}
+      if(k==="aff"){
+        const aff=nomDe("affect",c.v("aff"),"nom"),isPersonnel=norm(aff)===norm("Charges du personnel");
+        c.refreshOptions("sousaff");
+        c.enable("sousaff",!!aff);
+        c.enable("benef",isPersonnel);
+        if(userChange){c.set("sousaff","");if(!isPersonnel)c.set("benef","");}
+      }
       if(k==="mode"){const cash=c.v("mode")==="Espèces";c.enable("info",!cash);if(cash&&userChange)c.set("info","");}
     },
-    validate:r=>{const aff=nomDe("affect",r.aff,"nom");if((aff==="Fournisseur"||aff==="Remboursement client")&&!r.sousaff)return `Sélectionnez le ${aff==="Fournisseur"?"fournisseur":"client"} concerné.`;return null;},
+    validate:r=>{
+      const aff=nomDe("affect",r.aff,"nom");
+      if(!aff)return "Sélectionnez une affectation.";
+      if(aff==="Fournisseur"&&!actifs("fournisseur").some(x=>x.id===r.sousaff))return "Sélectionnez un fournisseur enregistré.";
+      if(aff==="Remboursement client"&&!actifs("client").some(x=>x.id===r.sousaff))return "Sélectionnez un client enregistré.";
+      if(!["Fournisseur","Remboursement client"].includes(aff)&&r.sousaff&&!actifs("sousaff").some(x=>x.id===r.sousaff&&x.aff===r.aff))return "La sous-affectation ne correspond pas à l'affectation choisie.";
+      if(norm(aff)===norm("Charges du personnel")&&!r.benef)return "Sélectionnez le bénéficiaire de cette dépense.";
+      return null;
+    },
     filtres:[{t:"dates",k:"date"},{t:"cb",l:"Affectation",k:"aff"},{t:"cb",l:"Mode",k:"mode"}],
     extra:[{t:"Bon de paiement",f:imprimerBonPaiementWeb},{t:"Gestion des affectations",f:()=>ouvrirSous(cfgAffect)},{t:"Sous-affectations",f:()=>ouvrirSous(cfgSousAff)}]
   })],
@@ -1688,17 +1588,53 @@ const MODULES = [
 // Modules complémentaires repris de l'application Java
 // =====================================================================
 let activeSpecialRefresh=null;
-const DEFAULT_AFFECTATIONS=["Fournisseur","Remboursement client","Charges du personnel","Carburants et lubrifiants","Entretien et réparations","Énergie et consommation d'eau","Transport et logistique","Charges locatives","Assurances","Honoraires et prestations externes","Impôts, taxes et redevances","Frais bancaires et financiers"];
+const DEFAULT_AFFECTATION_CHILDREN={
+  "Carburants et lubrifiants":["Gasoil des camions malaxeurs","Gasoil des chargeuses","Gasoil des autres engins","Carburant des groupes électrogènes","Huiles moteur","Huiles hydrauliques","Graisses et lubrifiants","Autres carburants"],
+  "Entretien et réparations":["Entretien de la centrale à béton","Entretien des malaxeurs","Entretien des convoyeurs","Entretien des silos","Entretien des camions malaxeurs","Entretien des chargeuses","Entretien des pompes à béton","Pièces de rechange","Réparations mécaniques","Réparations électriques","Maintenance préventive","Contrôle et étalonnage des équipements"],
+  "Énergie et consommation d'eau":["Électricité de la centrale","Électricité des bureaux","Consommation d'eau pour la production","Eau potable","Gaz","Assainissement et évacuation des eaux","Autres consommations énergétiques"],
+  "Transport et logistique":["Transport de matières premières","Transport sous-traité","Location de camions","Location de pompes à béton","Frais de déplacement des véhicules","Stationnement et péages","Frais de manutention","Autres frais de transport"],
+  "Locations et charges locatives":["Location du terrain","Location des locaux administratifs","Location du dépôt","Location d’équipements","Location d’engins","Charges locatives","Autres locations"],
+  "Assurances":["Assurance des camions","Assurance des engins","Assurance de la centrale","Assurance des bâtiments","Assurance responsabilité civile","Assurance multirisque professionnelle","Autres assurances"],
+  "Honoraires et prestations externes":["Honoraires comptables","Honoraires juridiques","Commissariat aux comptes","Études techniques","Analyses et essais du béton","Analyses des granulats","Contrôle technique","Prestations informatiques","Nettoyage sous-traité","Gardiennage","Autres prestations"],
+  "Impôts, taxes et redevances":["Impôts sur les rémunérations","Impôts et taxes non récupérables","Taxes foncières","Droits de timbre","Droits d’enregistrement","Redevances administratives","Vignettes automobiles","Autres impôts et taxes"],
+  "Frais bancaires et financiers":["Frais de tenue de compte","Commissions bancaires","Frais de virement","Frais de chèques","Intérêts sur emprunts","Agios bancaires","Autres frais financiers"]
+};
+const DEFAULT_PERSONNEL_SUBAFFECTATIONS=["Salaires","Avances sur salaire","Primes","Indemnités","Heures supplémentaires","Congés payés","Autres charges du personnel","Cotisations patronales CNAS","Médecine du travail","Formation professionnelle","Transport du personnel","Restauration du personnel"];
+const DEFAULT_AFFECTATIONS=["Fournisseur","Remboursement client","Charges du personnel",...Object.keys(DEFAULT_AFFECTATION_CHILDREN)];
+const AFFECTATION_SEED_KEY="affectations.scf.bpe.v1";
 let seededAffectations=false;
 function seedDefaultAffectations(){
-  if(seededAffectations||!peutEcrire()||!changeManager||actifs("affect").length)return;
+  if(seededAffectations||!peutEcrire()||!changeManager)return;
+  if(actifs("app_meta").some(r=>r.key===AFFECTATION_SEED_KEY)){seededAffectations=true;return;}
   seededAffectations=true;
-  try{const rows=DEFAULT_AFFECTATIONS.map(nom=>({table:"affect",id:recordId("affect"),data:{nom,origine:"CBPManagement"}}));changeManager.createMany(rows);info("Les affectations initiales ont été préparées. Cliquez sur Enregistrer pour les conserver.");}
-  catch(e){console.warn("Préparation des affectations initiales :",e);}
+  try{
+    const entries=[],affects=actifs("affect").map(r=>({...r})),children=actifs("sousaff").map(r=>({...r}));
+    const getAffectId=(name)=>{
+      let found=affects.find(r=>norm(r.nom)===norm(name));
+      if(!found&&name==="Locations et charges locatives"){
+        const legacy=affects.find(r=>norm(r.nom)==="charges locatives"&&r.origine==="CBPManagement");
+        if(legacy){changeManager.update("affect",legacy.id,{nom:name});legacy.nom=name;found=legacy;}
+      }
+      if(found)return found.id;
+      const id=recordId("affect"),row={id,nom:name};affects.push(row);entries.push({table:"affect",id,data:{nom:name,origine:"CBPManagement"}});return id;
+    };
+    const addChild=(parentId,name)=>{
+      if(children.some(r=>r.aff===parentId&&norm(r.nom)===norm(name)))return;
+      const id=recordId("sousaff"),row={id,aff:parentId,nom:name};children.push(row);entries.push({table:"sousaff",id,data:{aff:parentId,nom:name}});
+    };
+    for(const name of DEFAULT_AFFECTATIONS)getAffectId(name);
+    const personnelId=getAffectId("Charges du personnel");
+    // Java n'ajoute la liste standard du personnel que si elle est totalement absente.
+    if(!children.some(r=>r.aff===personnelId))for(const name of DEFAULT_PERSONNEL_SUBAFFECTATIONS)addChild(personnelId,name);
+    for(const [category,names] of Object.entries(DEFAULT_AFFECTATION_CHILDREN)){
+      const parentId=getAffectId(category);for(const name of names)addChild(parentId,name);
+    }
+    const markerId=recordId("app_meta");entries.push({table:"app_meta",id:markerId,data:{key:AFFECTATION_SEED_KEY,value:"1"}});
+    if(entries.length){changeManager.createMany(entries);info("Les affectations et sous-affectations initiales de CBPManagement ont été préparées. Cliquez sur Enregistrer pour les conserver.");}
+  }catch(e){seededAffectations=false;console.warn("Préparation des affectations initiales :",e);}
 }
 function money(x){return `${fmt(x)} DA`;}
 function dateRows(table,date){return actifs(table).filter(r=>!date||String(r.date||"")<=date);}
-function monthRows(table,month){return actifs(table).filter(r=>String(r.date||"").startsWith(month));}
 function recordLabel(table,id,field="nom"){return nomDe(table,id,field)||String(id||"");}
 function sumBy(rows,key){return rows.reduce((n,r)=>n+nb(r[key]),0);}
 function createKpi(title,value,sub=""){return `<article class="kpi"><small>${esc(title)}</small><strong>${esc(value)}</strong><div class="sub">${esc(sub)}</div></article>`;}
@@ -1733,21 +1669,6 @@ function allStockRows(dateISO=aujourdhui()){
   const rows=[];for(const material of materials)for(const sid of siloIds){const v=stockAtDate(material.id,sid,dateISO);rows.push({materialId:material.id,material:material.nom,siloId:sid,silo:sid?recordLabel("silo",sid):"—",...v});}
   return rows.sort((a,b)=>a.material.localeCompare(b.material,"fr")||a.silo.localeCompare(b.silo,"fr"));
 }
-function renderDashboard(host){
-  const d=aujourdhui(),m=d.slice(0,7),production=monthRows("prod",m),todayProd=production.filter(r=>r.date===d),receipts=monthRows("recette",m),expenses=monthRows("depense",m),appro=monthRows("appro",m),treasury=treasuryBalances(d);
-  const todayVolume=sumBy(todayProd.filter(r=>r.nature===PROD),"qte"),monthVolume=sumBy(production.filter(r=>r.nature===PROD),"qte"),sales=sumBy(production,"ttc"),collect=sumBy(receipts,"net"),charges=sumBy(expenses,"montant");
-  const recent=[...actifs("prod").map(r=>({...r,kind:"Production",label:recordLabel("client",r.client)})),...actifs("appro").map(r=>({...r,kind:"Approvisionnement",label:recordLabel("fournisseur",r.fournisseur)})),...actifs("recette").map(r=>({...r,kind:"Recette",label:recordLabel("client",r.debiteur)})),...actifs("depense").map(r=>({...r,kind:"Dépense",label:recordLabel("affect",r.aff)}))].sort((a,b)=>String(b.date||"").localeCompare(String(a.date||""))).slice(0,8);
-  const stock=allStockRows(d),alerts=stock.filter(r=>r.theoretical<=0);
-  const days=Array.from({length:7},(_,i)=>{const x=new Date(`${d}T12:00:00`);x.setDate(x.getDate()-(6-i));const iso=x.toISOString().slice(0,10);return {iso,label:iso.slice(8,10)+"/"+iso.slice(5,7),value:sumBy(todayRows("prod",iso),"qte")};});
-  const max=Math.max(1,...days.map(x=>x.value));
-  host.innerHTML=`<div class="advanced-grid">${createKpi("Production du jour",`${fmt(todayVolume)} m³`,`${todayProd.length} opération(s)`)}${createKpi("Production du mois",`${fmt(monthVolume)} m³`,m)}${createKpi("Chiffre d'affaires TTC",money(sales),"Mois en cours")}${createKpi("Encaissements",money(collect),"Mois en cours")}${createKpi("Disponibilité",money(treasury.total),`Caisse : ${money(treasury.cash)} · Banque : ${money(treasury.bank)}`)}${createKpi("Dépenses du mois",money(charges),`${expenses.length} opération(s)`)}</div>
-  <div class="two-panels"><section class="advanced-card"><h3>Production des 7 derniers jours</h3><div class="chart-bars">${days.map(x=>`<div class="bar-item"><b>${esc(fmt(x.value))}</b><div class="bar-fill" style="height:${Math.max(2,x.value/max*100)}%"></div><small>${esc(x.label)}</small></div>`).join("")}</div></section>
-  <section class="advanced-card"><h3>Alertes de stock</h3>${tableHtml([{label:"Matière"},{label:"Silo"},{label:"Stock théorique",num:true}],alerts.slice(0,8).map(r=>[esc(r.material),esc(r.silo),fmt(r.theoretical)]),"Aucun stock nul ou négatif.")}</section></div>
-  <section class="advanced-card"><h3>Opérations récentes</h3>${tableHtml([{label:"Date"},{label:"Type"},{label:"Tiers / détail"},{label:"Quantité / montant",num:true}],recent.map(r=>[esc(frDate(r.date)),esc(r.kind),esc(r.label||r.produit||r.motif||""),fmt(r.qte||r.ttc||r.net||r.montant||0)]))}</section>
-  <section class="advanced-card"><h3>Accès rapide</h3><div class="advanced-actions"><button class="b-blue" data-go="production">Production</button><button class="b-blue" data-go="appro">Approvisionnements</button><button class="b-blue" data-go="recettes">Recettes</button><button class="b-blue" data-go="depenses">Dépenses</button><button class="b-blue" data-go="regstock">Régularisation du stock</button><button class="b-blue" data-go="rapports">Rapports</button></div></section>`;
-  host.querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>ouvrir(b.dataset.go));
-}
-function todayRows(table,date){return actifs(table).filter(r=>r.date===date);}
 
 function renderStock(host){
   const write=peutEcrire(),rows=allStockRows(aujourdhui()),history=actifs("regstock").slice().sort((a,b)=>String(b.date||"").localeCompare(String(a.date||""))||String(b.heure||"").localeCompare(String(a.heure||"")));
@@ -1945,12 +1866,12 @@ function renderReports(host){
   $r("reportPrint").onclick=()=>{if(current)openStatementPrintPreview(current.title,reportHtml(current),null);};
 }
 
-function renderJournal(host,control=false){
-  const rows=actifs("journal").slice().sort((a,b)=>String(b.date_heure||"").localeCompare(String(a.date_heure||"")));
-  host.innerHTML=`<section class="advanced-card"><h3>${control?"Contrôle de gestion — journal d'audit":"Journal des opérations"}</h3><div class="advanced-toolbar"><label>Recherche<input id="jrSearch" type="search" placeholder="Utilisateur, module, opération…"></label><label>Du<input id="jrFrom" type="date"></label><label>Au<input id="jrTo" type="date" value="${aujourdhui()}"></label><button id="jrRefresh" class="b-blue">Actualiser</button><button id="jrPrint" class="b-navy">Aperçu / Imprimer</button></div><div id="jrSummary" class="cbpm-status"></div><div id="jrTable"></div></section>`;
-  const $j=id=>host.querySelector("#"+id);let current=[];
-  const update=()=>{const q=$j("jrSearch").value.toLowerCase(),from=$j("jrFrom").value,to=$j("jrTo").value;current=rows.filter(r=>{const dt=String(r.date_heure||"").slice(0,10);return (!from||dt>=from)&&(!to||dt<=to)&&(!q||[r.utilisateur,r.module,r.operation,r.element,r.description].join(" ").toLowerCase().includes(q));});$j("jrSummary").textContent=`${current.length} opération(s) affichée(s) · ${rows.length} au total`;$j("jrTable").innerHTML=tableHtml([{label:"Date et heure"},{label:"Utilisateur"},{label:"Module"},{label:"Opération"},{label:"Élément"},{label:"Description"}],current.map(r=>[esc(r.date_heure?new Date(r.date_heure).toLocaleString("fr-FR"):""),esc(r.utilisateur||""),esc(r.module||""),esc(r.operation||""),esc(r.element||""),esc(r.description||"")]));};
-  ["jrSearch","jrFrom","jrTo"].forEach(id=>$j(id).addEventListener("input",update));$j("jrRefresh").onclick=update;$j("jrPrint").onclick=()=>{const body=current.map(r=>`<tr><td>${esc(r.date_heure||"")}</td><td>${esc(r.utilisateur||"")}</td><td>${esc(r.module||"")}</td><td>${esc(r.operation||"")}</td><td>${esc(r.element||"")}</td><td>${esc(r.description||"")}</td></tr>`).join("");openStatementPrintPreview("Journal des opérations",`<h1>JOURNAL DES OPÉRATIONS</h1><table><thead><tr><th>Date et heure</th><th>Utilisateur</th><th>Module</th><th>Opération</th><th>Élément</th><th>Description</th></tr></thead><tbody>${body}</tbody></table>`,null);};update();
+function renderJournal(host){
+  const rows=actifs("journal").slice().sort((a,b)=>journalTimestamp(b.date_heure)-journalTimestamp(a.date_heure));
+  const headers=["Utilisateur","Date et heure","Module","Opération","Élément","Description","Anciennes valeurs","Nouvelles valeurs"];
+  const body=rows.length?rows.map(r=>`<tr><td>${esc(r.utilisateur||"")}</td><td>${esc(r.date_heure||"")}</td><td>${esc(r.module||"")}</td><td>${esc(r.operation||"")}</td><td>${esc(r.element||"")}</td><td>${esc(r.description||"")}</td><td class="journal-values">${esc(r.anciennes_valeurs||"")}</td><td class="journal-values">${esc(r.nouvelles_valeurs||"")}</td></tr>`).join(""):`<tr><td colspan="8" class="empty-note">Aucune opération enregistrée.</td></tr>`;
+  host.innerHTML=`<section class="advanced-card"><div class="journal-heading"><strong>${esc(ent?.nom||"Nouvelle session")}</strong><button id="jrRefresh" class="b-blue" type="button">Actualiser</button></div><div class="advanced-table-wrap"><table class="advanced-table journal-table"><thead><tr>${headers.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>${body}</tbody></table></div></section>`;
+  host.querySelector("#jrRefresh").onclick=()=>renderJournal(host);
 }
 
 function runControlAudit(){
@@ -2036,12 +1957,10 @@ async function renderUsers(host){
   $u("usrCreate").onclick=async()=>{const email=$u("usrEmail").value.trim(),pass=$u("usrPass").value,usrRole=$u("usrRole").value;try{if(!email||pass.length<6)throw new Error("Saisissez un e-mail valide et un mot de passe d'au moins 6 caractères.");if(!secondaryAuth)throw new Error("La création de comptes n'est pas disponible.");const cred=await createUserWithEmailAndPassword(secondaryAuth,email,pass);await setDoc(doc(db,"utilisateurs",cred.user.uid),{email,role:usrRole,entrepriseId:ent.id,actif:true,createdAt:serverTimestamp(),createdBy:user?.email||""});await signOut(secondaryAuth);$u("usrMessage").textContent="Compte créé et associé à cette entreprise.";$u("usrEmail").value="";$u("usrPass").value="";await reload();}catch(e){$u("usrMessage").textContent=e.message||String(e);try{if(secondaryAuth?.currentUser)await signOut(secondaryAuth);}catch{}}};await reload();
 }
 function renderHelp(host){host.innerHTML=`<section class="advanced-card"><h3>Aide — CBPManagement</h3><h4>Fonctionnement général</h4><p>Les boutons Ajouter, Modifier et Supprimer préparent les opérations dans la copie de travail de l'entreprise. Cliquez sur Enregistrer pour transmettre l'ensemble des changements.</p><h4>Enregistrement</h4><p>Les brouillons sont conservés automatiquement dans le navigateur. L'enregistrement global synchronise les modifications avec Firebase. Les conflits sont présentés pour arbitrage.</p><h4>Production et stocks</h4><p>Créez les matières premières, les silos et les compositions des produits finis avant la saisie de production. Les mouvements de stock sont calculés à partir des approvisionnements, des consommations et des régularisations.</p><h4>Facturation</h4><p>Choisissez un client, sélectionnez ses opérations non facturées, puis créez et imprimez sa facture.</p><h4>Rôles</h4><p>L'administrateur peut modifier les données. Le profil Consultation peut consulter et imprimer les informations.</p></section>`;}
-const SPECIAL_VIEWS={dashboard:renderDashboard,regstock:renderStock, factures:renderInvoices, dettes_clients:(h)=>renderDebts(h,"client"),dettes_fournisseurs:(h)=>renderDebts(h,"supplier"),tresorerie:renderTreasury,rapports:renderReports,journal:(h)=>renderJournal(h,false),controle_gestion:renderControlAudit,mail:renderMail,users:renderUsers,aide:renderHelp};
+const SPECIAL_VIEWS={regstock:renderStock,factures:renderInvoices,dettes_clients:(h)=>renderDebts(h,"client"),dettes_fournisseurs:(h)=>renderDebts(h,"supplier"),tresorerie:renderTreasury,rapports:renderReports,journal:renderJournal,controle_gestion:renderControlAudit,mail:renderMail,users:renderUsers,aide:renderHelp};
 
-// Exports compatibles avec les sauvegardes binaires CBPM Java et les classeurs Excel.
+// Conversion des références métier et export Excel.
 function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=el("a");a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);}
-function writeInt(out,n){out.push((n>>>24)&255,(n>>>16)&255,(n>>>8)&255,n&255);}
-function writeString(out,value){const bytes=new TextEncoder().encode(String(value??""));writeInt(out,bytes.length);for(let i=0;i<bytes.length;i++)out.push(bytes[i]);}
 function toLegacyExportRow(table,row){
   const out=cleanFirestoreDocument(row);
   const label=(target,id,field="nom")=>id?nomDe(target,id,field)||String(id):"";
@@ -2053,9 +1972,6 @@ function toLegacyExportRow(table,row){
   else if(table==="regstock"){out.produit=label("prod_appro",row.produit);out.silo=label("silo",row.silo);}
   else if(table==="sousaff"){out.aff=label("affect",row.aff);}
   return out;
-}
-function exportCbpm(){
-  try{const out=[0x43,0x42,0x50,0x4d,2],tables=TABLES.filter(t=>t!=="journal");writeInt(out,tables.length);for(const table of tables){writeString(out,table==="parametres"?"param":table);const rows=actifs(table);writeInt(out,rows.length);for(const row of rows){const fields=Object.entries(toLegacyExportRow(table,row)).filter(([k,v])=>!k.startsWith("_")&&v!==undefined);writeInt(out,fields.length);for(const [k,v] of fields){writeString(out,k);writeString(out,typeof v==="object"?JSON.stringify(v):typeof v==="boolean"?(v?"true":"false"):String(v??""));}}}const raw=new Uint8Array(out);let blob;if(typeof CompressionStream==="function"){const stream=new Blob([raw]).stream().pipeThrough(new CompressionStream("gzip"));blob=new Response(stream).blob();}else{let text="#CBPM\t1\n";for(const table of tables)for(const r of actifs(table)){const vals=Object.entries(toLegacyExportRow(table,r)).filter(([k])=>k!=="id"&&!k.startsWith("_")).map(([k,v])=>`${k}=${String(v??"").replace(/\\/g,"\\\\").replace(/\t/g,"\\t").replace(/\n/g,"\\n")}`).join("\t");text+=`${table==="parametres"?"param":table}\t${vals}\n`;}blob=Promise.resolve(new Blob([text],{type:"text/plain;charset=utf-8"}));}Promise.resolve(blob).then(b=>downloadBlob(b,`CBPManagement_${aujourdhui()}.cbpm`));info("Export .cbpm préparé.");}catch(e){info("Export .cbpm impossible : "+(e.message||String(e)),true);}
 }
 let xlsxModule=null;
 async function getXlsx(){if(xlsxModule)return xlsxModule;const mod=await import("https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs");xlsxModule=mod.default||mod;return xlsxModule;}
@@ -2140,9 +2056,6 @@ async function analyserParsedImport(parsed){
     pendingImportPlan=plan;pendingImportParsed=parsed;renderImportPlan(plan);
   }catch(error){$("importStatus").textContent="Importation impossible : "+(error?.message||String(error));}
 }
-async function analyserCbpm(file){try{await analyserParsedImport(await readLegacyCbpm(file));}catch(error){info("Import .cbpm impossible : "+(error?.message||String(error)),true);}}
-$("btnImportCbpm").onclick=()=>{if(!peutEcrire())return info("Votre profil autorise uniquement la consultation.",true);$("inputCbpm").click();};
-$("inputCbpm").addEventListener("change",()=>{const file=$("inputCbpm").files?.[0];if(file)void analyserCbpm(file);$("inputCbpm").value="";});
 $("importClose").onclick=()=>$("dlgImport").close();
 $("btnStageImport").onclick=()=>{
   if(!pendingImportPlan||!peutEcrire())return;
@@ -2197,14 +2110,9 @@ async function saveFromToolbar(){
   finally{b.textContent="Enregistrer";updateSaveUI();}
 }
 $("btnSaveAll").onclick=()=>void saveFromToolbar();
-$("btnUndo").onclick=()=>{if(hasFormChanges()){alert("Validez ou abandonnez d'abord les modifications du formulaire.");return;}if(changeManager?.undo())info("Dernière opération annulée dans la copie de travail.");};
-$("btnRedo").onclick=()=>{if(hasFormChanges()){alert("Validez ou abandonnez d'abord les modifications du formulaire.");return;}if(changeManager?.redo())info("Opération rétablie dans la copie de travail.");};
-$("btnExportCbpm").onclick=exportCbpm;
 $("btnExportXlsx").onclick=()=>void exportXlsx();
 $("btnImportXlsx").onclick=()=>$("inputXlsx").click();
 $("inputXlsx").addEventListener("change",()=>{const file=$("inputXlsx").files?.[0];if(file)void importXlsxFile(file);$("inputXlsx").value="";});
-$("btnTheme").onclick=()=>{document.body.classList.toggle("cbpm-dark");try{localStorage.setItem("cbpm-theme",document.body.classList.contains("cbpm-dark")?"dark":"light");}catch{}};
-try{if(localStorage.getItem("cbpm-theme")==="dark")document.body.classList.add("cbpm-dark");}catch{}
 
 window.addEventListener("offline",()=>synchro("e","Hors ligne — brouillons conservés localement"));
 window.addEventListener("online",()=>synchro(changeManager?.isDirty()?"p":"",changeManager?.isDirty()?"Modifications en attente":"Connecté à Firebase"));
@@ -2219,7 +2127,7 @@ window.addEventListener("beforeunload",(event)=>{
 
 function buildNavigation(){
   const groups=[
-    ["GESTION",[["dashboard","Tableau de bord"],["clients","Clients"],["fournisseurs","Fournisseurs"],["appro","Approvisionnements"],["production","Production"],["regstock","Régularisation du stock"]]],
+    ["GESTION",[["clients","Clients"],["fournisseurs","Fournisseurs"],["appro","Approvisionnements"],["production","Production"],["regstock","Régularisation du stock"]]],
     ["FINANCES",[["factures","Facturation"],["recettes","Recettes"],["depenses","Dépenses"],["transferts","Transferts de trésorerie"],["dettes_clients","Dettes clients"],["dettes_fournisseurs","Dettes fournisseurs"],["tresorerie","Trésorerie"]]],
     ["RESSOURCES",[["personnel","Personnel"],["materiels","Matériels"]]],
     ["SYSTÈME",[["parametres","Paramètres"],["rapports","Rapports"],["journal","Journal des opérations"],["controle_gestion","Contrôle de gestion"],["mail","Messagerie"],["aide","Aide"]]]
@@ -2231,12 +2139,16 @@ function buildNavigation(){
 // ===== Démarrage : comptes Web existants + copie de travail locale =====
 const TABLES = ["client","fournisseur","appro","prod","recette","prod_appro","prod_fini","silo","personnel","materiel","parametres","depense","transfert","facture","regstock","affect","sousaff","journal","app_meta"];
 function demarrerSynchro(){
+  const readyForAffectations=new Set();
   TABLES.forEach(t=>{
     tous[t]=new Map();
     onSnapshot(collection(db,"entreprises",ent.id,t),snapshot=>{
       const docs=new Map(snapshot.docs.map(d=>[d.id,d.data()]));
       changeManager.setRemoteTable(t,docs);
-      if(t==="affect"&&snapshot.empty)seedDefaultAffectations();
+      if(["affect","sousaff","app_meta"].includes(t)){
+        readyForAffectations.add(t);
+        if(readyForAffectations.size===3)seedDefaultAffectations();
+      }
       synchro(changeManager.isDirty()?"p":"",changeManager.isDirty()?"Modifications en attente":"Synchronisé");
     },error=>{console.error("Écoute Firestore "+t,error);synchro("e","Erreur de lecture : "+t);});
   });
@@ -2255,7 +2167,7 @@ onAuthStateChanged(auth,async u=>{
     changeManager.subscribe(()=>{refreshEffectiveTables();updateSaveUI();});
     if(!peutEcrire()){$("btnSaveAll").disabled=true;}
     buildNavigation();
-    demarrerSynchro();ouvrir("dashboard");updateSaveUI();
+    demarrerSynchro();ouvrir("clients");updateSaveUI();
     if(restored||formDrafts.size)info(`${restored} modification(s) en attente et ${formDrafts.size} formulaire(s) récupéré(s) depuis le dernier passage. Rien n'a encore été enregistré.`);
   }catch(err){console.error(err);info(err.message||"Accès refusé.",true);}
 });
