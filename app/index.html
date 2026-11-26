@@ -301,6 +301,144 @@ th{background:#f5f7fb;color:#52647a}
 @media(max-width:760px){.dash-panels{grid-template-columns:1fr}.dash-welcome h1{font-size:21px}.dash-kpi strong{font-size:18px}}
 @media(max-width:480px){.dash-kpis{grid-template-columns:1fr 1fr;gap:8px}.dash-kpi{padding:12px}.dash-kpi strong{font-size:15px}.dash-fin-row{font-size:10px}}
 
+
+/* ===== Finition visuelle CBPManagement — sans modification du fonctionnement ===== */
+:root{
+  --ink:#17263b;
+  --steel:#40536b;
+  --sig:#2866d7;
+  --bg:#f5f7fb;
+  --card:#fff;
+  --line:#e4eaf2;
+  --mut:#718096;
+  --r:12px;
+  --shadow:0 2px 10px rgba(24,42,66,.045),0 1px 2px rgba(24,42,66,.025);
+  --shadow-hover:0 8px 22px rgba(24,42,66,.075),0 2px 5px rgba(24,42,66,.035);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);grid-template-columns:252px minmax(0,1fr)}
+aside{background:#111d30;box-shadow:3px 0 18px rgba(13,27,46,.07)}
+.logo{padding:5px 19px 20px}
+.brand-copy b{font-size:15px;letter-spacing:.15px}
+.brand-copy small{font-size:9px;letter-spacing:.11em}
+#menu{scrollbar-width:thin;scrollbar-color:#34445b transparent}
+#menu button{min-height:38px;position:relative;transition:background .18s ease,color .18s ease,transform .18s ease}
+#menu button:before{width:5px;height:5px;flex-basis:5px;border-radius:2px;opacity:.62}
+#menu button.on{background:linear-gradient(105deg,#245fc8,#3479e9);box-shadow:0 4px 12px rgba(37,99,235,.2)}
+#menu button.on:after{content:"";position:absolute;inset:8px auto 8px 0;width:3px;border-radius:0 4px 4px 0;background:#fff;opacity:.9}
+main{padding:19px clamp(14px,2.2vw,30px) 34px;gap:14px;max-width:1900px;width:100%;margin:0 auto}
+.bar{min-height:64px;border:1px solid #e4eaf2;border-radius:12px;padding:10px 14px;background:rgba(255,255,255,.97);box-shadow:0 2px 9px rgba(23,38,59,.035);gap:12px}
+.bar>div:first-child{min-width:150px}
+.bar strong{font-size:14px;font-weight:750;letter-spacing:-.01em}
+.bar small{font-size:11px;line-height:1.45}
+.bar .bd{gap:7px}
+.bar button{min-height:34px;padding:7px 11px;font-size:11px;font-weight:650;border-radius:7px}
+.cbpm-savebar{gap:7px}
+#btnSaveAll{min-width:104px;background:#16845e}
+#saveCount{font-size:10px;color:#77869a}
+#sync{padding:5px 9px;font-size:10px;white-space:nowrap}
+#info{padding:10px 13px;border-radius:9px;font-size:12px;box-shadow:0 1px 2px rgba(24,42,66,.025)}
+#vue{gap:14px}
+.card,.advanced-card,.dash-panel,.dash-kpi{border-color:#e5eaf1;box-shadow:var(--shadow)}
+.card{padding:16px 17px}
+.fiche h3,.advanced-card h3{color:#304761;letter-spacing:.035em}
+.fiche h3{font-size:13px}
+.advanced-card{padding:17px}
+.advanced-card h3{font-size:14px;font-weight:750}
+.grille{gap:13px 15px}
+.champ label,.advanced-toolbar label,.stock-entry-grid label{color:#53677f;font-size:11.5px;font-weight:650}
+.champ input,.champ select,.champ textarea,
+.filt input,.filt select,
+.advanced-toolbar input,.advanced-toolbar select,.adv-input,
+.stock-entry-grid input,.stock-entry-grid select,
+.aff-manager-input input{
+  border:1px solid #dce4ee;border-radius:7px;background:#fff;color:#24364d;
+  transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
+}
+.champ input,.champ select{height:37px;padding:7px 10px}
+.champ textarea{min-height:76px;padding:8px 10px}
+.champ input:hover,.champ select:hover,.champ textarea:hover,
+.filt input:hover,.filt select:hover,.advanced-toolbar input:hover,.advanced-toolbar select:hover{border-color:#b9c8da}
+.champ input:focus,.champ select:focus,.champ textarea:focus,
+.filt input:focus,.filt select:focus,.advanced-toolbar input:focus,.advanced-toolbar select:focus,
+.adv-input:focus,.stock-entry-grid input:focus,.stock-entry-grid select:focus{
+  outline:0;border-color:#6c9ce9;box-shadow:0 0 0 3px rgba(40,102,215,.11)
+}
+button{font-weight:650;letter-spacing:.005em;box-shadow:none}
+button:hover:not(:disabled){filter:brightness(1.035);box-shadow:0 3px 9px rgba(20,39,66,.11)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(40,102,215,.2);outline-offset:1px}
+.btns{gap:7px}
+.btns button,.advanced-actions button{min-height:34px;padding:8px 12px;font-size:11.5px}
+.b-grn{background:#16845e}.b-teal{background:#087f91}.b-blue{background:#2866d7}.b-red{background:#c94b50}.b-navy{background:#40536b}
+.tcard{border:1px solid #e4eaf2;border-radius:11px;box-shadow:var(--shadow)}
+.tw,.advanced-table-wrap{scrollbar-width:thin;scrollbar-color:#c8d2df transparent}
+table{font-size:12px}
+th{padding:10px 11px;background:#f5f7fb;color:#586b82;font-size:10px;letter-spacing:.055em}
+td{padding:9px 11px;color:#33465e}
+tbody tr:nth-child(even) td{background:#fbfcfe}
+tbody tr:hover td{background:#f0f5fd}
+tbody tr.sel td{background:#e6efff}
+.tot{padding:11px 7px}
+.tot span{font-size:11px;padding:3px 15px}
+.tot b{font-size:13px}
+.filt{gap:9px 15px;color:#52667f}
+.filt input,.filt select{height:33px}
+.status-pill{padding:4px 9px;font-size:10px;letter-spacing:.01em}
+dialog{border:1px solid #e2e8f0;border-radius:14px;padding:19px;background:#f7f9fc;box-shadow:0 22px 65px rgba(15,27,45,.24)}
+dialog::backdrop{background:rgba(13,25,42,.48);backdrop-filter:blur(3px)}
+.sh{padding-bottom:11px;border-bottom:1px solid #e5eaf1;margin-bottom:14px}
+.sh h3{font-size:15px;color:#263d58}
+.cbpm-conflict,.aff-manager-panel,.comp-editor,.logo-editor,.report-preview{border-color:#e3e9f1;box-shadow:0 1px 3px rgba(24,42,66,.025)}
+.aff-manager-panel{padding:15px}
+.aff-manager-panel h4{color:#304761}
+.dash-welcome{padding:8px 2px 5px}
+.dash-eyebrow{color:#6480a1;font-size:9px;letter-spacing:.17em}
+.dash-welcome h1{font-size:clamp(21px,2vw,26px);font-weight:750;letter-spacing:-.045em}
+.dash-welcome p{font-size:11px}
+.dash-kpi{border-radius:12px;padding:15px 16px;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.dash-kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover);border-color:#d8e2ef}
+.dash-kpi-top{font-size:10.5px}
+.dash-kpi-top i{background:#eff4fb;color:#3168bc}
+.dash-kpi strong{font-size:clamp(18px,1.7vw,24px);margin:13px 0 5px}
+.dash-panel{border-radius:12px;padding:17px}
+.dash-panel-head h3{font-size:13px}
+.dash-chip{border:1px solid #e8edf4;background:#f7f9fc}
+.dash-alert{border:1px solid #edf1f6;background:#fafbfd}
+.empty-note{font-size:12px}
+@media(max-width:1100px){
+  body{grid-template-columns:225px minmax(0,1fr)}
+  main{padding:15px 16px 28px}
+  .bar{align-items:flex-start}
+}
+@media(max-width:900px){
+  body{grid-template-columns:minmax(0,1fr)}
+  aside{position:relative;z-index:30;padding:9px 0 7px;box-shadow:0 3px 12px rgba(13,27,46,.1)}
+  .logo{padding:3px 14px 10px}
+  #menu{padding:0 9px 5px;gap:5px}
+  #menu button{min-height:34px;padding:8px 10px;font-size:11.5px}
+  #menu button.on:after{display:none}
+  main{padding:12px;gap:11px}
+  .bar{position:relative;flex-direction:column;align-items:stretch}
+  .bar .bd{width:100%}
+  .cbpm-savebar{width:auto;flex-wrap:wrap}
+  #saveCount{flex:1 1 100%}
+}
+@media(max-width:600px){
+  .bar .bd{gap:6px}
+  .bar button{min-height:33px}
+  .card,.advanced-card{padding:13px}
+  .grille{grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
+  .tw{max-height:58vh}
+  th,td{padding:8px 9px}
+  .dash-welcome{align-items:flex-start}
+  .dash-kpis{gap:8px}
+  .dash-kpi{padding:11px}
+  .dash-kpi-top i{width:25px;height:25px}
+  .dash-kpi strong{font-size:15px}
+  dialog{padding:14px;width:calc(100vw - 18px);max-height:94vh;overflow:auto}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
 </style>
 </head>
 <body>
@@ -340,7 +478,7 @@ th{background:#f5f7fb;color:#52647a}
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, signOut, onAuthStateChanged, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getAuth, getIdToken, signOut, onAuthStateChanged, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
 import { getFirestore, doc, getDoc, getDocs, collection, onSnapshot, runTransaction, serverTimestamp, setDoc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -2591,8 +2729,130 @@ function renderControlAudit(host){
 }
 
 function renderMail(host){
-  host.innerHTML=`<section class="advanced-card"><h3>Messagerie</h3><p>Préparez un message depuis CBPManagement. L'envoi est confié au logiciel de messagerie configuré sur votre appareil.</p><div class="stock-entry-grid"><label>Destinataire<input id="mailTo" type="email" placeholder="destinataire@example.com"></label><label>Objet<input id="mailSubject" placeholder="Objet du message"></label><label style="grid-column:1/-1">Message<textarea id="mailBody" rows="7" class="adv-input" style="height:auto"></textarea></label></div><div class="advanced-actions"><button id="mailCompose" class="b-blue">Ouvrir le logiciel de messagerie</button><button id="mailCopy" class="b-navy">Copier le message</button></div><p class="cbpm-status">La réception et la synchronisation IMAP/SMTP de la version Java nécessitent un service de messagerie sécurisé côté serveur. Le navigateur ne peut pas se connecter directement à votre boîte IMAP/SMTP.</p></section>`;
-  const $m=id=>host.querySelector("#"+id);$m("mailCompose").onclick=()=>{const to=$m("mailTo").value,subject=$m("mailSubject").value,body=$m("mailBody").value;location.href=`mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;};$m("mailCopy").onclick=()=>{const msg=`À : ${$m("mailTo").value}\nObjet : ${$m("mailSubject").value}\n\n${$m("mailBody").value}`;navigator.clipboard?.writeText(msg).then(()=>info("Message copié.")).catch(()=>alert("Copie indisponible dans ce navigateur."));};
+  const savedApi = localStorage.getItem("cbpm_mail_api") || "";
+  host.innerHTML = `
+  <section class="advanced-card">
+    <div class="sh"><h3>Messagerie</h3><span id="mailConnection" class="status-pill warn">Non connecté</span></div>
+    <p>Messagerie de l'entreprise : connexion IMAP pour la réception et SMTP pour l'envoi. Les identifiants sont transmis uniquement au serveur sécurisé de messagerie.</p>
+    <div class="advanced-actions"><button id="mailSettingsToggle" class="b-navy">Configuration</button><button id="mailRefresh" class="b-blue">Actualiser</button><button id="mailComposeToggle" class="b-grn">Nouveau message</button></div>
+    <div id="mailSettings" style="display:none;margin-top:14px;border-top:1px solid var(--line);padding-top:14px">
+      <h4>Configuration du compte e-mail</h4>
+      <div class="stock-entry-grid">
+        <label style="grid-column:1/-1">Adresse du service sécurisé Cloudflare<input id="mailApiUrl" type="url" placeholder="https://votre-service.workers.dev" value="${esc(savedApi)}"></label>
+        <label>Serveur de messagerie<select id="mailProvider"><option value="gmail">Gmail</option><option value="outlook">Outlook / Microsoft 365</option><option value="yahoo">Yahoo</option><option value="custom">Autre serveur (IMAP/SMTP)</option></select></label>
+        <label>Adresse e-mail<input id="mailEmail" type="email" autocomplete="username" placeholder="nom@entreprise.dz"></label>
+        <label>Mot de passe d'application<input id="mailPassword" type="password" autocomplete="new-password" placeholder="Laisser vide pour conserver le mot de passe enregistré"></label>
+        <label>Serveur IMAP<input id="mailImapHost" placeholder="imap.gmail.com"></label>
+        <label>Port IMAP<input id="mailImapPort" type="number" min="1" max="65535" value="993"></label>
+        <label>Serveur SMTP<input id="mailSmtpHost" placeholder="smtp.gmail.com"></label>
+        <label>Port SMTP<select id="mailSmtpPort"><option value="465">465 — SSL/TLS</option><option value="587">587 — STARTTLS</option></select></label>
+        <label>Nombre de messages à charger<select id="mailLimit"><option>25</option><option selected>50</option><option>100</option><option>200</option><option>500</option></select></label>
+      </div>
+      <div class="advanced-actions"><button id="mailSaveConfig" class="b-grn">Enregistrer et connecter</button><button id="mailDisconnect" class="b-red">Déconnecter</button></div>
+      <p id="mailConfigStatus" class="cbpm-status">Gmail : activez IMAP dans les paramètres Gmail et utilisez un mot de passe d'application Google. Le mot de passe n'est jamais affiché après l'enregistrement.</p>
+    </div>
+  </section>
+  <section class="advanced-card">
+    <div class="stock-entry-grid" style="grid-template-columns:minmax(180px,260px) 1fr;align-items:end">
+      <label>Dossier<select id="mailFolder"><option value="INBOX">INBOX</option></select></label>
+      <div><p id="mailStatus" class="cbpm-status" style="margin:0">Configurez votre compte pour afficher les messages.</p></div>
+    </div>
+    <div id="mailMessages" style="overflow:auto;margin-top:12px"><div class="empty-note">Aucun message chargé.</div></div>
+    <div id="mailReader" style="display:none;margin-top:14px;border-top:1px solid var(--line);padding-top:14px"></div>
+  </section>
+  <section class="advanced-card" id="mailComposer" style="display:none">
+    <h3>Nouveau message</h3>
+    <div class="stock-entry-grid">
+      <label>Destinataire(s)<input id="mailTo" type="text" placeholder="adresse@example.com (séparer plusieurs adresses par une virgule)"></label>
+      <label>Objet<input id="mailSubject" type="text" placeholder="Objet du message"></label>
+      <label style="grid-column:1/-1">Message<textarea id="mailBody" rows="9" class="adv-input" style="height:auto"></textarea></label>
+      <label style="grid-column:1/-1">Pièces jointes<input id="mailAttachments" type="file" multiple></label>
+    </div>
+    <div class="advanced-actions"><button id="mailSend" class="b-grn">Envoyer</button><button id="mailCancelCompose" class="b-navy">Annuler</button></div>
+    <p class="cbpm-status">Les pièces jointes sont limitées à 20 Mo au total.</p>
+  </section>`;
+
+  const $m=id=>host.querySelector("#"+id);
+  let currentMessage=null, busy=false, configLoaded=false;
+  const setStatus=(msg,bad=false)=>{const e=$m("mailStatus");if(e)e.textContent=msg; if(e)e.style.color=bad?"var(--err)":"var(--mut)";};
+  const apiBase=()=>String($m("mailApiUrl")?.value||localStorage.getItem("cbpm_mail_api")||"").trim().replace(/\/$/,"");
+  async function request(path, options={}){
+    const base=apiBase(); if(!base) throw new Error("Le service de messagerie sécurisé n'est pas encore configuré.");
+    if(!user) throw new Error("Session utilisateur absente. Reconnectez-vous.");
+    const token=await getIdToken(user);
+    const headers={Authorization:`Bearer ${token}`,...(options.body instanceof FormData?{}:{"Content-Type":"application/json"}),...(options.headers||{})};
+    const res=await fetch(base+path,{...options,headers});
+    let data={};try{data=await res.json();}catch(e){}
+    if(!res.ok)throw new Error(data.error||data.message||`Erreur du serveur (${res.status}).`);
+    return data;
+  }
+  function busyState(v){busy=v;["mailRefresh","mailSaveConfig","mailSend","mailDisconnect"].forEach(id=>{const b=$m(id);if(b)b.disabled=v;});}
+  function providerDefaults(){const p=$m("mailProvider").value;const d={gmail:["imap.gmail.com",993,"smtp.gmail.com",465],outlook:["outlook.office365.com",993,"smtp.office365.com",587],yahoo:["imap.mail.yahoo.com",993,"smtp.mail.yahoo.com",465],custom:["",993,"",465]}[p];$m("mailImapHost").value=d[0];$m("mailImapPort").value=d[1];$m("mailSmtpHost").value=d[2];$m("mailSmtpPort").value=String(d[3]);}
+  function showMessages(rows){
+    const box=$m("mailMessages");
+    if(!Array.isArray(rows)||!rows.length){box.innerHTML='<div class="empty-note">Aucun message dans ce dossier.</div>';return;}
+    box.innerHTML=tableHtml([{label:"État"},{label:"Expéditeur"},{label:"Objet"},{label:"Date"}],rows.map((m,i)=>[
+      m.seen?"":"<span class=\"status-pill good\">Nouveau</span>",esc(m.from||""),`<button type="button" class="mail-open b-navy" data-index="${i}" style="white-space:normal;text-align:left">${esc(m.subject||"(sans objet)")}</button>`,esc(m.date||"")
+    ]));
+    box.querySelectorAll(".mail-open").forEach(b=>b.onclick=()=>openMessage(rows[Number(b.dataset.index)]));
+  }
+  async function loadConfig(){
+    try{
+      const d=await request("/config");
+      const c=d.config||{};
+      if(c.provider)$m("mailProvider").value=c.provider;
+      ["email","imapHost","imapPort","smtpHost","smtpPort","limit"].forEach(k=>{const map={email:"mailEmail",imapHost:"mailImapHost",imapPort:"mailImapPort",smtpHost:"mailSmtpHost",smtpPort:"mailSmtpPort",limit:"mailLimit"};if(c[k]!=null)$m(map[k]).value=String(c[k]);});
+      $m("mailPassword").placeholder=d.hasPassword?"Mot de passe enregistré — laisser vide pour le conserver":"Mot de passe d'application";
+      $m("mailConnection").textContent=d.configured?"Compte configuré":"Non connecté";
+      $m("mailConnection").className="status-pill "+(d.configured?"good":"warn");configLoaded=true;
+      if(d.configured)await loadFolders();
+    }catch(e){setStatus(e.message,true);}
+  }
+  async function loadFolders(){
+    const d=await request("/folders");const folders=d.folders||[];const sel=$m("mailFolder"),old=sel.value;
+    sel.innerHTML="";for(const f of folders){const o=document.createElement("option");o.value=typeof f==="string"?f:f.name;o.textContent=typeof f==="string"?f:(f.label||f.name);sel.appendChild(o);}if([...sel.options].some(o=>o.value===old))sel.value=old;
+    if(!folders.length){const o=document.createElement("option");o.value="INBOX";o.textContent="INBOX";sel.appendChild(o);}
+    await refreshMessages();
+  }
+  async function refreshMessages(){
+    if(busy)return;busyState(true);setStatus("Chargement des messages…");
+    try{const d=await request("/messages?folder="+encodeURIComponent($m("mailFolder").value)+"&limit="+encodeURIComponent($m("mailLimit")?.value||50));showMessages(d.messages||[]);setStatus(`${(d.messages||[]).length} message(s) chargé(s).`);$m("mailReader").style.display="none";}
+    catch(e){setStatus(e.message,true);}finally{busyState(false);}
+  }
+  async function openMessage(m){
+    currentMessage=m;setStatus("Ouverture du message…");
+    try{const d=await request("/message",{method:"POST",body:JSON.stringify({folder:$m("mailFolder").value,id:m.id})});const msg=d.message||d;
+      const reader=$m("mailReader");reader.style.display="block";
+      reader.innerHTML=`<div class="sh"><h3>${esc(msg.subject||m.subject||"(sans objet)")}</h3><button id="mailReply" class="b-blue">Répondre</button></div><p><b>De :</b> ${esc(msg.from||m.from||"")}<br><b>Date :</b> ${esc(msg.date||m.date||"")}</p><div style="white-space:pre-wrap;overflow-wrap:anywhere;border:1px solid var(--line);border-radius:8px;padding:14px;background:var(--card)">${esc(msg.text||msg.body||"Contenu non disponible en texte brut.")}</div>`;
+      $m("mailReply").onclick=()=>{$m("mailTo").value=msg.replyTo||msg.from||m.from||"";$m("mailSubject").value=/^re:/i.test(msg.subject||m.subject||"")?(msg.subject||m.subject):"Re: "+(msg.subject||m.subject||"");$m("mailBody").value="\n\nLe "+(msg.date||m.date||"")+", "+(msg.from||m.from||"")+" a écrit :\n"+String(msg.text||msg.body||"").split("\n").map(x=>"> "+x).join("\n");$m("mailComposer").style.display="block";$m("mailComposer").scrollIntoView({behavior:"smooth"});};
+      setStatus("Message ouvert.");
+    }catch(e){setStatus(e.message,true);}
+  }
+  $m("mailSettingsToggle").onclick=()=>{$m("mailSettings").style.display=$m("mailSettings").style.display==="none"?"block":"none";};
+  $m("mailComposeToggle").onclick=()=>{$m("mailComposer").style.display="block";$m("mailComposer").scrollIntoView({behavior:"smooth"});};
+  $m("mailCancelCompose").onclick=()=>{$m("mailComposer").style.display="none";};
+  $m("mailProvider").onchange=providerDefaults;
+  $m("mailFolder").onchange=refreshMessages;
+  $m("mailRefresh").onclick=refreshMessages;
+  $m("mailSaveConfig").onclick=async()=>{
+    const api=$m("mailApiUrl").value.trim();if(api){try{new URL(api);localStorage.setItem("cbpm_mail_api",api);}catch(e){$m("mailConfigStatus").textContent="Adresse du service Cloudflare invalide.";return;}}
+    const c={provider:$m("mailProvider").value,email:$m("mailEmail").value.trim(),password:$m("mailPassword").value,imapHost:$m("mailImapHost").value.trim(),imapPort:Number($m("mailImapPort").value),smtpHost:$m("mailSmtpHost").value.trim(),smtpPort:Number($m("mailSmtpPort").value),limit:Number($m("mailLimit").value)};
+    if(!c.email.includes("@")||!c.imapHost||!c.smtpHost||!c.imapPort||!c.smtpPort){$m("mailConfigStatus").textContent="Veuillez vérifier l'adresse e-mail et les serveurs IMAP/SMTP.";return;}
+    if(!c.password&&!configLoaded){$m("mailConfigStatus").textContent="Saisissez le mot de passe d'application.";return;}
+    busyState(true);$m("mailConfigStatus").textContent="Enregistrement sécurisé et test de connexion…";
+    try{delete c.password;const password=$m("mailPassword").value;await request("/config",{method:"POST",body:JSON.stringify({...c,password})});$m("mailPassword").value="";$m("mailConfigStatus").textContent="Configuration enregistrée. Connexion à la boîte…";await loadFolders();$m("mailConfigStatus").textContent="Compte configuré et connecté.";$m("mailSettings").style.display="none";}
+    catch(e){$m("mailConfigStatus").textContent=e.message;}
+    finally{busyState(false);}
+  };
+  $m("mailDisconnect").onclick=async()=>{if(!confirm("Déconnecter le compte e-mail de cette entreprise ?"))return;busyState(true);try{await request("/config",{method:"DELETE"});$m("mailConnection").textContent="Non connecté";$m("mailConnection").className="status-pill warn";$m("mailMessages").innerHTML='<div class="empty-note">Compte déconnecté.</div>';setStatus("Compte e-mail déconnecté.");}catch(e){setStatus(e.message,true);}finally{busyState(false);}};
+  $m("mailSend").onclick=async()=>{
+    const files=[...$m("mailAttachments").files];const total=files.reduce((n,f)=>n+f.size,0);if(total>20*1024*1024){alert("Les pièces jointes dépassent 20 Mo.");return;}
+    const to=$m("mailTo").value.split(/[;,]/).map(x=>x.trim()).filter(Boolean);if(!to.length){alert("Indiquez au moins un destinataire.");return;}
+    const form=new FormData();form.append("to",JSON.stringify(to));form.append("subject",$m("mailSubject").value);form.append("text",$m("mailBody").value);files.forEach(f=>form.append("attachments",f,f.name));
+    busyState(true);setStatus("Envoi du message…");try{await request("/send",{method:"POST",body:form});setStatus("Message envoyé.");$m("mailComposer").style.display="none";$m("mailTo").value="";$m("mailSubject").value="";$m("mailBody").value="";$m("mailAttachments").value="";}catch(e){setStatus(e.message,true);}finally{busyState(false);}
+  };
+  if(!savedApi){setStatus("Service serveur non configuré : la messagerie nécessite l'adresse du service Cloudflare sécurisé.",true);$m("mailSettings").style.display="block";const hint=document.createElement("p");hint.className="cbpm-status";hint.textContent="Renseignez l’adresse de votre Worker Cloudflare ci-dessus. Aucun mot de passe de messagerie n’est stocké dans le navigateur.";$m("mailSettings").prepend(hint);}
+  loadConfig();
 }
 
 async function renderUsers(host){
