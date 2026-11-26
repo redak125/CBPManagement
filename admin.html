@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Espace propriétaire — CBPManagement</title>
+<style>
+:root{--ink:#17222d;--steel:#2f4a5f;--acc:#0b7c99;--sig:#0a6fd6;--bg:#e9ebed;--pap:#fff;--line:#d3d8dd;--mut:#5a6978;--ok:#176b3f;--warn:#9a5b00;--bad:#b3261e;--f:Bahnschrift,"Segoe UI Variable","Segoe UI",system-ui,-apple-system,Tahoma,sans-serif}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;font:15px/1.5 var(--f);background:var(--bg);color:var(--ink)}
+:focus-visible{outline:3px solid var(--sig);outline-offset:2px}
+button,input,select,textarea{font:inherit;color:inherit}
+.mark{display:inline-block;width:24px;height:24px;background:#fff;position:relative;vertical-align:middle;margin-inline-end:10px}.mark:after{content:"";position:absolute;inset:7px;background:var(--sig)}
+.btn{padding:10px 16px;border:0;border-radius:4px;background:var(--ink);color:#fff;font-weight:700;cursor:pointer}.btn:hover{background:var(--steel)}.btn:disabled{opacity:.5;cursor:default}
+.btn.p{background:var(--sig)}.btn.p:hover{filter:brightness(1.08)}
+.btn.s{padding:5px 10px;font-size:13px;font-weight:600;background:#fff;color:var(--steel);border:1px solid var(--line)}.btn.s:hover{border-color:var(--steel);background:#f4f5f6}
+.btn.s.d{color:var(--bad)}.btn.d{background:var(--bad)}
+.btn.g{background:transparent;color:var(--steel);border:1px solid var(--line)}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
+input,select,textarea{width:100%;padding:10px 11px;border:1px solid var(--line);border-radius:4px;background:#fff}
+textarea{min-height:80px;resize:vertical}
+/* connexion */
+#login{min-height:100vh;display:grid;place-items:center;background:var(--ink);padding:20px}
+.lc{width:min(400px,100%);background:var(--bg);border-radius:8px;padding:30px;display:grid;gap:14px}
+.lc h1{margin:0;font-size:22px}.lc p{margin:0;color:var(--mut);font-size:14px}
+.lc .brand{background:var(--ink);color:#fff;margin:-30px -30px 6px;padding:16px 30px;border-radius:8px 8px 0 0;font-weight:700}
+#lerr{color:var(--bad);min-height:1.3em;font-size:14px}
+/* application */
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+aside{background:var(--ink);color:#c3ced8;display:flex;flex-direction:column;padding:20px 14px;position:sticky;top:0;height:100vh}
+aside .brand{color:#fff;font-weight:700;font-size:18px;padding:0 8px 22px}
+aside nav{display:grid;gap:2px}
+aside nav button{text-align:start;background:none;border:0;border-inline-start:3px solid transparent;color:inherit;padding:10px 12px;cursor:pointer;border-radius:0 4px 4px 0}
+aside nav button:hover{background:#22313f;color:#fff}
+aside nav button[aria-current=true]{background:#22313f;color:#fff;border-inline-start-color:var(--sig);font-weight:700}
+.me{margin-top:auto;padding:14px 8px 0;border-top:1px solid #2f4152;font-size:13px}.me b{display:block;color:#fff;word-break:break-all;margin-bottom:10px;font-weight:600}
+.me .btn{width:100%;background:transparent;border:1px solid #3a5063;color:#c3ced8}
+main{padding:30px clamp(16px,3vw,40px);min-width:0}
+main h2{margin:0 0 4px;font-size:26px;letter-spacing:-.01em}.sub{color:var(--mut);margin:0 0 22px}
+.kp{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.k{background:var(--pap);border:1px solid var(--line);border-top:3px solid var(--ink);padding:16px 18px}.k b{display:block;font-size:34px;line-height:1.1}.k span{color:var(--mut);font-size:13px}
+.k.a{border-top-color:var(--ok)}.k.w{border-top-color:var(--warn)}.k.u{border-top-color:var(--acc)}
+.note{background:#fff;border:1px solid var(--line);border-inline-start:4px solid var(--acc);padding:12px 16px;margin-bottom:22px}
+.bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:14px}.bar input{flex:1 1 220px;width:auto}.bar select{width:auto;flex:0 1 220px}
+.tb{background:var(--pap);border:1px solid var(--line);border-radius:4px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:720px}
+th{text-align:start;font-size:13px;color:var(--mut);background:#f1f3f4;padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:12px 14px;border-bottom:1px solid #e6e9ec;vertical-align:middle}tr:last-child td{border-bottom:0}
+td small{display:block;color:var(--mut);font-size:12.5px}
+td.ac{white-space:nowrap;text-align:end}td.ac .btn{margin-inline-start:4px}
+.b{display:inline-block;padding:2px 10px;border-radius:99px;font-size:12.5px;font-weight:700}.b.ok{background:#dcf1e5;color:var(--ok)}.b.off{background:#fbe3d0;color:var(--warn)}.b.r{background:#e3edf8;color:#124c8a}
+.q{width:110px;height:6px;background:#e1e5e8;border-radius:3px;overflow:hidden;margin-top:5px}.q i{display:block;height:100%;background:var(--acc)}.q i.f{background:var(--warn)}
+.em{padding:34px;text-align:center;color:var(--mut)}
+/* fenêtres */
+dialog{border:0;border-radius:8px;padding:0;width:min(520px,94vw);background:var(--bg);color:var(--ink);box-shadow:0 24px 50px -20px rgba(23,34,45,.6)}
+dialog::backdrop{background:rgba(23,34,45,.6)}
+dialog form,.cf{display:grid;gap:14px;padding:24px}
+dialog h3{margin:0;font-size:19px}.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ft{display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:4px}
+.hint{font-size:12.5px;color:var(--mut);margin:0}
+.pw{display:flex;gap:8px}
+#toast{position:fixed;bottom:22px;inset-inline:0;margin:auto;width:fit-content;max-width:92vw;background:var(--ink);color:#fff;padding:11px 18px;border-radius:4px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:50}
+#toast.show{opacity:1}#toast.bad{background:var(--bad)}
+@media(max-width:860px){.app{grid-template-columns:1fr}aside{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px;padding:12px}aside .brand{padding:0 8px 0 0}aside nav{display:flex;overflow-x:auto}aside nav button{border-radius:4px;border-inline-start:0;white-space:nowrap}.me{margin:0 0 0 auto;padding:0;border:0;display:flex;align-items:center;gap:10px}.me b{display:none}.me .btn{width:auto}.kp{grid-template-columns:repeat(2,1fr)}.g2{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){#toast{transition:none}}
+</style>
+</head>
+<body>
+
+<div id="login" hidden>
+<form class="lc" id="lF"><div class="brand"><span class="mark"></span>CBPManagement</div>
+<h1>Espace propriétaire</h1><p>Connectez-vous avec votre compte propriétaire pour gérer les entreprises clientes.</p>
+<div><label for="lE">Adresse e-mail</label><input id="lE" type="email" autocomplete="username" required></div>
+<div><label for="lP">Mot de passe</label><input id="lP" type="password" autocomplete="current-password" required></div>
+<p id="lerr" role="alert"></p><button class="btn p" id="lB" type="submit">Se connecter</button>
+<p><a href="./">← Retour au site</a></p></form>
+</div>
+
+<div class="app" id="app" hidden>
+<aside><div class="brand"><span class="mark"></span>CBPManagement</div>
+<nav aria-label="Navigation"><button data-v="home" aria-current="true">Vue d’ensemble</button><button data-v="ent">Entreprises</button><button data-v="usr">Utilisateurs</button><button data-v="jr">Journal d’activité</button></nav>
+<div class="me">Propriétaire<b id="who"></b><button class="btn" id="out" type="button">Se déconnecter</button></div></aside>
+<main>
+<section id="v-home"><h2>Vue d’ensemble</h2><p class="sub">L’état de votre parc d’entreprises clientes.</p>
+<div class="kp"><div class="k"><b id="kE">0</b><span>Entreprises</span></div><div class="k a"><b id="kA">0</b><span>Actives</span></div><div class="k w"><b id="kS">0</b><span>Suspendues</span></div><div class="k u"><b id="kU">0</b><span>Comptes utilisateurs</span></div></div>
+<p class="note" id="hN"></p>
+<h3>Dernières actions</h3><div class="tb"><table><thead><tr><th>Date</th><th>Auteur</th><th>Action</th><th>Cible</th></tr></thead><tbody id="hL"></tbody></table></div></section>
+
+<section id="v-ent" hidden><h2>Entreprises</h2><p class="sub">Ajoutez, modifiez, suspendez ou supprimez les entreprises clientes.</p>
+<div class="bar"><input id="eQ" type="search" placeholder="Rechercher un nom, une ville, un contact" aria-label="Rechercher"><select id="eF" aria-label="Filtrer par état"><option value="">Tous les états</option><option value="a">Actives</option><option value="s">Suspendues</option></select><button class="btn p" id="eNew">Nouvelle entreprise</button></div>
+<div class="tb"><table><thead><tr><th>Entreprise</th><th>Contact</th><th>Comptes</th><th>État</th><th></th></tr></thead><tbody id="eB"></tbody></table></div></section>
+
+<section id="v-usr" hidden><h2>Utilisateurs</h2><p class="sub">Créez les comptes de chaque entreprise et contrôlez leur accès.</p>
+<div class="bar"><input id="uQ" type="search" placeholder="Rechercher une adresse e-mail" aria-label="Rechercher"><select id="uF" aria-label="Filtrer par entreprise"></select><button class="btn p" id="uNew">Nouvel utilisateur</button></div>
+<div class="tb"><table><thead><tr><th>Utilisateur</th><th>Entreprise</th><th>Rôle</th><th>État</th><th>Créé le</th><th></th></tr></thead><tbody id="uB"></tbody></table></div></section>
+
+<section id="v-jr" hidden><h2>Journal d’activité</h2><p class="sub">Les 100 dernières actions effectuées dans cet espace.</p>
+<div class="tb"><table><thead><tr><th>Date</th><th>Auteur</th><th>Action</th><th>Cible</th></tr></thead><tbody id="jB"></tbody></table></div></section>
+</main></div>
+
+<dialog id="eD"><form id="eForm"><h3 id="eT">Nouvelle entreprise</h3>
+<div><label for="eNom">Nom de l’entreprise</label><input id="eNom" required maxlength="80"></div>
+<div class="g2"><div><label for="eVille">Ville</label><input id="eVille" maxlength="60"></div><div><label for="eMax">Comptes autorisés</label><input id="eMax" type="number" min="1" max="100" value="3" required></div></div>
+<div class="g2"><div><label for="eCt">Personne à contacter</label><input id="eCt" maxlength="60"></div><div><label for="eTel">Téléphone</label><input id="eTel" type="tel" dir="ltr" maxlength="30"></div></div>
+<div><label for="eMail">E-mail de contact</label><input id="eMail" type="email" maxlength="80"></div>
+<div><label for="eNote">Note interne</label><textarea id="eNote" maxlength="500"></textarea></div>
+<div class="ft"><button class="btn g" type="button" data-close>Annuler</button><button class="btn p" id="eSave" type="submit">Enregistrer</button></div></form></dialog>
+
+<dialog id="uD"><form id="uForm"><h3>Nouvel utilisateur</h3>
+<div><label for="uEnt">Entreprise</label><select id="uEnt" required></select></div>
+<div><label for="uEmail">Adresse e-mail</label><input id="uEmail" type="email" autocomplete="off" required></div>
+<div class="g2"><div><label for="uRole">Rôle</label><select id="uRole"><option value="admin">Administrateur</option><option value="utilisateur">Utilisateur</option></select></div>
+<div><label for="uPwd">Mot de passe provisoire</label><div class="pw"><input id="uPwd" type="text" minlength="8" autocomplete="off" dir="ltr" required><button class="btn s" id="uGen" type="button">Générer</button></div></div></div>
+<p class="hint">8 caractères minimum. Communiquez-le à l’utilisateur : il pourra le remplacer avec « Mot de passe oublié ».</p>
+<div class="ft"><button class="btn g" type="button" data-close>Annuler</button><button class="btn p" id="uSave" type="submit">Créer le compte</button></div></form></dialog>
+
+<dialog id="cD"><div class="cf"><h3 id="cT"></h3><p id="cP" style="margin:0"></p>
+<div id="cWrap" hidden><label for="cW" id="cL"></label><input id="cW" autocomplete="off"></div>
+<div class="ft"><button class="btn g" id="cNo" type="button">Annuler</button><button class="btn d" id="cOk" type="button">Confirmer</button></div></div></dialog>
+<div id="toast" role="status"></div>
+
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import{getAuth,signInWithEmailAndPassword,createUserWithEmailAndPassword,sendPasswordResetEmail,deleteUser,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import{getFirestore,doc,getDoc,collection,addDoc,setDoc,getDocs,updateDoc,writeBatch,query,orderBy,limit,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const cfg={apiKey:"AIzaSyAifzXsjpvftlxi3RGAVd0g8zznpzCLAf0",authDomain:"cbpm-8ac0e.firebaseapp.com",projectId:"cbpm-8ac0e",storageBucket:"cbpm-8ac0e.firebasestorage.app",messagingSenderId:"14440101768",appId:"1:14440101768:web:61d42ef693721443cfac3d"};
+const app=initializeApp(cfg),app2=initializeApp(cfg,"secondaire"),auth=getAuth(app),auth2=getAuth(app2),db=getFirestore(app);
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=t=>t&&t.toDate?t.toDate().toLocaleString("fr-FR",{dateStyle:"short",timeStyle:"short"}):"—";
+const empty=n=>`<tr><td colspan="${n}" class="em">Aucun résultat.</td></tr>`;
+let E=[],U=[],J=[],editId=null;
+const count=id=>U.filter(u=>u.entrepriseId===id).length;
+const entName=id=>(E.find(e=>e.id===id)||{}).nom||"Entreprise supprimée";
+
+function toast(t,bad){const x=$("toast");x.textContent=t;x.className=bad?"bad show":"show";clearTimeout(toast.t);toast.t=setTimeout(()=>x.className="",3800)}
+async function log(a,c){try{await addDoc(collection(db,"journal"),{action:a,cible:c,par:auth.currentUser.email,le:serverTimestamp()})}catch(_){}}
+function ask(t,p,word){return new Promise(res=>{$("cT").textContent=t;$("cP").textContent=p;$("cW").value="";$("cWrap").hidden=!word;$("cWrap").dataset.w=word||"";$("cL").textContent=word?"Tapez « "+word+" » pour confirmer":"";$("cOk").disabled=!!word;
+const d=$("cDlg")||$("cD");const done=v=>{d.close();res(v)};$("cOk").onclick=()=>done(true);$("cNo").onclick=()=>done(false);d.oncancel=()=>res(false);d.showModal()})}
+$("cW").addEventListener("input",()=>{$("cOk").disabled=$("cW").value.trim()!==$("cWrap").dataset.w});
+document.querySelectorAll("[data-close]").forEach(b=>b.addEventListener("click",()=>b.closest("dialog").close()));
+
+async function load(){
+  try{
+    const[a,b,c]=await Promise.all([getDocs(collection(db,"entreprises")),getDocs(collection(db,"utilisateurs")),getDocs(query(collection(db,"journal"),orderBy("le","desc"),limit(100)))]);
+    E=a.docs.map(d=>({id:d.id,...d.data()})).sort((x,y)=>(x.nom||"").localeCompare(y.nom||"","fr"));
+    U=b.docs.map(d=>({id:d.id,...d.data()}));J=c.docs.map(d=>d.data());render();
+  }catch(e){toast("Chargement impossible. Vérifiez votre connexion et vos règles Firestore.",1)}
+}
+const logRow=j=>`<tr><td>${fmt(j.le)}</td><td>${esc(j.par)}</td><td>${esc(j.action)}</td><td>${esc(j.cible)}</td></tr>`;
+function render(){
+  const act=E.filter(e=>e.etat!=="suspendue").length,full=E.filter(e=>e.maxComptes&&count(e.id)>=e.maxComptes);
+  $("kE").textContent=E.length;$("kA").textContent=act;$("kS").textContent=E.length-act;$("kU").textContent=U.length;
+  $("hN").textContent=full.length?full.length+" entreprise(s) ont atteint leur limite de comptes : "+full.map(e=>e.nom).join(", ")+".":"Aucune entreprise n’a atteint sa limite de comptes.";
+  $("hL").innerHTML=J.slice(0,6).map(logRow).join("")||empty(4);$("jB").innerHTML=J.map(logRow).join("")||empty(4);
+  const cur=$("uF").value;$("uF").innerHTML='<option value="">Toutes les entreprises</option>'+E.map(e=>`<option value="${esc(e.id)}">${esc(e.nom)}</option>`).join("");$("uF").value=cur;
+  rE();rU();
+}
+function rE(){
+  const q=$("eQ").value.trim().toLowerCase(),f=$("eF").value;
+  const r=E.filter(e=>(!f||(f==="s")===(e.etat==="suspendue"))&&[e.nom,e.ville,e.contact,e.email,e.telephone].join(" ").toLowerCase().includes(q));
+  $("eB").innerHTML=r.map(e=>{const s=e.etat==="suspendue",n=count(e.id),m=e.maxComptes||1,p=Math.min(100,Math.round(n/m*100));
+    return`<tr><td><strong>${esc(e.nom)}</strong><small>${esc(e.ville||"")}</small></td><td>${esc(e.contact||"—")}<small dir="ltr">${esc([e.telephone,e.email].filter(Boolean).join("  "))}</small></td>
+<td>${n} / ${esc(e.maxComptes)}<div class="q"><i class="${n>=m?"f":""}" style="width:${p}%"></i></div></td><td><span class="b ${s?"off":"ok"}">${s?"Suspendue":"Active"}</span></td>
+<td class="ac"><button class="btn s" data-a="edit" data-id="${esc(e.id)}">Modifier</button><button class="btn s" data-a="tog" data-id="${esc(e.id)}">${s?"Réactiver":"Suspendre"}</button><button class="btn s d" data-a="del" data-id="${esc(e.id)}">Supprimer</button></td></tr>`}).join("")||empty(5);
+}
+function rU(){
+  const q=$("uQ").value.trim().toLowerCase(),f=$("uF").value;
+  const r=U.filter(u=>(!f||u.entrepriseId===f)&&(u.email||"").toLowerCase().includes(q)).sort((a,b)=>(a.email||"").localeCompare(b.email||""));
+  $("uB").innerHTML=r.map(u=>{const s=u.etat==="suspendue",es=(E.find(e=>e.id===u.entrepriseId)||{}).etat==="suspendue";
+    return`<tr><td dir="ltr">${esc(u.email)}</td><td>${esc(entName(u.entrepriseId))}${es?"<small>Entreprise suspendue</small>":""}</td><td><span class="b r">${u.role==="admin"?"Administrateur":"Utilisateur"}</span></td>
+<td><span class="b ${s?"off":"ok"}">${s?"Suspendu":"Actif"}</span></td><td>${fmt(u.creeLe)}</td>
+<td class="ac"><button class="btn s" data-a="utog" data-id="${esc(u.id)}">${s?"Réactiver":"Suspendre"}</button><button class="btn s" data-a="reset" data-id="${esc(u.id)}">Mot de passe</button><button class="btn s d" data-a="udel" data-id="${esc(u.id)}">Supprimer</button></td></tr>`}).join("")||empty(6);
+}
+["eQ","eF"].forEach(i=>$(i).addEventListener("input",rE));["uQ","uF"].forEach(i=>$(i).addEventListener("input",rU));
+
+document.querySelectorAll("[data-v]").forEach(b=>b.addEventListener("click",()=>{
+  document.querySelectorAll("[data-v]").forEach(x=>x.setAttribute("aria-current",x===b));
+  ["home","ent","usr","jr"].forEach(v=>$("v-"+v).hidden=v!==b.dataset.v)}));
+
+async function run(fn,ok){try{await fn();await load();toast(ok)}catch(e){toast(e.code==="permission-denied"?"Action refusée par les règles Firestore.":"Opération impossible.",1)}}
+
+function openE(e){editId=e?e.id:null;$("eT").textContent=e?"Modifier l’entreprise":"Nouvelle entreprise";
+  $("eNom").value=e?e.nom:"";$("eVille").value=e?e.ville||"":"";$("eMax").value=e?e.maxComptes:3;$("eCt").value=e?e.contact||"":"";$("eTel").value=e?e.telephone||"":"";$("eMail").value=e?e.email||"":"";$("eNote").value=e?e.note||"":"";$("eD").showModal()}
+$("eNew").addEventListener("click",()=>openE(null));
+$("eForm").addEventListener("submit",async ev=>{ev.preventDefault();
+  const nom=$("eNom").value.trim(),max=parseInt($("eMax").value,10);
+  if(E.some(x=>x.id!==editId&&(x.nom||"").toLowerCase()===nom.toLowerCase()))return toast("Une entreprise porte déjà ce nom.",1);
+  if(editId&&max<count(editId))return toast("La limite ne peut pas être inférieure aux "+count(editId)+" comptes existants.",1);
+  const d={nom,ville:$("eVille").value.trim(),maxComptes:max,contact:$("eCt").value.trim(),telephone:$("eTel").value.trim(),email:$("eMail").value.trim(),note:$("eNote").value.trim(),modifieLe:serverTimestamp()};
+  $("eSave").disabled=true;
+  await run(async()=>{if(editId){await updateDoc(doc(db,"entreprises",editId),d);await log("Entreprise modifiée",nom)}else{await addDoc(collection(db,"entreprises"),{...d,etat:"active",creeLe:serverTimestamp()});await log("Entreprise créée",nom)}$("eD").close()},editId?"Entreprise modifiée.":"Entreprise créée.");
+  $("eSave").disabled=false});
+
+$("uNew").addEventListener("click",()=>{const a=E.filter(e=>e.etat!=="suspendue");if(!a.length)return toast("Créez d’abord une entreprise active.",1);
+  $("uEnt").innerHTML=a.map(e=>`<option value="${esc(e.id)}">${esc(e.nom)} (${count(e.id)}/${esc(e.maxComptes)})</option>`).join("");$("uForm").reset();$("uD").showModal()});
+$("uGen").addEventListener("click",()=>{const c="ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789",r=crypto.getRandomValues(new Uint32Array(12));$("uPwd").value=[...r].map(x=>c[x%c.length]).join("")});
+$("uForm").addEventListener("submit",async ev=>{ev.preventDefault();
+  const eid=$("uEnt").value,e=E.find(x=>x.id===eid),em=$("uEmail").value.trim();
+  if(count(eid)>=e.maxComptes)return toast("Limite de comptes atteinte pour cette entreprise.",1);
+  $("uSave").disabled=true;
+  try{const c=await createUserWithEmailAndPassword(auth2,em,$("uPwd").value);
+    try{await setDoc(doc(db,"utilisateurs",c.user.uid),{entrepriseId:eid,role:$("uRole").value,email:c.user.email,etat:"active",creeLe:serverTimestamp()})}catch(x){await deleteUser(c.user);throw x}
+    await signOut(auth2);$("uD").close();await log("Utilisateur créé",em+" — "+e.nom);await load();toast("Utilisateur créé.")}
+  catch(x){toast(x.code==="auth/email-already-in-use"?"Cette adresse e-mail est déjà utilisée.":x.code==="auth/weak-password"?"Mot de passe trop court (8 caractères minimum).":"Création impossible.",1)}
+  finally{$("uSave").disabled=false}});
+
+document.addEventListener("click",async ev=>{
+  const b=ev.target.closest("[data-a]");if(!b)return;
+  const id=b.dataset.id,a=b.dataset.a,e=E.find(x=>x.id===id),u=U.find(x=>x.id===id);
+  if(a==="edit")openE(e);
+  else if(a==="tog"){const s=e.etat==="suspendue";
+    if(!s&&!await ask("Suspendre "+e.nom+" ?","Les "+count(id)+" compte(s) de cette entreprise perdront l’accès à l’application. Vous pourrez la réactiver à tout moment."))return;
+    run(async()=>{await updateDoc(doc(db,"entreprises",id),{etat:s?"active":"suspendue",modifieLe:serverTimestamp()});await log(s?"Entreprise réactivée":"Entreprise suspendue",e.nom)},s?"Entreprise réactivée.":"Entreprise suspendue.")}
+  else if(a==="del"){
+    if(!await ask("Supprimer "+e.nom+" ?","Action définitive : l’entreprise et les "+count(id)+" fiche(s) utilisateur associées seront supprimées. Pour la désactiver sans perte, préférez la suspension.",e.nom))return;
+    run(async()=>{const w=writeBatch(db);U.filter(x=>x.entrepriseId===id).forEach(x=>w.delete(doc(db,"utilisateurs",x.id)));w.delete(doc(db,"entreprises",id));await w.commit();await log("Entreprise supprimée",e.nom)},"Entreprise supprimée.")}
+  else if(a==="utog"){const s=u.etat==="suspendue";
+    if(!s&&!await ask("Suspendre "+u.email+" ?","Cet utilisateur ne pourra plus accéder à l’application tant qu’il n’est pas réactivé."))return;
+    run(async()=>{await updateDoc(doc(db,"utilisateurs",id),{etat:s?"active":"suspendue"});await log(s?"Utilisateur réactivé":"Utilisateur suspendu",u.email)},s?"Utilisateur réactivé.":"Utilisateur suspendu.")}
+  else if(a==="reset"){
+    if(!await ask("Réinitialiser le mot de passe ?","Un e-mail de réinitialisation sera envoyé à "+u.email+"."))return;
+    run(async()=>{await sendPasswordResetEmail(auth,u.email);await log("Réinitialisation du mot de passe",u.email)},"E-mail de réinitialisation envoyé.")}
+  else if(a==="udel"){
+    if(!await ask("Supprimer "+u.email+" ?","La fiche est supprimée et l’accès à CBPManagement retiré. Le compte reste listé dans Firebase > Authentication, où vous pouvez aussi le supprimer."))return;
+    run(async()=>{await updateDoc(doc(db,"utilisateurs",id),{etat:"suspendue"}).catch(()=>{});const w=writeBatch(db);w.delete(doc(db,"utilisateurs",id));await w.commit();await log("Utilisateur supprimé",u.email)},"Utilisateur supprimé.")}
+});
+
+const lerr=t=>$("lerr").textContent=t||"";
+$("lF").addEventListener("submit",async ev=>{ev.preventDefault();lerr();$("lB").disabled=true;
+  try{await signInWithEmailAndPassword(auth,$("lE").value.trim(),$("lP").value)}
+  catch(x){const c=x.code;lerr(["auth/invalid-credential","auth/wrong-password","auth/user-not-found","auth/invalid-email"].includes(c)?"Adresse e-mail ou mot de passe incorrect.":c==="auth/too-many-requests"?"Trop de tentatives. Réessayez dans quelques minutes.":c==="auth/network-request-failed"?"Pas de connexion Internet.":"Connexion impossible.")}
+  finally{$("lB").disabled=false}});
+$("out").addEventListener("click",()=>signOut(auth));
+
+onAuthStateChanged(auth,async user=>{
+  if(!user){$("app").hidden=true;$("login").hidden=false;$("lP").value="";return}
+  try{const f=await getDoc(doc(db,"proprietaires",user.uid));
+    if(f.exists()&&f.data().role==="proprietaire"){$("who").textContent=user.email;$("login").hidden=true;$("app").hidden=false;load()}
+    else{const u=await getDoc(doc(db,"utilisateurs",user.uid));if(u.exists()){location.href="app/";return}await signOut(auth);lerr("Ce compte n’est pas un compte propriétaire.")}
+  }catch(e){await signOut(auth);lerr("Connexion impossible.")}
+});
+</script>
+</body>
+</html>
