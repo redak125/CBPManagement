@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CBPManagement — Application</title>
+<style>
+:root{--ink:#17222d;--steel:#2f4a5f;--acc:#0b7c99;--sig:#0a6fd6;--bg:#e6e8ea;--pap:#f4f5f6;--line:#cfd4d9;--mut:#566574;--err:#b3261e;--ok:#1f8a5b}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:grid;grid-template-columns:210px 1fr;font:15px/1.5 "Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+aside{background:var(--ink);color:#c3ced8;padding:16px 0}
+.logo{display:flex;align-items:center;gap:10px;padding:0 18px 16px;color:#fff;font-weight:700;font-size:17px}
+.mark{width:22px;height:22px;background:#fff;position:relative}.mark:after{content:"";position:absolute;inset:6px;background:var(--sig)}
+#menu button{display:block;width:100%;text-align:start;padding:11px 18px;border:0;border-inline-start:4px solid transparent;background:none;color:inherit;font:inherit;cursor:pointer}
+#menu button:hover{background:#22303d}#menu button.on{background:#22303d;color:#fff;border-color:var(--sig)}
+main{padding:18px 24px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.bar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;background:#fff;border-radius:8px;padding:10px 16px}
+.bar small{display:block;color:var(--mut)}.bd{display:flex;align-items:center;gap:14px}
+#sync{font-size:13px;color:var(--ok)}#sync.p{color:var(--mut)}#sync.e{color:var(--err)}
+.tete{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.tete h2{margin:0;flex:1;font-size:22px}
+input,select{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:4px;background:#fff;color:var(--ink);width:100%}
+.tete input{width:240px}
+button{font:inherit;cursor:pointer;border-radius:4px;padding:8px 14px;border:1px solid var(--line);background:#fff;color:var(--steel)}
+button.pri{background:var(--sig);border-color:var(--sig);color:#fff;font-weight:600}button.danger{color:var(--err);border-color:var(--err)}
+:focus-visible{outline:3px solid var(--sig);outline-offset:2px}
+.tab{background:#fff;border-radius:8px;overflow-x:auto}
+table{border-collapse:collapse;width:100%}th,td{text-align:start;padding:10px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:13px;color:var(--mut);background:var(--pap)}tbody tr{cursor:pointer}tbody tr:hover{background:#eef4fb}
+#vide,#info{color:var(--mut)}#info.e{color:var(--err)}
+dialog{border:0;border-radius:8px;padding:0;width:min(640px,94vw);background:var(--pap);color:var(--ink)}
+dialog::backdrop{background:rgba(23,34,45,.6)}
+.fiche{padding:22px;display:grid;gap:14px}.fiche h3{margin:0}
+.grille{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{display:block;font-size:13px;font-weight:600;margin-bottom:4px}
+.actions{display:flex;gap:10px;align-items:center}.esp{flex:1}#dMsg{margin:0;min-height:1.3em;color:var(--err);font-size:14px}
+[hidden]{display:none!important}
+@media(max-width:760px){body{grid-template-columns:1fr}aside{padding:8px 0}.logo{padding-bottom:8px}#menu{display:flex;overflow-x:auto}#menu button{width:auto;white-space:nowrap}.grille{grid-template-columns:1fr}.tete input{width:100%}}
+</style>
+</head>
+<body>
+<aside><div class="logo"><span class="mark"></span>CBPManagement</div><nav id="menu"></nav></aside>
+<main>
+  <div class="bar"><div><strong id="entNom">…</strong><small id="userInfo"></small></div>
+    <div class="bd"><span id="sync" class="p">● …</span><button id="btnOut" type="button">Déconnexion</button></div></div>
+  <p id="info">Chargement…</p>
+  <div id="vue" hidden>
+    <div class="tete"><h2 id="titre"></h2><input id="recherche" type="search" placeholder="Rechercher…" aria-label="Rechercher"><button id="btnNew" class="pri" type="button">+ Nouveau</button></div>
+    <div class="tab"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+    <p id="vide"></p>
+  </div>
+</main>
+<dialog id="dlg"><form id="frm" class="fiche">
+  <h3 id="dTitre"></h3><div id="champs" class="grille"></div><p id="dMsg" role="alert"></p>
+  <div class="actions"><button type="button" id="dSupp" class="danger">Supprimer</button><span class="esp"></span><button type="button" id="dFerm">Fermer</button><button type="submit" id="dOk" class="pri">Enregistrer</button></div>
+</form></dialog>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, collection, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyAifzXsjpvftlxi3RGAVd0g8zznpzCLAf0", authDomain: "cbpm-8ac0e.firebaseapp.com", projectId: "cbpm-8ac0e",
+  storageBucket: "cbpm-8ac0e.firebasestorage.app", messagingSenderId: "14440101768", appId: "1:14440101768:web:61d42ef693721443cfac3d"
+});
+const auth = getAuth(app), db = getFirestore(app);
+const $ = (id) => document.getElementById(id);
+
+// Définition des modules : [clé, libellé, type]. Le 1er champ est obligatoire.
+const TIERS = [["nom","Nom / raison sociale"],["adresse","Adresse"],["tel","Téléphone","tel"],["mobile","Mobile","tel"],["email","E-mail","email"],["rc","RC"],["nif","NIF"],["nis","NIS"],["rib","RIB"],["art","N° article d’imposition"],["categorie","Catégorie"]];
+const MODULES = {
+  clients:      { titre: "Clients",      champs: TIERS, cols: ["nom","tel","email","categorie"] },
+  fournisseurs: { titre: "Fournisseurs", champs: TIERS, cols: ["nom","tel","email","categorie"] },
+  personnel:    { titre: "Personnel",    cols: ["nom","prenom","poste","statut"],
+    champs: [["nom","Nom"],["prenom","Prénom"],["poste","Poste"],["embauche","Date d’embauche","date"],["secu","N° sécurité sociale"],["statut","Statut","sel:Actif|Inactif"],["tel","Téléphone","tel"],["email","E-mail","email"]] },
+  materiels:    { titre: "Matériels",    cols: ["designation","immat"],
+    champs: [["designation","Désignation"],["immat","Immatriculation"]] }
+};
+
+let user, ent, role, cle, unsub, lignes = [], edition = null;
+const peutEcrire = () => role === "admin";
+const info = (t, err) => { $("info").textContent = t; $("info").className = err ? "e" : ""; $("info").hidden = !t; };
+const synchro = (cls, t) => { $("sync").className = cls; $("sync").textContent = "● " + t; };
+const chemin = (id) => ["entreprises", ent.id, cle, ...(id ? [id] : [])];
+
+$("btnOut").onclick = () => signOut(auth);
+window.addEventListener("offline", () => synchro("e", "Hors ligne"));
+window.addEventListener("online", () => synchro("", "Synchronisé"));
+
+// ---- Démarrage : compte -> entreprise -> modules ----
+onAuthStateChanged(auth, async (u) => {
+  if (!u) { location.replace("../"); return; }
+  user = u; $("userInfo").textContent = u.email;
+  try {
+    const f = await getDoc(doc(db, "utilisateurs", u.uid));
+    if (!f.exists()) throw new Error("Ce compte n’est rattaché à aucune entreprise.");
+    role = f.data().role;
+    const e = await getDoc(doc(db, "entreprises", f.data().entrepriseId));
+    if (!e.exists()) throw new Error("Entreprise introuvable.");
+    ent = { id: e.id, ...e.data() }; $("entNom").textContent = ent.nom;
+    if (ent.etat === "suspendue") { synchro("e", "Suspendue"); info("Cette entreprise est suspendue. Contactez le fournisseur de l’application.", true); return; }
+    $("menu").textContent = "";
+    for (const k in MODULES) { const b = document.createElement("button"); b.textContent = MODULES[k].titre; b.dataset.k = k; b.onclick = () => ouvrir(k); $("menu").append(b); }
+    ouvrir("clients");
+  } catch (err) { info(err.message || "Accès refusé.", true); }
+});
+
+// ---- Affichage d'un module avec synchronisation en temps réel ----
+function ouvrir(k) {
+  cle = k; if (unsub) unsub();
+  document.querySelectorAll("#menu button").forEach((b) => b.classList.toggle("on", b.dataset.k === k));
+  $("titre").textContent = MODULES[k].titre; $("recherche").value = ""; $("btnNew").hidden = !peutEcrire();
+  $("vue").hidden = false; info("");
+  unsub = onSnapshot(collection(db, ...chemin()), (s) => {
+    lignes = s.docs.map((d) => ({ id: d.id, ...d.data() })).filter((r) => !r.deleted);
+    synchro(s.metadata.hasPendingWrites ? "p" : "", s.metadata.hasPendingWrites ? "Envoi…" : "Synchronisé");
+    afficher();
+  }, () => synchro("e", "Erreur de synchronisation"));
+}
+
+function afficher() {
+  const M = MODULES[cle], lib = Object.fromEntries(M.champs.map((c) => [c[0], c[1]]));
+  const tr = document.createElement("tr"); M.cols.forEach((c) => { const th = document.createElement("th"); th.textContent = lib[c]; tr.append(th); });
+  $("thead").replaceChildren(tr);
+  const q = $("recherche").value.trim().toLowerCase();
+  const vis = lignes.filter((r) => !q || M.cols.some((c) => String(r[c] || "").toLowerCase().includes(q)))
+                    .sort((a, b) => String(a[M.cols[0]] || "").localeCompare(String(b[M.cols[0]] || "")));
+  $("tbody").replaceChildren(...vis.map((r) => {
+    const t = document.createElement("tr"); t.onclick = () => fiche(r);
+    M.cols.forEach((c) => { const td = document.createElement("td"); td.textContent = r[c] || ""; t.append(td); });
+    return t;
+  }));
+  $("vide").textContent = vis.length ? "" : "Aucun enregistrement.";
+}
+$("recherche").oninput = afficher;
+$("btnNew").onclick = () => fiche(null);
+
+// ---- Fiche (création / modification / suppression) ----
+function fiche(r) {
+  edition = r; const M = MODULES[cle];
+  $("dTitre").textContent = (r ? "Modifier" : "Nouveau") + " — " + M.titre; $("dMsg").textContent = "";
+  $("champs").replaceChildren(...M.champs.map(([k, l, t], i) => {
+    const w = document.createElement("div"), lb = document.createElement("label"); lb.htmlFor = "f_" + k; lb.textContent = l;
+    let inp;
+    if (t && t.startsWith("sel:")) { inp = document.createElement("select"); t.slice(4).split("|").forEach((o) => inp.add(new Option(o, o))); }
+    else { inp = document.createElement("input"); inp.type = t || "text"; }
+    inp.id = "f_" + k; inp.name = k; inp.value = (r && r[k]) || (t && t.startsWith("sel:") ? t.slice(4).split("|")[0] : "");
+    inp.required = i === 0; inp.disabled = !peutEcrire(); w.append(lb, inp); return w;
+  }));
+  $("dOk").hidden = !peutEcrire(); $("dSupp").hidden = !(r && peutEcrire());
+  $("dlg").showModal();
+}
+$("dFerm").onclick = () => $("dlg").close();
+
+// Écriture protégée : refuse si quelqu'un d'autre a modifié l'enregistrement entre-temps
+async function ecrire(id, base, fabrique) {
+  await runTransaction(db, async (tx) => {
+    const ref = doc(db, ...chemin(id)), s = await tx.get(ref);
+    if ((s.exists() ? s.data().version || 0 : 0) !== base) throw new Error("conflit");
+    tx.set(ref, { ...fabrique(s.exists() ? s.data() : {}), version: base + 1, majPar: user.email, majLe: serverTimestamp() });
+  });
+}
+const erreur = (e) => e.message === "conflit"
+  ? "Cet enregistrement a été modifié par un autre utilisateur. Fermez la fiche et rouvrez-la pour voir la version à jour."
+  : "Opération impossible. Vérifiez votre connexion et vos droits.";
+
+$("frm").onsubmit = async (ev) => {
+  ev.preventDefault(); $("dOk").disabled = true; $("dMsg").textContent = "";
+  const d = {}; MODULES[cle].champs.forEach(([k]) => { d[k] = $("f_" + k).value.trim(); });
+  const id = edition ? edition.id : doc(collection(db, ...chemin())).id;
+  try { await ecrire(id, edition ? edition.version || 0 : 0, () => d); $("dlg").close(); }
+  catch (e) { $("dMsg").textContent = erreur(e); } finally { $("dOk").disabled = false; }
+};
+$("dSupp").onclick = async () => {
+  if (!confirm("Supprimer cet enregistrement ?")) return;
+  try { await ecrire(edition.id, edition.version || 0, (ancien) => ({ ...ancien, deleted: true })); $("dlg").close(); }
+  catch (e) { $("dMsg").textContent = erreur(e); }
+};
+</script>
+</body>
+</html>
