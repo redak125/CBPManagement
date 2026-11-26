@@ -235,7 +235,7 @@ const M = {
 const m = (k) => (M[document.documentElement.lang] || M.fr)[k];
 const msg = (k, bon) => { $("lgMsg").textContent = k ? m(k) : ""; $("lgMsg").style.color = bon ? "var(--acc)" : ""; };
 
-$("btnLogin").addEventListener("click", (e) => { e.preventDefault(); msg(""); $("loginDlg").showModal(); });
+$("btnLogin").addEventListener("click",(e)=>{e.preventDefault();location.href="admin.html";});
 $("lgClose").addEventListener("click", () => $("loginDlg").close());
 $("lgOut").addEventListener("click", () => signOut(auth));
 
