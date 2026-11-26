@@ -19,11 +19,11 @@ a{color:inherit}:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 @keyframes shine{0%,55%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
 .callbar .w{position:relative;display:flex;align-items:center;justify-content:center;gap:22px;flex-wrap:wrap;padding:14px 0}
 .callbar .lbl{font-size:clamp(16px,2vw,20px);font-weight:700;text-transform:uppercase;letter-spacing:.06em;text-shadow:0 1px 2px rgba(0,0,0,.3)}
-.callbar a.num{position:relative;display:inline-flex;align-items:center;gap:14px;background:#fff;color:#0a4f9e;text-decoration:none;font-weight:900;font-size:clamp(28px,4.6vw,44px);letter-spacing:.04em;line-height:1;padding:12px 30px 12px 14px;border-radius:999px;white-space:nowrap;box-shadow:0 6px 0 #06356b,0 10px 24px rgba(0,0,0,.35);animation:pulse 2s ease-out infinite;transition:transform .15s}
-.callbar a.num:hover{transform:translateY(-2px) scale(1.04);background:#eaf4ff}
-.callbar a.num:active{transform:translateY(3px);box-shadow:0 2px 0 #06356b}
+.callbar .num{position:relative;display:inline-flex;align-items:center;gap:10px;background:#fff;color:#0a4f9e;font-weight:900;font-size:clamp(20px,3.2vw,34px);letter-spacing:.03em;line-height:1;padding:12px 28px 12px 14px;border-radius:999px;white-space:nowrap;box-shadow:0 6px 0 #06356b,0 10px 24px rgba(0,0,0,.35);animation:pulse 2s ease-out infinite}
+.callbar .num a{color:inherit;text-decoration:none}
+.callbar .num a:hover{text-decoration:underline}
 @keyframes pulse{0%{box-shadow:0 6px 0 #06356b,0 0 0 0 rgba(255,255,255,.75)}70%,100%{box-shadow:0 6px 0 #06356b,0 0 0 20px rgba(255,255,255,0)}}
-.callbar .ico{display:inline-grid;place-items:center;width:clamp(38px,5vw,52px);height:clamp(38px,5vw,52px);border-radius:50%;background:linear-gradient(135deg,#0a6fd6,#062e63);color:#fff;font-size:clamp(20px,2.8vw,28px);animation:ring 2.4s ease-in-out infinite}
+.callbar .ico{display:inline-grid;place-items:center;width:clamp(34px,4.4vw,48px);height:clamp(34px,4.4vw,48px);flex:none;border-radius:50%;background:linear-gradient(135deg,#0a6fd6,#062e63);color:#fff;font-size:clamp(18px,2.4vw,26px);animation:ring 2.4s ease-in-out infinite}
 @keyframes ring{0%,60%,100%{transform:rotate(0)}65%{transform:rotate(-14deg)}72%{transform:rotate(12deg)}79%{transform:rotate(-10deg)}86%{transform:rotate(8deg)}}
 
 header{background:var(--pap);border-bottom:1px solid var(--line)}
@@ -85,40 +85,20 @@ footer{background:#0f1822;color:#9fb0c0;padding:30px 0;font-size:13px}
 .ft{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}footer strong{color:#fff}footer a{color:#bcdcff;text-decoration:none}
 @media(max-width:860px){html{scroll-padding-top:150px}.h{flex-wrap:wrap;padding:12px 0}.nav{width:100%;overflow-x:auto;white-space:nowrap;gap:16px;padding-bottom:4px}.nav .cta{order:0}
 .hg,.mg,.cg{grid-template-columns:1fr}.hero{padding:60px 0}.fg{grid-template-columns:repeat(2,1fr)}.tr,.st{grid-template-columns:repeat(2,1fr)}.st{gap:34px 0}section{padding:60px 0}}
-@media(max-width:560px){.callbar .w{padding:10px 0;gap:8px}.callbar .lbl{font-size:13px;width:100%;text-align:center}.callbar a.num{width:100%;justify-content:center;font-size:28px;padding:10px 16px}.fg,.dg,form{grid-template-columns:1fr}.st{grid-template-columns:1fr}.row{grid-template-columns:78px 1fr 64px}.tr{font-size:12px}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar i{animation:none}.callbar .ico,.callbar a.num,.callbar:before{animation:none}}
+@media(max-width:560px){.callbar .w{padding:10px 0;gap:8px}.callbar .lbl{font-size:13px;width:100%;text-align:center}.callbar .num{width:100%;justify-content:center;flex-wrap:wrap;font-size:18px;padding:10px 14px;border-radius:28px}.fg,.dg,form{grid-template-columns:1fr}.st{grid-template-columns:1fr}.row{grid-template-columns:78px 1fr 64px}.tr{font-size:12px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.bar i{animation:none}.callbar .ico,.callbar .num,.callbar:before{animation:none}}
 html[dir=rtl] .btns{justify-content:flex-start}
-/* ===== Fenêtre de connexion (ajout) ===== */
-[hidden]{display:none!important}
-dialog{border:0;border-radius:8px;padding:0;width:min(520px,92vw);background:var(--pap);color:var(--ink);box-shadow:0 24px 50px -20px rgba(23,34,45,.6)}
-dialog::backdrop{background:rgba(23,34,45,.6)}
-.dlg{display:grid;gap:14px;padding:26px}
-.dlg h2{margin:0;font-size:20px}
-.dlg form{grid-template-columns:1fr}
-.dlg .btn{width:100%;border:0;cursor:pointer;text-align:center;font-family:inherit}
-.dlg form .btn{justify-self:stretch}
-.dlg .btn.x{background:transparent;color:var(--steel);border:1px solid var(--line)}
-.dlg .lgok{margin:0;font-weight:700;color:var(--acc)}
-#lgUser{margin:0;color:var(--mut);font-size:14px}
-#lgMsg{margin:0;min-height:1.3em;font-size:14px;color:#b3261e}
-.en{display:grid;gap:10px;border-top:1px solid var(--line);padding-top:14px}
-.en h3{margin:0;font-size:16px}
-#enListe{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-#enListe li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;background:#fff;border:1px solid var(--line);border-radius:6px;font-size:14px}
-#enListe small{display:block;color:var(--mut)}
-#enListe .susp{color:#b3261e;font-weight:700}
-#enListe button{padding:6px 10px;border:1px solid var(--line);border-radius:4px;background:transparent;cursor:pointer;font:inherit;font-size:13px;color:var(--steel)}
 </style>
 </head>
 <body>
 <div class="top">
 <div class="callbar"><div class="w">
 <span class="lbl" data-i="callLabel">Appelez-nous maintenant</span>
-<a class="num" href="tel:+213550271004" dir="ltr" aria-label="Téléphoner au + 213 550 271 004"><span class="ico" aria-hidden="true">☎</span>+ 213 550 271 004</a>
+<div class="num" dir="ltr"><span class="ico" aria-hidden="true">☎</span><a href="tel:+213550271004" aria-label="Téléphoner au +213 550 271 004">(+213) 550 271 004</a><span aria-hidden="true">/</span><a href="tel:+213540711205" aria-label="Téléphoner au +213 540 711 205">540 711 205</a></div>
 </div></div>
 <header><div class="w h">
 <a class="brand" href="#home"><span class="mark"></span>CBPManagement</a>
-<nav class="nav"><a href="#home" data-i="navHome">Accueil</a><a href="#features" data-i="navFeatures">Fonctionnalités</a><a href="#mobile" data-i="navMobile">Application mobile</a><a href="#screenshots" data-i="navShots">Captures</a><a href="#contact" data-i="navContact">Contact</a><a href="#" id="btnLogin" data-i="navLogin">Connexion</a><a href="#download" class="cta" data-i="navDownload">Téléchargement</a><select id="language" aria-label="Language"><option value="fr">FR</option><option value="en">EN</option><option value="ar">AR</option></select></nav>
+<nav class="nav"><a href="#home" data-i="navHome">Accueil</a><a href="#features" data-i="navFeatures">Fonctionnalités</a><a href="#mobile" data-i="navMobile">Application mobile</a><a href="#screenshots" data-i="navShots">Captures</a><a href="#contact" data-i="navContact">Contact</a><a href="admin.html" data-i="navLogin">Connexion</a><a href="#download" class="cta" data-i="navDownload">Téléchargement</a><select id="language" aria-label="Language"><option value="fr">FR</option><option value="en">EN</option><option value="ar">AR</option></select></nav>
 </div></header>
 </div>
 <main>
@@ -158,7 +138,7 @@ dialog::backdrop{background:rgba(23,34,45,.6)}
 <section class="dl" id="download"><div class="w"><h2 class="t" data-i="dlTitle">Choisissez votre version</h2><p class="lead" data-i="dlSub">Téléchargez CBPManagement pour votre appareil.</p>
 <div class="dg"><article class="dc"><small>Windows</small><h3>CBPManagement</h3><p data-i="winDesc">Application de gestion pour ordinateur Windows. Installeur disponible depuis GitHub Releases.</p><a class="btn" href="https://github.com/redak125/CBPManagement/releases/download/V1.0.0/CBPManagement_Setup.exe" data-i="winBtn">↓ Télécharger pour Windows</a></article>
 <article class="dc"><small>Android</small><h3>CBPManagement.apk</h3><p data-i="androidDesc">Application Android compagnon pour accéder aux sauvegardes CBPManagement.</p><a class="btn g" href="./CBPManagement.apk" download data-i="androidBtn">↓ Télécharger l’APK Android</a></article></div></div></section>
-<section id="contact"><div class="w cg"><div><h2 class="t" data-i="contactTitle">Parlons de votre centrale</h2><p class="lead" data-i="contactSub">Une question sur CBPManagement ? Envoyez-nous un message.</p><p class="tel"><span data-i="phoneLabel">Téléphone</span> : <a href="tel:+213550271004" dir="ltr">+ 213 550 271 004</a></p></div>
+<section id="contact"><div class="w cg"><div><h2 class="t" data-i="contactTitle">Parlons de votre centrale</h2><p class="lead" data-i="contactSub">Une question sur CBPManagement ? Envoyez-nous un message.</p><p class="tel"><span data-i="phoneLabel">Téléphone</span> : <a href="tel:+213550271004" dir="ltr">(+213) 550 271 004</a> / <a href="tel:+213540711205" dir="ltr">540 711 205</a></p></div>
 <form action="https://formsubmit.co/cherfa.abdelkader@gmail.com" method="POST"><input type="hidden" name="_subject" value="Contact depuis le site CBPManagement"><input type="hidden" name="_template" value="table"><input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
 <div><label for="name" data-i="nameLabel">Nom</label><input id="name" name="Nom" required></div><div><label for="email" data-i="emailLabel">Adresse e-mail</label><input id="email" type="email" name="email" required></div>
 <div class="full"><label for="message" data-i="messageLabel">Votre message</label><textarea id="message" name="Message" required></textarea></div><button class="btn" type="submit" data-i="sendBtn">Envoyer le message</button></form></div></section>
@@ -166,33 +146,10 @@ dialog::backdrop{background:rgba(23,34,45,.6)}
 <footer><div class="w ft"><div>© <span id="year"></span> <strong>CBPManagement</strong> — Concrete Batch Plant Management<br><span data-i="footerText">Conçu pour la gestion des centrales à béton prêt à l’emploi.</span></div>
 <div><strong>Sarl CBPSoftware</strong> — <span data-i="pubAddr">Ouled Moussa, Boumerdes, Algérie</span><br><span data-i="madeBy">Conception :</span> <strong>Redak Ledba</strong> · <a href="https://github.com/redak125/CBPManagement">GitHub</a></div></div></footer>
 
-<!-- Fenêtre de connexion (ajout) -->
-<dialog id="loginDlg" aria-labelledby="lgTitle"><div class="dlg">
-<h2 id="lgTitle" data-i="lgTitle">Espace propriétaire</h2>
-<form id="lgForm">
-<div><label for="lgEmail" data-i="emailLabel">Adresse e-mail</label><input id="lgEmail" type="email" autocomplete="username" required></div>
-<div><label for="lgPwd" data-i="lgPwdLabel">Mot de passe</label><input id="lgPwd" type="password" autocomplete="current-password" required></div>
-<button class="btn" id="lgSubmit" type="submit" data-i="lgBtn">Se connecter</button>
-</form>
-<div id="lgIn" hidden><p class="lgok" data-i="lgOk">Connexion réussie : vous êtes le propriétaire.</p><p id="lgUser" dir="ltr"></p>
-<div class="en"><h3 data-i="enTitle">Entreprises</h3>
-<form id="enForm"><div><label for="enNom" data-i="enNomLabel">Nom de l’entreprise</label><input id="enNom" required></div>
-<div><label for="enMax" data-i="enMaxLabel">Nombre maximum de comptes</label><input id="enMax" type="number" min="1" max="100" value="3" required></div>
-<button class="btn g" id="enSubmit" type="submit" data-i="enCreate">Créer l’entreprise</button></form>
-<ul id="enListe"></ul>
-<form id="cpForm"><h3 data-i="cpTitle">Compte administrateur d’une entreprise</h3>
-<div><label for="cpEnt" data-i="cpEntLabel">Entreprise</label><select id="cpEnt" required></select></div>
-<div><label for="cpEmail" data-i="emailLabel">Adresse e-mail</label><input id="cpEmail" type="email" autocomplete="off" required></div>
-<div><label for="cpPwd" data-i="cpPwdLabel">Mot de passe provisoire (8 caractères minimum)</label><input id="cpPwd" type="text" minlength="8" autocomplete="off" required></div>
-<button class="btn g" id="cpSubmit" type="submit" data-i="cpCreate">Créer le compte</button></form></div><button class="btn" id="lgOut" type="button" data-i="lgOutBtn">Se déconnecter</button></div>
-<p id="lgMsg" role="alert"></p>
-<button class="btn x" id="lgClose" type="button" data-i="lgClose">Fermer</button>
-</div></dialog>
-
 <script>
 const T={
-en:{callLabel:'Call us now',navHome:'Home',navFeatures:'Features',navMobile:'Mobile app',navShots:'Screenshots',navDownload:'Downloads',navContact:'Contact',heroTitle:'Your concrete plant. Under control.',heroText:'CBPManagement brings operations, production, inventory, finances and commercial tracking together in one management solution designed for ready-mix concrete professionals.',heroWindows:'↓ Download for Windows',heroAndroid:'Android app ↗',heroNote:'Desktop management with mobile access to your backups.',mixTitle:'Today’s production',mixSub:'Sample tracking by strength class, in m³.',mixTot:'Total',trust1:'Ready-mix concrete plants',trust2:'Dashboards and monitoring',trust3:'Backup and restore',trust4:'Multilingual interface',featuresTitle:'All essential modules, in one place',featuresSub:'A clear way to monitor every stage of your plant operations.',f1t:'Dashboard & operations',f1p:'A business overview to quickly monitor key indicators.',f2t:'Production & mix designs',f2p:'Organize production and manage finished-product compositions.',f3t:'Procurement & inventory',f3p:'Track raw-material receipts, purchases and services.',f4t:'Finance & cash flow',f4p:'Centralize financial movements and review account positions.',f5t:'Customers, suppliers & debts',f5p:'Keep a clear view of business contacts and their balances.',f6t:'Invoicing & documents',f6p:'Prepare and track commercial documents related to your operations.',f7t:'Staff & equipment',f7p:'Centralize information about your plant resources.',f8t:'Reports & management control',f8p:'Analyze data and review operational reports.',f9t:'Backups & settings',f9p:'Protect your data and adapt the application to your organization.',flowTitle:'From raw materials to financial monitoring.',flowText:'CBPManagement brings your plant’s key information into one environment, without scattering your data.',s1t:'Record operations',s1p:'Customers, suppliers, procurement and production.',s2t:'Monitor stock and transactions',s2p:'Review raw materials, mix designs, income and expenses.',s3t:'Analyze and decide',s3p:'Dashboards, reports, debts and management control.',s4t:'Back up your data',s4p:'Keep copies and restore your data when needed.',mobTitle:'Your backups, within reach.',mobText:'The Android app complements the desktop application by providing access to backups associated with your CBPManagement account.',mob1:'Dedicated CBPManagement mobile app',mob2:'Access to cloud backups',mob3:'Review saved data',mob4:'Light and dark interface themes',apkBtn:'↓ Download CBPManagement for Android',apkNote:'APK file — allow installation from this source if Android asks.',darkCap:'Dark theme',lightCap:'Light theme',deskTitle:'An interface designed for everyday monitoring',deskSub:'Access your key indicators and management modules from one workspace.',deskCap:'Example of the desktop application dashboard.',dlTitle:'Choose your version',dlSub:'Download CBPManagement for your device.',winDesc:'Management application for Windows computers. Installer available through GitHub Releases.',winBtn:'↓ Download for Windows',androidDesc:'Companion Android app to access CBPManagement backups.',androidBtn:'↓ Download Android APK',contactTitle:'Let’s talk about your plant',contactSub:'Have a question about CBPManagement? Send us a message.',nameLabel:'Name',emailLabel:'Email address',messageLabel:'Your message',sendBtn:'Send message',phoneLabel:'Phone',footerText:'Designed for ready-mix concrete plant management.',pubAddr:'Ouled Moussa, Boumerdes, Algeria',madeBy:'Created by:',navLogin:'Sign in',lgTitle:'Owner area',lgPwdLabel:'Password',lgBtn:'Sign in',lgOk:'Signed in: you are the owner.',lgOutBtn:'Sign out',lgClose:'Close',enTitle:'Companies',enNomLabel:'Company name',enMaxLabel:'Maximum number of accounts',enCreate:'Create company',cpTitle:'Company administrator account',cpEntLabel:'Company',cpPwdLabel:'Temporary password (8 characters minimum)',cpCreate:'Create account'},
-ar:{callLabel:'اتصل بنا الآن',navHome:'الرئيسية',navFeatures:'الميزات',navMobile:'تطبيق الهاتف',navShots:'لقطات الشاشة',navDownload:'التنزيلات',navContact:'اتصل بنا',heroTitle:'محطة الخرسانة الخاصة بك، تحت السيطرة.',heroText:'يجمع CBPManagement الإنتاج والتموين والمخزون والمالية والمتابعة التجارية في حل واحد مصمم لمهنيي الخرسانة الجاهزة.',heroWindows:'↓ تحميل نسخة Windows',heroAndroid:'تطبيق Android ↗',heroNote:'إدارة عبر الحاسوب مع إمكانية الوصول إلى النسخ الاحتياطية من الهاتف.',mixTitle:'إنتاج اليوم',mixSub:'مثال على المتابعة حسب فئة المقاومة، بالمتر المكعب.',mixTot:'المجموع',trust1:'محطات الخرسانة الجاهزة',trust2:'لوحات القيادة والمتابعة',trust3:'النسخ الاحتياطي والاستعادة',trust4:'واجهة متعددة اللغات',featuresTitle:'جميع وحدات التسيير الأساسية في مكان واحد',featuresSub:'تنظيم واضح لمتابعة مختلف مراحل نشاط محطة الخرسانة.',f1t:'لوحة القيادة والنشاط',f1p:'ملخص للنشاط لمتابعة أهم المؤشرات بسرعة.',f2t:'الإنتاج والتركيبات',f2p:'تنظيم الإنتاج وإدارة تركيبات المنتجات النهائية.',f3t:'التموين والمخزون',f3p:'متابعة دخول المواد الأولية والمشتريات والخدمات.',f4t:'المالية والخزينة',f4p:'تجميع الحركات المالية والاطلاع على الوضعيات.',f5t:'العملاء والموردون والديون',f5p:'متابعة واضحة للمتعاملين وأرصدتهم.',f6t:'الفوترة والمستندات',f6p:'إعداد ومتابعة الوثائق التجارية المرتبطة بالنشاط.',f7t:'الموظفون والمعدات',f7p:'تجميع المعلومات الخاصة بموارد المحطة.',f8t:'التقارير ومراقبة التسيير',f8p:'تحليل البيانات والاطلاع على تقارير المتابعة.',f9t:'النسخ الاحتياطي والإعدادات',f9p:'حماية بياناتك وتكييف التطبيق مع طريقة عملك.',flowTitle:'من المواد الأولية إلى المتابعة المالية.',flowText:'يجمع CBPManagement المعلومات المهمة لمحطتك في بيئة واحدة، دون تشتيت بياناتك.',s1t:'تسجيل العمليات',s1p:'العملاء والموردون والتموين والإنتاج.',s2t:'متابعة المخزون والحركات',s2p:'المواد الأولية والتركيبات والإيرادات والمصاريف.',s3t:'التحليل واتخاذ القرار',s3p:'لوحات القيادة والتقارير والديون ومراقبة التسيير.',s4t:'حفظ بياناتك',s4p:'الاحتفاظ بنسخ واستعادة البيانات عند الحاجة.',mobTitle:'نسخك الاحتياطية في متناول يدك.',mobText:'يكمل تطبيق Android تطبيق الحاسوب ويتيح الوصول إلى النسخ الاحتياطية المرتبطة بحساب CBPManagement.',mob1:'تطبيق مخصص لـ CBPManagement',mob2:'الوصول إلى النسخ السحابية',mob3:'الاطلاع على البيانات المحفوظة',mob4:'واجهة بالمظهر الفاتح والداكن',apkBtn:'↓ تحميل CBPManagement لنظام Android',apkNote:'ملف APK — اسمح بالتثبيت من هذا المصدر إذا طلب Android ذلك.',darkCap:'المظهر الداكن',lightCap:'المظهر الفاتح',deskTitle:'واجهة مصممة للمتابعة اليومية',deskSub:'اطلع على مؤشراتك ووحدات التسيير من مساحة عمل واحدة.',deskCap:'مثال على لوحة قيادة تطبيق الحاسوب.',dlTitle:'اختر نسختك',dlSub:'حمّل CBPManagement لجهازك.',winDesc:'تطبيق تسيير لأجهزة Windows. ملف التثبيت متاح عبر GitHub Releases.',winBtn:'↓ تحميل Windows',androidDesc:'تطبيق Android مرافق للوصول إلى نسخ CBPManagement الاحتياطية.',androidBtn:'↓ تحميل APK لنظام Android',contactTitle:'لنتحدث عن محطتك',contactSub:'هل لديك سؤال حول CBPManagement؟ أرسل لنا رسالة.',nameLabel:'الاسم',emailLabel:'البريد الإلكتروني',messageLabel:'رسالتك',sendBtn:'إرسال الرسالة',phoneLabel:'الهاتف',footerText:'مصمم لتسيير محطات الخرسانة الجاهزة.',pubAddr:'أولاد موسى، بومرداس، الجزائر',madeBy:'التصميم:',navLogin:'تسجيل الدخول',lgTitle:'فضاء المالك',lgPwdLabel:'كلمة المرور',lgBtn:'دخول',lgOk:'تم تسجيل الدخول: أنت المالك.',lgOutBtn:'تسجيل الخروج',lgClose:'إغلاق',enTitle:'الشركات',enNomLabel:'اسم الشركة',enMaxLabel:'العدد الأقصى للحسابات',enCreate:'إنشاء الشركة',cpTitle:'حساب مسؤول الشركة',cpEntLabel:'الشركة',cpPwdLabel:'كلمة مرور مؤقتة (8 أحرف على الأقل)',cpCreate:'إنشاء الحساب'}
+en:{callLabel:'Call us now',navHome:'Home',navFeatures:'Features',navMobile:'Mobile app',navShots:'Screenshots',navDownload:'Downloads',navContact:'Contact',navLogin:'Sign in',heroTitle:'Your concrete plant. Under control.',heroText:'CBPManagement brings operations, production, inventory, finances and commercial tracking together in one management solution designed for ready-mix concrete professionals.',heroWindows:'↓ Download for Windows',heroAndroid:'Android app ↗',heroNote:'Desktop management with mobile access to your backups.',mixTitle:'Today’s production',mixSub:'Sample tracking by strength class, in m³.',mixTot:'Total',trust1:'Ready-mix concrete plants',trust2:'Dashboards and monitoring',trust3:'Backup and restore',trust4:'Multilingual interface',featuresTitle:'All essential modules, in one place',featuresSub:'A clear way to monitor every stage of your plant operations.',f1t:'Dashboard & operations',f1p:'A business overview to quickly monitor key indicators.',f2t:'Production & mix designs',f2p:'Organize production and manage finished-product compositions.',f3t:'Procurement & inventory',f3p:'Track raw-material receipts, purchases and services.',f4t:'Finance & cash flow',f4p:'Centralize financial movements and review account positions.',f5t:'Customers, suppliers & debts',f5p:'Keep a clear view of business contacts and their balances.',f6t:'Invoicing & documents',f6p:'Prepare and track commercial documents related to your operations.',f7t:'Staff & equipment',f7p:'Centralize information about your plant resources.',f8t:'Reports & management control',f8p:'Analyze data and review operational reports.',f9t:'Backups & settings',f9p:'Protect your data and adapt the application to your organization.',flowTitle:'From raw materials to financial monitoring.',flowText:'CBPManagement brings your plant’s key information into one environment, without scattering your data.',s1t:'Record operations',s1p:'Customers, suppliers, procurement and production.',s2t:'Monitor stock and transactions',s2p:'Review raw materials, mix designs, income and expenses.',s3t:'Analyze and decide',s3p:'Dashboards, reports, debts and management control.',s4t:'Back up your data',s4p:'Keep copies and restore your data when needed.',mobTitle:'Your backups, within reach.',mobText:'The Android app complements the desktop application by providing access to backups associated with your CBPManagement account.',mob1:'Dedicated CBPManagement mobile app',mob2:'Access to cloud backups',mob3:'Review saved data',mob4:'Light and dark interface themes',apkBtn:'↓ Download CBPManagement for Android',apkNote:'APK file — allow installation from this source if Android asks.',darkCap:'Dark theme',lightCap:'Light theme',deskTitle:'An interface designed for everyday monitoring',deskSub:'Access your key indicators and management modules from one workspace.',deskCap:'Example of the desktop application dashboard.',dlTitle:'Choose your version',dlSub:'Download CBPManagement for your device.',winDesc:'Management application for Windows computers. Installer available through GitHub Releases.',winBtn:'↓ Download for Windows',androidDesc:'Companion Android app to access CBPManagement backups.',androidBtn:'↓ Download Android APK',contactTitle:'Let’s talk about your plant',contactSub:'Have a question about CBPManagement? Send us a message.',nameLabel:'Name',emailLabel:'Email address',messageLabel:'Your message',sendBtn:'Send message',phoneLabel:'Phone',footerText:'Designed for ready-mix concrete plant management.',pubAddr:'Ouled Moussa, Boumerdes, Algeria',madeBy:'Created by:'},
+ar:{callLabel:'اتصل بنا الآن',navHome:'الرئيسية',navFeatures:'الميزات',navMobile:'تطبيق الهاتف',navShots:'لقطات الشاشة',navDownload:'التنزيلات',navContact:'اتصل بنا',navLogin:'تسجيل الدخول',heroTitle:'محطة الخرسانة الخاصة بك، تحت السيطرة.',heroText:'يجمع CBPManagement الإنتاج والتموين والمخزون والمالية والمتابعة التجارية في حل واحد مصمم لمهنيي الخرسانة الجاهزة.',heroWindows:'↓ تحميل نسخة Windows',heroAndroid:'تطبيق Android ↗',heroNote:'إدارة عبر الحاسوب مع إمكانية الوصول إلى النسخ الاحتياطية من الهاتف.',mixTitle:'إنتاج اليوم',mixSub:'مثال على المتابعة حسب فئة المقاومة، بالمتر المكعب.',mixTot:'المجموع',trust1:'محطات الخرسانة الجاهزة',trust2:'لوحات القيادة والمتابعة',trust3:'النسخ الاحتياطي والاستعادة',trust4:'واجهة متعددة اللغات',featuresTitle:'جميع وحدات التسيير الأساسية في مكان واحد',featuresSub:'تنظيم واضح لمتابعة مختلف مراحل نشاط محطة الخرسانة.',f1t:'لوحة القيادة والنشاط',f1p:'ملخص للنشاط لمتابعة أهم المؤشرات بسرعة.',f2t:'الإنتاج والتركيبات',f2p:'تنظيم الإنتاج وإدارة تركيبات المنتجات النهائية.',f3t:'التموين والمخزون',f3p:'متابعة دخول المواد الأولية والمشتريات والخدمات.',f4t:'المالية والخزينة',f4p:'تجميع الحركات المالية والاطلاع على الوضعيات.',f5t:'العملاء والموردون والديون',f5p:'متابعة واضحة للمتعاملين وأرصدتهم.',f6t:'الفوترة والمستندات',f6p:'إعداد ومتابعة الوثائق التجارية المرتبطة بالنشاط.',f7t:'الموظفون والمعدات',f7p:'تجميع المعلومات الخاصة بموارد المحطة.',f8t:'التقارير ومراقبة التسيير',f8p:'تحليل البيانات والاطلاع على تقارير المتابعة.',f9t:'النسخ الاحتياطي والإعدادات',f9p:'حماية بياناتك وتكييف التطبيق مع طريقة عملك.',flowTitle:'من المواد الأولية إلى المتابعة المالية.',flowText:'يجمع CBPManagement المعلومات المهمة لمحطتك في بيئة واحدة، دون تشتيت بياناتك.',s1t:'تسجيل العمليات',s1p:'العملاء والموردون والتموين والإنتاج.',s2t:'متابعة المخزون والحركات',s2p:'المواد الأولية والتركيبات والإيرادات والمصاريف.',s3t:'التحليل واتخاذ القرار',s3p:'لوحات القيادة والتقارير والديون ومراقبة التسيير.',s4t:'حفظ بياناتك',s4p:'الاحتفاظ بنسخ واستعادة البيانات عند الحاجة.',mobTitle:'نسخك الاحتياطية في متناول يدك.',mobText:'يكمل تطبيق Android تطبيق الحاسوب ويتيح الوصول إلى النسخ الاحتياطية المرتبطة بحساب CBPManagement.',mob1:'تطبيق مخصص لـ CBPManagement',mob2:'الوصول إلى النسخ السحابية',mob3:'الاطلاع على البيانات المحفوظة',mob4:'واجهة بالمظهر الفاتح والداكن',apkBtn:'↓ تحميل CBPManagement لنظام Android',apkNote:'ملف APK — اسمح بالتثبيت من هذا المصدر إذا طلب Android ذلك.',darkCap:'المظهر الداكن',lightCap:'المظهر الفاتح',deskTitle:'واجهة مصممة للمتابعة اليومية',deskSub:'اطلع على مؤشراتك ووحدات التسيير من مساحة عمل واحدة.',deskCap:'مثال على لوحة قيادة تطبيق الحاسوب.',dlTitle:'اختر نسختك',dlSub:'حمّل CBPManagement لجهازك.',winDesc:'تطبيق تسيير لأجهزة Windows. ملف التثبيت متاح عبر GitHub Releases.',winBtn:'↓ تحميل Windows',androidDesc:'تطبيق Android مرافق للوصول إلى نسخ CBPManagement الاحتياطية.',androidBtn:'↓ تحميل APK لنظام Android',contactTitle:'لنتحدث عن محطتك',contactSub:'هل لديك سؤال حول CBPManagement؟ أرسل لنا رسالة.',nameLabel:'الاسم',emailLabel:'البريد الإلكتروني',messageLabel:'رسالتك',sendBtn:'إرسال الرسالة',phoneLabel:'الهاتف',footerText:'مصمم لتسيير محطات الخرسانة الجاهزة.',pubAddr:'أولاد موسى، بومرداس، الجزائر',madeBy:'التصميم:'}
 };
 const els=[...document.querySelectorAll('[data-i]')],sel=document.getElementById('language');
 els.forEach(e=>e.dataset.fr=e.textContent);
@@ -203,123 +160,6 @@ document.getElementById('year').textContent=new Date().getFullYear();
 let L=null;try{L=localStorage.getItem('lang')}catch(_){}
 if(!L){const nav=(navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||'fr']).map(x=>x.slice(0,2).toLowerCase());L=nav.find(x=>x==='fr'||x==='en'||x==='ar')||'fr'}
 setLanguage(L==='en'||L==='ar'?L:'fr');
-</script>
-
-<!-- Connexion Firebase (ajout) -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, deleteUser, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, collection, addDoc, setDoc, getDocs, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
-
-// Configuration du projet Firebase CBPM (ces valeurs ne sont pas secrètes)
-const cfg = {
-  apiKey: "AIzaSyAifzXsjpvftlxi3RGAVd0g8zznpzCLAf0",
-  authDomain: "cbpm-8ac0e.firebaseapp.com",
-  projectId: "cbpm-8ac0e",
-  storageBucket: "cbpm-8ac0e.firebasestorage.app",
-  messagingSenderId: "14440101768",
-  appId: "1:14440101768:web:61d42ef693721443cfac3d"
-};
-const app = initializeApp(cfg);
-// Seconde instance : sert uniquement à créer les comptes sans déconnecter le propriétaire
-const app2 = initializeApp(cfg, "secondaire");
-const auth = getAuth(app), auth2 = getAuth(app2), db = getFirestore(app);
-const $ = (id) => document.getElementById(id);
-
-// Messages de la fenêtre de connexion (fr, en, ar)
-const M = {
-  fr: { bad: 'Adresse e-mail ou mot de passe incorrect.', many: 'Trop de tentatives. Réessayez dans quelques minutes.', net: 'Pas de connexion Internet.', notOwner: 'Ce compte n’est pas un compte propriétaire.', fail: 'Connexion impossible.', none: 'Aucune entreprise.', maxc: 'comptes', on: 'Active', off: 'Suspendue', btnOff: 'Suspendre', btnOn: 'Réactiver', saveFail: 'Opération impossible.', limit: 'Limite de comptes atteinte pour cette entreprise.', used: 'Cette adresse e-mail est déjà utilisée.', weak: 'Mot de passe trop court (8 caractères minimum).', cpOk: 'Compte créé.' },
-  en: { bad: 'Incorrect email address or password.', many: 'Too many attempts. Try again in a few minutes.', net: 'No Internet connection.', notOwner: 'This account is not an owner account.', fail: 'Sign-in failed.', none: 'No companies yet.', maxc: 'accounts', on: 'Active', off: 'Suspended', btnOff: 'Suspend', btnOn: 'Reactivate', saveFail: 'Operation failed.', limit: 'Account limit reached for this company.', used: 'This email address is already in use.', weak: 'Password too short (8 characters minimum).', cpOk: 'Account created.' },
-  ar: { bad: 'البريد الإلكتروني أو كلمة المرور غير صحيحة.', many: 'محاولات كثيرة. أعد المحاولة بعد بضع دقائق.', net: 'لا يوجد اتصال بالإنترنت.', notOwner: 'هذا الحساب ليس حساب مالك.', fail: 'تعذر تسجيل الدخول.', none: 'لا توجد شركات.', maxc: 'حسابات', on: 'نشطة', off: 'معلّقة', btnOff: 'تعليق', btnOn: 'إعادة التفعيل', saveFail: 'تعذرت العملية.', limit: 'تم بلوغ الحد الأقصى للحسابات لهذه الشركة.', used: 'هذا البريد الإلكتروني مستخدم بالفعل.', weak: 'كلمة المرور قصيرة جدًا (8 أحرف على الأقل).', cpOk: 'تم إنشاء الحساب.' }
-};
-const m = (k) => (M[document.documentElement.lang] || M.fr)[k];
-const msg = (k, bon) => { $("lgMsg").textContent = k ? m(k) : ""; $("lgMsg").style.color = bon ? "var(--acc)" : ""; };
-
-$("btnLogin").addEventListener("click",(e)=>{e.preventDefault();location.href="admin.html";});
-$("lgClose").addEventListener("click", () => $("loginDlg").close());
-$("lgOut").addEventListener("click", () => signOut(auth));
-
-$("lgForm").addEventListener("submit", async (e) => {
-  e.preventDefault(); msg(""); $("lgSubmit").disabled = true;
-  try {
-    await signInWithEmailAndPassword(auth, $("lgEmail").value.trim(), $("lgPwd").value);
-  } catch (err) {
-    const c = err.code;
-    msg(["auth/invalid-credential", "auth/wrong-password", "auth/user-not-found", "auth/invalid-email"].includes(c) ? "bad"
-      : c === "auth/too-many-requests" ? "many" : c === "auth/network-request-failed" ? "net" : "fail");
-  } finally { $("lgSubmit").disabled = false; }
-});
-
-// Entreprises (espace propriétaire) : liste, suspension et création
-const entreprises = new Map(), comptes = new Map();
-async function chargerEntreprises() {
-  const ul = $("enListe"); ul.textContent = "";
-  try {
-    const [snap, cs] = await Promise.all([getDocs(collection(db, "entreprises")), getDocs(collection(db, "utilisateurs"))]);
-    comptes.clear(); cs.forEach((c) => { const k = c.data().entrepriseId; comptes.set(k, (comptes.get(k) || 0) + 1); });
-    entreprises.clear(); snap.forEach((x) => entreprises.set(x.id, x.data()));
-    $("cpEnt").textContent = "";
-    if (snap.empty) { const li = document.createElement("li"); li.textContent = m("none"); ul.append(li); return; }
-    snap.docs.sort((a, b) => (a.data().nom || "").localeCompare(b.data().nom || "")).forEach((d) => {
-      const e = d.data(), active = e.etat !== "suspendue";
-      const li = document.createElement("li"), info = document.createElement("div"), b = document.createElement("button");
-      const nom = document.createElement("strong"); nom.textContent = e.nom;
-      const det = document.createElement("small"); det.textContent = (comptes.get(d.id) || 0) + "/" + e.maxComptes + " " + m("maxc") + " · " + (active ? m("on") : m("off"));
-      if (!active) det.classList.add("susp"); else { const o = document.createElement("option"); o.value = d.id; o.textContent = e.nom; $("cpEnt").append(o); }
-      info.append(nom, det);
-      b.textContent = active ? m("btnOff") : m("btnOn");
-      b.addEventListener("click", async () => {
-        try { await updateDoc(doc(db, "entreprises", d.id), { etat: active ? "suspendue" : "active" }); chargerEntreprises(); }
-        catch (err) { msg("saveFail"); }
-      });
-      li.append(info, b); ul.append(li);
-    });
-  } catch (err) { msg("saveFail"); }
-}
-
-$("enForm").addEventListener("submit", async (e) => {
-  e.preventDefault(); msg(""); $("enSubmit").disabled = true;
-  try {
-    await addDoc(collection(db, "entreprises"), { nom: $("enNom").value.trim(), maxComptes: parseInt($("enMax").value, 10), etat: "active", creeLe: serverTimestamp() });
-    $("enNom").value = ""; await chargerEntreprises();
-  } catch (err) { msg("saveFail"); }
-  finally { $("enSubmit").disabled = false; }
-});
-
-// Création du compte administrateur d'une entreprise (compte + fiche « utilisateurs »)
-$("cpForm").addEventListener("submit", async (ev) => {
-  ev.preventDefault(); msg(""); $("cpSubmit").disabled = true;
-  const entId = $("cpEnt").value, ent = entreprises.get(entId);
-  try {
-    if (!ent) { msg("saveFail"); return; }
-    if ((comptes.get(entId) || 0) >= ent.maxComptes) { msg("limit"); return; }
-    const cred = await createUserWithEmailAndPassword(auth2, $("cpEmail").value.trim(), $("cpPwd").value);
-    try {
-      await setDoc(doc(db, "utilisateurs", cred.user.uid), { entrepriseId: entId, role: "admin", email: cred.user.email, creeLe: serverTimestamp() });
-    } catch (err) { await deleteUser(cred.user); throw err; }
-    await signOut(auth2);
-    $("cpEmail").value = ""; $("cpPwd").value = "";
-    await chargerEntreprises(); msg("cpOk", true);
-  } catch (err) {
-    msg(err.code === "auth/email-already-in-use" ? "used" : err.code === "auth/weak-password" ? "weak" : "saveFail");
-  } finally { $("cpSubmit").disabled = false; }
-});
-
-// Après chaque connexion ou déconnexion : vérifier que le compte est propriétaire
-onAuthStateChanged(auth, async (user) => {
-  if (!user) { $("lgForm").hidden = false; $("lgIn").hidden = true; $("lgPwd").value = ""; $("enListe").textContent = ""; return; }
-  try {
-    const fiche = await getDoc(doc(db, "proprietaires", user.uid));
-    if (fiche.exists() && fiche.data().role === "proprietaire") {
-      $("lgUser").textContent = user.email; $("lgForm").hidden = true; $("lgIn").hidden = false; msg(""); chargerEntreprises();
-    } else {
-      // Compte d'entreprise : ouvrir l'application ; sinon refuser
-      const u = await getDoc(doc(db, "utilisateurs", user.uid));
-      if (u.exists()) { location.href = "app/"; return; }
-      await signOut(auth); msg("notOwner");
-    }
-  } catch (err) { await signOut(auth); msg("fail"); }
-});
 </script>
 </body>
 </html>
