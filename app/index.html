@@ -124,6 +124,28 @@ dialog::backdrop{background:rgba(23,34,45,.6)}
 .journal-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px}.journal-table{min-width:1450px}.journal-table td{vertical-align:top;white-space:nowrap}.journal-table td.journal-values{white-space:pre-wrap;overflow-wrap:anywhere;min-width:260px;max-width:420px}
 @media(max-width:760px){.advanced-grid{grid-template-columns:repeat(auto-fit,minmax(145px,1fr))}.kpi strong{font-size:18px}.advanced-table td,.advanced-table th{padding:7px}}
 
+
+.cbpm-aff-dialog{width:min(1120px,96vw);max-width:1120px}
+.aff-manager-grid{display:grid;grid-template-columns:minmax(300px,1fr) minmax(300px,1fr);gap:12px;min-height:420px}
+.aff-manager-panel{display:flex;flex-direction:column;min-width:0;background:#fff;border:1px solid var(--line);border-radius:9px;padding:12px}
+.aff-manager-panel h4{margin:0 0 9px;color:var(--steel);font-size:14px}
+.aff-manager-table-wrap{overflow:auto;flex:1;min-height:230px;max-height:48vh;border:1px solid #e1e6eb;border-radius:6px}
+.aff-manager-table{width:100%;border-collapse:collapse;font-size:13px}
+.aff-manager-table th{position:sticky;top:0;background:#eaf0f6;z-index:1}
+.aff-manager-table td,.aff-manager-table th{padding:8px 9px;border-bottom:1px solid #e6eaee;text-align:left;white-space:normal}
+.aff-manager-table tbody tr{cursor:pointer}
+.aff-manager-table tbody tr:nth-child(even) td{background:#f7f9fb}
+.aff-manager-table tbody tr:hover td{background:#eaf3fd}
+.aff-manager-table tbody tr.selected td{background:#d3e6fb}
+.aff-manager-input{display:flex;flex-direction:column;gap:4px;margin-top:10px}
+.aff-manager-input label{font-size:12px;color:var(--steel)}
+.aff-manager-input input{height:34px;padding:6px 9px;border:1px solid var(--line);border-radius:6px;font:inherit;background:#fff;color:var(--ink)}
+.aff-manager-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+.aff-manager-actions button{padding:7px 12px}
+.aff-manager-actions button:disabled,.aff-manager-input input:disabled{opacity:.5;cursor:not-allowed}
+.aff-manager-message{font-size:12px;color:var(--mut);margin:9px 0 0;min-height:2.8em;line-height:1.4}
+@media(max-width:760px){.aff-manager-grid{grid-template-columns:1fr}.aff-manager-table-wrap{max-height:32vh}.cbpm-aff-dialog{max-height:94vh;overflow:auto}}
+
 </style>
 </head>
 <body>
@@ -137,6 +159,25 @@ dialog::backdrop{background:rgba(23,34,45,.6)}
   <div id="vue" hidden></div>
 </main>
 <dialog id="dlgSub"><div class="sh"><h3 id="subTitre"></h3><button id="subFerm" class="b-navy" type="button">Fermer</button></div><div id="subBody"></div></dialog>
+<dialog id="dlgAffectations" class="cbpm-dialog cbpm-aff-dialog">
+  <div class="sh"><h3>Gestion des affectations</h3><button id="affManagerClose" class="b-navy" type="button">Fermer</button></div>
+  <div class="aff-manager-grid">
+    <section class="aff-manager-panel">
+      <h4>Affectations</h4>
+      <div class="aff-manager-table-wrap"><table class="aff-manager-table"><thead><tr><th>Affectation</th><th>Type</th></tr></thead><tbody id="affManagerRows"></tbody></table></div>
+      <div class="aff-manager-input"><label for="affManagerName">Nom de l'affectation</label><input id="affManagerName" type="text" autocomplete="off" placeholder="Nom de l'affectation"></div>
+      <div class="aff-manager-actions"><button id="affManagerAdd" class="b-grn" type="button">Ajouter</button><button id="affManagerEdit" class="b-navy" type="button">Modifier</button><button id="affManagerDelete" class="b-red" type="button">Supprimer</button></div>
+      <p id="affManagerMessage" class="aff-manager-message">Sélectionnez une affectation.</p>
+    </section>
+    <section class="aff-manager-panel">
+      <h4>Sous-affectations</h4>
+      <div class="aff-manager-table-wrap"><table class="aff-manager-table"><thead><tr><th>Sous-affectation</th></tr></thead><tbody id="subAffManagerRows"></tbody></table></div>
+      <div class="aff-manager-input"><label for="subAffManagerName">Nom de la sous-affectation</label><input id="subAffManagerName" type="text" autocomplete="off" placeholder="Nom de la sous-affectation"></div>
+      <div class="aff-manager-actions"><button id="subAffManagerAdd" class="b-grn" type="button">Ajouter</button><button id="subAffManagerEdit" class="b-navy" type="button">Modifier</button><button id="subAffManagerDelete" class="b-red" type="button">Supprimer</button></div>
+      <p id="subAffManagerMessage" class="aff-manager-message">Sélectionnez une affectation.</p>
+    </section>
+  </div>
+</dialog>
 <dialog id="dlgExit" class="cbpm-dialog"><h2>Modifications non enregistrées</h2><p>Des modifications sont en attente. Voulez-vous les enregistrer avant de quitter l'application ?</p><p class="cbpm-status">« Enregistrer et quitter » transmet les modifications à l'entreprise. « Quitter sans enregistrer » abandonne les modifications en attente.</p><div class="cbpm-actions"><button id="exitSave" class="b-grn" type="button">Enregistrer et quitter</button><button id="exitLocal" class="b-red" type="button">Quitter sans enregistrer</button><button id="exitCancel" class="b-blue" type="button">Continuer</button></div><p id="exitStatus" class="msg" role="status"></p></dialog>
 <dialog id="dlgConflicts" class="cbpm-dialog"><div class="sh"><h3>Résolution des conflits Firebase</h3><button id="conflictClose" class="b-navy" type="button">Fermer</button></div><div id="conflictBody"></div></dialog>
 <dialog id="dlgImport" class="cbpm-dialog"><div class="sh"><h3>Importation Excel</h3><button id="importClose" class="b-navy" type="button">Fermer</button></div><p id="importStatus" class="cbpm-status">Choisissez un classeur Excel (.xlsx). L'analyse est effectuée avant toute modification.</p><div id="importSummary"></div><div class="cbpm-actions"><button id="btnStageImport" class="b-grn" type="button" disabled>Ajouter les nouvelles données</button></div></dialog>
@@ -1560,7 +1601,7 @@ const MODULES = [
       return null;
     },
     filtres:[{t:"dates",k:"date"},{t:"cb",l:"Affectation",k:"aff"},{t:"cb",l:"Mode",k:"mode"}],
-    extra:[{t:"Bon de paiement",f:imprimerBonPaiementWeb},{t:"Gestion des affectations",f:()=>ouvrirSous(cfgAffect)},{t:"Sous-affectations",f:()=>ouvrirSous(cfgSousAff)}]
+    extra:[{t:"Bon de paiement",f:imprimerBonPaiementWeb},{t:"Gestion des affectations",f:ouvrirGestionAffectations}]
   })],
   ["transferts", "Transferts de trésorerie", () => ({
     table:"transfert",titre:"Gestion des transferts de trésorerie",sort:"date",totals:["montant"],
@@ -1977,6 +2018,124 @@ let xlsxModule=null;
 async function getXlsx(){if(xlsxModule)return xlsxModule;const mod=await import("https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs");xlsxModule=mod.default||mod;return xlsxModule;}
 async function exportXlsx(){try{const X=await getXlsx(),wb=X.utils.book_new();for(const table of TABLES){const rows=actifs(table);if(!rows.length)continue;const data=rows.map(r=>{const out={};for(const [k,v] of Object.entries(toLegacyExportRow(table,r)))out[k]=typeof v==="object"?JSON.stringify(v):v;return out;});const ws=X.utils.json_to_sheet(data);X.utils.book_append_sheet(wb,ws,table.slice(0,31));}const bytes=X.write(wb,{bookType:"xlsx",type:"array"});downloadBlob(new Blob([bytes],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}),`CBPManagement_${aujourdhui()}.xlsx`);info("Classeur Excel exporté.");}catch(e){info("Export Excel impossible : "+(e.message||String(e)),true);}}
 async function importXlsxFile(file){try{const X=await getXlsx(),wb=X.read(await file.arrayBuffer(),{type:"array"}),tables={};for(const name of wb.SheetNames){if(!COLLECTIONS.has(name))continue;tables[name]=X.utils.sheet_to_json(wb.Sheets[name],{defval:"",raw:false});}if(!Object.keys(tables).length)throw new Error("Aucune feuille reconnue dans le classeur.");await analyserParsedImport({format:"XLSX",version:1,tables});}catch(e){info("Import Excel impossible : "+(e.message||String(e)),true);}}
+
+// ===== Gestion intégrée Affectations / Sous-affectations (un seul bouton, comme Java) =====
+let affectManagerSelectedId=null, subAffectManagerSelectedId=null;
+function affectManagerType(name){
+  if(norm(name)==="fournisseur")return "Protégée · liée aux fournisseurs";
+  if(norm(name)==="remboursement client")return "Protégée · liée aux clients";
+  if(norm(name)==="charges du personnel")return "Protégée · sous-affectations libres";
+  return "Personnalisée";
+}
+function ouvrirGestionAffectations(){
+  const dlg=$("dlgAffectations");
+  affectManagerSelectedId=null;subAffectManagerSelectedId=null;
+  const $a=id=>$(id);
+  const isSpecial=name=>["Fournisseur","Remboursement client"].some(x=>norm(x)===norm(name));
+  const selectedAffect=()=>affectManagerSelectedId?tous.affect?.get(affectManagerSelectedId)||null:null;
+  const selectedSub=()=>subAffectManagerSelectedId?tous.sousaff?.get(subAffectManagerSelectedId)||null:null;
+  const writable=()=>peutEcrire();
+  const typeOf=name=>affectManagerType(name);
+  const render=()=>{
+    const affRows=actifs("affect").slice().sort((a,b)=>String(a.nom||"").localeCompare(String(b.nom||""),"fr"));
+    if(!affRows.some(x=>x.id===affectManagerSelectedId))affectManagerSelectedId=null;
+    const aff=selectedAffect();
+    if(!aff)subAffectManagerSelectedId=null;
+    const special=!!aff&&isSpecial(aff.nom);
+    const affBody=$a("affManagerRows");
+    affBody.innerHTML=affRows.map(r=>`<tr data-id="${esc(r.id)}" class="${r.id===affectManagerSelectedId?"selected":""}"><td>${esc(r.nom||"")}</td><td>${esc(typeOf(r.nom||""))}</td></tr>`).join("")||'<tr><td colspan="2" class="empty-note">Aucune affectation.</td></tr>';
+    $a("affManagerName").value=aff?.nom||"";
+    $a("affManagerName").disabled=!writable();
+    $a("affManagerAdd").disabled=!writable();
+    $a("affManagerEdit").disabled=!writable()||!aff||PROTECTED_AFFECTATIONS.has(norm(aff.nom));
+    $a("affManagerDelete").disabled=!writable()||!aff||PROTECTED_AFFECTATIONS.has(norm(aff.nom));
+    $a("affManagerMessage").textContent=aff?`Type : ${typeOf(aff.nom||"")}.` : "Sélectionnez une affectation.";
+
+    let childRows=[],message="Sélectionnez une affectation.";
+    if(aff&&norm(aff.nom)==="fournisseur"){
+      childRows=actifs("fournisseur").slice().sort((a,b)=>String(a.nom||"").localeCompare(String(b.nom||""),"fr")).map(x=>({id:x.id,nom:x.nom||""}));
+      message="Sous-affectations automatiques : fournisseurs enregistrés (lecture seule).";
+    }else if(aff&&norm(aff.nom)==="remboursement client"){
+      childRows=actifs("client").slice().sort((a,b)=>String(a.nom||"").localeCompare(String(b.nom||""),"fr")).map(x=>({id:x.id,nom:x.nom||""}));
+      message="Sous-affectations automatiques : clients enregistrés (lecture seule).";
+    }else if(aff){
+      childRows=actifs("sousaff").filter(x=>x.aff===aff.id).slice().sort((a,b)=>String(a.nom||"").localeCompare(String(b.nom||""),"fr"));
+      message="Sous-affectations librement modifiables.";
+    }
+    if(!childRows.some(x=>x.id===subAffectManagerSelectedId))subAffectManagerSelectedId=null;
+    $a("subAffManagerRows").innerHTML=childRows.map(r=>`<tr data-id="${esc(r.id)}" class="${r.id===subAffectManagerSelectedId?"selected":""}"><td>${esc(r.nom||"")}</td></tr>`).join("")||'<tr><td class="empty-note">Aucune sous-affectation.</td></tr>';
+    const canEditChildren=!!aff&&!special&&writable();
+    $a("subAffManagerName").value=(selectedSub()?.nom)||"";
+    $a("subAffManagerName").disabled=!canEditChildren;
+    $a("subAffManagerAdd").disabled=!canEditChildren;
+    $a("subAffManagerEdit").disabled=!canEditChildren||!selectedSub();
+    $a("subAffManagerDelete").disabled=!canEditChildren||!selectedSub();
+    $a("subAffManagerMessage").textContent=message;
+  };
+
+  $a("affManagerRows").onclick=event=>{
+    const row=event.target.closest("tr[data-id]");if(!row)return;
+    affectManagerSelectedId=row.dataset.id;subAffectManagerSelectedId=null;render();
+  };
+  $a("subAffManagerRows").onclick=event=>{
+    const row=event.target.closest("tr[data-id]");if(!row)return;
+    subAffectManagerSelectedId=row.dataset.id;render();
+  };
+  $a("affManagerAdd").onclick=()=>{
+    if(!writable())return;
+    const name=$a("affManagerName").value.trim();
+    if(!name){alert("Saisissez le nom de l'affectation.");return;}
+    if(actifs("affect").some(x=>norm(x.nom)===norm(name))){alert("Cette affectation existe déjà.");return;}
+    try{const id=recordId("affect"),after={nom:name};changeManager.create("affect",id,after);journaliser("affect","Ajout",id,null,after);affectManagerSelectedId=id;subAffectManagerSelectedId=null;render();info("Affectation ajoutée à la copie de travail. Cliquez sur Enregistrer pour la conserver.");}
+    catch(e){alert("Ajout impossible : "+(e.message||e));}
+  };
+  $a("affManagerEdit").onclick=()=>{
+    if(!writable())return;const current=selectedAffect();if(!current)return;
+    if(PROTECTED_AFFECTATIONS.has(norm(current.nom))){alert("Cette affectation est protégée : elle ne peut pas être renommée.");return;}
+    const name=$a("affManagerName").value.trim();if(!name){alert("Saisissez le nom de l'affectation.");return;}
+    if(actifs("affect").some(x=>x.id!==current.id&&norm(x.nom)===norm(name))){alert("Cette affectation existe déjà.");return;}
+    try{const before={...current};changeManager.update("affect",current.id,{nom:name});journaliser("affect","Modification",current.id,before,{...before,nom:name});render();info("Affectation modifiée dans la copie de travail. Cliquez sur Enregistrer pour la conserver.");}
+    catch(e){alert("Modification impossible : "+(e.message||e));}
+  };
+  $a("affManagerDelete").onclick=()=>{
+    if(!writable())return;const current=selectedAffect();if(!current)return;
+    if(PROTECTED_AFFECTATIONS.has(norm(current.nom))){alert("Cette affectation est protégée : elle ne peut pas être supprimée.");return;}
+    const used=actifs("depense").some(x=>x.aff===current.id);
+    const warning=used?" Les dépenses déjà enregistrées conserveront ce libellé comme historique.":"";
+    if(!confirm(`Supprimer l'affectation « ${current.nom} » et ses sous-affectations ?${warning}`))return;
+    try{
+      for(const child of actifs("sousaff").filter(x=>x.aff===current.id)){
+        const before={...child};changeManager.softDelete("sousaff",child.id);journaliser("sousaff","Suppression",child.id,before,null);
+      }
+      const before={...current};changeManager.softDelete("affect",current.id);journaliser("affect","Suppression",current.id,before,null);
+      affectManagerSelectedId=null;subAffectManagerSelectedId=null;render();info("Affectation supprimée de la copie de travail. Cliquez sur Enregistrer pour confirmer.");
+    }catch(e){alert("Suppression impossible : "+(e.message||e));}
+  };
+  $a("subAffManagerAdd").onclick=()=>{
+    if(!writable())return;const aff=selectedAffect();if(!aff||isSpecial(aff.nom))return;
+    const name=$a("subAffManagerName").value.trim();if(!name){alert("Saisissez le nom de la sous-affectation.");return;}
+    if(actifs("sousaff").some(x=>x.aff===aff.id&&norm(x.nom)===norm(name))){alert("Cette sous-affectation existe déjà.");return;}
+    try{const id=recordId("sousaff"),after={aff:aff.id,nom:name};changeManager.create("sousaff",id,after);journaliser("sousaff","Ajout",id,null,after);subAffectManagerSelectedId=id;render();info("Sous-affectation ajoutée à la copie de travail. Cliquez sur Enregistrer pour la conserver.");}
+    catch(e){alert("Ajout impossible : "+(e.message||e));}
+  };
+  $a("subAffManagerEdit").onclick=()=>{
+    if(!writable())return;const aff=selectedAffect(),current=selectedSub();if(!aff||!current||isSpecial(aff.nom))return;
+    const name=$a("subAffManagerName").value.trim();if(!name){alert("Saisissez le nom de la sous-affectation.");return;}
+    if(actifs("sousaff").some(x=>x.id!==current.id&&x.aff===aff.id&&norm(x.nom)===norm(name))){alert("Cette sous-affectation existe déjà.");return;}
+    try{const before={...current};changeManager.update("sousaff",current.id,{nom:name});journaliser("sousaff","Modification",current.id,before,{...before,nom:name});render();info("Sous-affectation modifiée dans la copie de travail. Cliquez sur Enregistrer pour la conserver.");}
+    catch(e){alert("Modification impossible : "+(e.message||e));}
+  };
+  $a("subAffManagerDelete").onclick=()=>{
+    if(!writable())return;const aff=selectedAffect(),current=selectedSub();if(!aff||!current||isSpecial(aff.nom))return;
+    const used=actifs("depense").some(x=>x.sousaff===current.id);
+    const warning=used?" Les anciennes dépenses conserveront ce libellé dans leur historique.":"";
+    if(!confirm(`Supprimer la sous-affectation « ${current.nom} » ?${warning}`))return;
+    try{const before={...current};changeManager.softDelete("sousaff",current.id);journaliser("sousaff","Suppression",current.id,before,null);subAffectManagerSelectedId=null;render();info("Sous-affectation supprimée de la copie de travail. Cliquez sur Enregistrer pour confirmer.");}
+    catch(e){alert("Suppression impossible : "+(e.message||e));}
+  };
+  $a("affManagerClose").onclick=()=>dlg.close();
+  render();dlg.showModal();
+}
 
 function ouvrir(k) {
   document.querySelectorAll("#menu button").forEach((b) => b.classList.toggle("on", b.dataset.k === k));
