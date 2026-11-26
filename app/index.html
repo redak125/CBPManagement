@@ -51,6 +51,22 @@ dialog{border:0;border-radius:10px;padding:14px;width:min(820px,95vw);background
 dialog::backdrop{background:rgba(23,34,45,.6)}
 .sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}.sh h3{margin:0}
 [hidden]{display:none!important}
+.cbpm-savebar{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+#btnSaveAll{background:#157347}
+#btnSaveAll:disabled{opacity:.45;cursor:not-allowed}
+#saveCount{font-size:12px;color:var(--mut)}
+#btnConflicts{background:#9a5b00}
+.cbpm-dialog{max-width:720px;width:min(720px,95vw)}
+.cbpm-dialog h2{margin:0 0 8px;font-size:19px}
+.cbpm-dialog p{line-height:1.5}
+.cbpm-actions{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:14px}
+.cbpm-actions button{min-height:38px}
+.cbpm-option{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:8px 0;border-bottom:1px solid var(--line)}
+.cbpm-option select{padding:6px;border:1px solid var(--line);border-radius:6px;font:inherit}
+.cbpm-conflict{border:1px solid var(--line);border-radius:8px;padding:10px;margin:10px 0;background:#fff}
+.cbpm-status{font-size:12px;color:var(--mut)}
+@media(max-width:760px){.cbpm-savebar{width:100%}.bar{align-items:flex-start}}
+
 @media(max-width:760px){body{grid-template-columns:1fr}aside{padding:8px 0}.logo{padding-bottom:8px}#menu{display:flex;overflow-x:auto}#menu button{width:auto;white-space:nowrap}}
 </style>
 </head>
@@ -58,16 +74,21 @@ dialog::backdrop{background:rgba(23,34,45,.6)}
 <aside><div class="logo"><span class="mark"></span>CBPManagement</div><nav id="menu"></nav></aside>
 <main>
   <div class="bar"><div><strong id="entNom">…</strong><small id="userInfo"></small></div>
-    <div class="bd"><span id="sync" class="p">● …</span><button id="btnOut" class="b-navy" type="button">Déconnexion</button></div></div>
+    <div class="bd"><span id="sync" class="p">● …</span>
+      <div class="cbpm-savebar"><button id="btnSaveAll" type="button" disabled>Enregistrer dans Firebase</button><span id="saveCount">Aucune modification en attente</span><button id="btnConflicts" type="button" hidden>Voir les conflits</button><button id="btnImportCbpm" class="b-blue" type="button">Importer .cbpm</button><input id="inputCbpm" type="file" accept=".cbpm" hidden></div>
+      <button id="btnOut" class="b-navy" type="button">Déconnexion</button></div></div>
   <p id="info">Chargement…</p>
   <div id="vue" hidden></div>
 </main>
 <dialog id="dlgSub"><div class="sh"><h3 id="subTitre"></h3><button id="subFerm" class="b-navy" type="button">Fermer</button></div><div id="subBody"></div></dialog>
+<dialog id="dlgExit" class="cbpm-dialog"><h2>Données non enregistrées</h2><p>Des modifications sont en attente. Voulez-vous les sauvegarder dans Firebase avant de vous déconnecter ?</p><p class="cbpm-status">Les brouillons sont également conservés localement sur cet appareil.</p><div class="cbpm-actions"><button id="exitSave" class="b-grn" type="button">Enregistrer et quitter</button><button id="exitLocal" class="b-navy" type="button">Quitter sans envoyer</button><button id="exitCancel" class="b-blue" type="button">Annuler</button></div><p id="exitStatus" class="msg" role="status"></p></dialog>
+<dialog id="dlgConflicts" class="cbpm-dialog"><div class="sh"><h3>Résolution des conflits Firebase</h3><button id="conflictClose" class="b-navy" type="button">Fermer</button></div><div id="conflictBody"></div></dialog>
+<dialog id="dlgImport" class="cbpm-dialog"><div class="sh"><h3>Importation d'une sauvegarde Java (.cbpm)</h3><button id="importClose" class="b-navy" type="button">Fermer</button></div><p id="importStatus" class="cbpm-status">Choisissez un fichier .cbpm. L'analyse est effectuée en lecture seule.</p><div id="importSummary"></div><div class="cbpm-actions"><button id="btnStageImport" class="b-grn" type="button" disabled>Ajouter les nouvelles données à la copie locale</button></div></dialog>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, doc, getDoc, collection, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getFirestore, doc, getDoc, getDocs, collection, onSnapshot, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 const app = initializeApp({
   apiKey: "AIzaSyAifzXsjpvftlxi3RGAVd0g8zznpzCLAf0", authDomain: "cbpm-8ac0e.firebaseapp.com", projectId: "cbpm-8ac0e",
@@ -110,17 +131,719 @@ function show(f, r) {
   return v == null ? "" : String(v);
 }
 
-// Écriture protégée : refuse si quelqu'un d'autre a modifié l'enregistrement entre-temps
-async function ecrire(table, id, base, fabrique) {
-  await runTransaction(db, async (tx) => {
-    const ref = doc(db, ...chemin(table, id)), s = await tx.get(ref);
-    if ((s.exists() ? s.data().version || 0 : 0) !== base) throw new Error("conflit");
-    tx.set(ref, { ...fabrique(s.exists() ? s.data() : {}), version: base + 1, majPar: user.email, majLe: serverTimestamp() });
-  });
+// ===== Stockage local + moteur de fusion (tout est intégré dans ce fichier) =====
+const DB_NAME = "cbpmanagement-local-drafts";
+const DB_VERSION = 1;
+const STORE_NAME = "drafts";
+
+class DraftStore {
+  open() {
+    return new Promise((resolve, reject) => {
+      if (!globalThis.indexedDB) return reject(new Error("IndexedDB n'est pas disponible dans ce navigateur."));
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = () => { if (!req.result.objectStoreNames.contains(STORE_NAME)) req.result.createObjectStore(STORE_NAME, { keyPath: "key" }); };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error || new Error("Ouverture du stockage local impossible."));
+    });
+  }
+  async readRecord(key) {
+    const d = await this.open();
+    try { return await new Promise((resolve, reject) => { const tx=d.transaction(STORE_NAME,"readonly"), req=tx.objectStore(STORE_NAME).get(key); req.onsuccess=()=>resolve(req.result||{key,changes:[],forms:[]}); req.onerror=()=>reject(req.error); }); }
+    finally { d.close(); }
+  }
+  async read(key) { const r=await this.readRecord(key); return r.changes || []; }
+  async readForms(key) { const r=await this.readRecord(key); return r.forms || []; }
+  async updateRecord(key, patch) {
+    const d=await this.open();
+    try { await new Promise((resolve,reject)=>{ const tx=d.transaction(STORE_NAME,"readwrite"), st=tx.objectStore(STORE_NAME), req=st.get(key);
+      req.onsuccess=()=>st.put({...((req.result)||{key,changes:[],forms:[]}),...patch,key,savedAt:new Date().toISOString()});
+      req.onerror=()=>reject(req.error); tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error||new Error("Écriture locale impossible.")); tx.onabort=()=>reject(tx.error||new Error("Écriture locale annulée.")); }); }
+    finally { d.close(); }
+  }
+  async write(key, changes) { return this.updateRecord(key,{changes}); }
+  async writeForms(key, forms) { return this.updateRecord(key,{forms}); }
+  async remove(key) {
+    const d=await this.open();
+    try { await new Promise((resolve,reject)=>{ const tx=d.transaction(STORE_NAME,"readwrite"); tx.objectStore(STORE_NAME).delete(key); tx.oncomplete=resolve; tx.onerror=()=>reject(tx.error); }); }
+    finally { d.close(); }
+  }
 }
-const erreur = (e) => e.message === "conflit"
-  ? "Cette ligne a été modifiée par un autre utilisateur. Sélectionnez-la de nouveau pour voir la version à jour."
-  : "Opération impossible. Vérifiez votre connexion et vos droits.";
+
+const META_FIELDS = new Set(["id","version","majPar","majLe"]);
+function canonical(value) {
+  if (value === undefined) return {__undefined:true};
+  if (value === null || typeof value !== "object") return value;
+  if (value instanceof Date) return {__date:value.toISOString()};
+  if (Array.isArray(value)) return value.map(canonical);
+  if (typeof value.toMillis === "function") return {__timestamp:value.toMillis()};
+  const out={}; for (const k of Object.keys(value).sort()) out[k]=canonical(value[k]); return out;
+}
+function isDeepEqual(a,b) { return JSON.stringify(canonical(a)) === JSON.stringify(canonical(b)); }
+function cleanFirestoreDocument(data={}) { const out={}; for (const [k,v] of Object.entries(data||{})) if (!META_FIELDS.has(k) && v !== undefined) out[k]=v; return out; }
+function mergeThreeWay(base={},local={},remote={}) {
+  const merged={...remote}, conflicts=[];
+  for (const k of new Set([...Object.keys(base),...Object.keys(local),...Object.keys(remote)])) {
+    if (META_FIELDS.has(k)) continue;
+    const b=Object.prototype.hasOwnProperty.call(base,k)?base[k]:undefined;
+    const l=Object.prototype.hasOwnProperty.call(local,k)?local[k]:undefined;
+    const r=Object.prototype.hasOwnProperty.call(remote,k)?remote[k]:undefined;
+    const lc=!isDeepEqual(l,b), rc=!isDeepEqual(r,b);
+    if (!lc) continue;
+    if (rc && !isDeepEqual(l,r)) { conflicts.push({field:k,base:b,local:l,remote:r}); continue; }
+    if (Object.prototype.hasOwnProperty.call(local,k)) merged[k]=l; else delete merged[k];
+  }
+  return {merged,conflicts};
+}
+const changeKey = (table,id) => `${table}\u0000${id}`;
+const cloneChange = (v) => v == null ? v : JSON.parse(JSON.stringify(v));
+
+class ChangeManager {
+  constructor({store,scopeKey}) { if(!store||!scopeKey) throw new TypeError("store et scopeKey sont obligatoires."); this.store=store; this.scopeKey=scopeKey; this.remote=new Map(); this.changes=new Map(); this.listeners=new Set(); this.persistQueue=Promise.resolve(); this.saving=false; }
+  subscribe(fn) { this.listeners.add(fn); return ()=>this.listeners.delete(fn); }
+  notify() { const s={dirty:this.isDirty(),count:this.pendingCount(),conflicts:this.conflicts()}; for(const fn of this.listeners) { try{fn(s);}catch(e){console.error(e);} } }
+  isDirty(){return this.changes.size>0;}
+  pendingCount(){return this.changes.size;}
+  conflicts(){return [...this.changes.values()].filter(x=>x.conflicts?.length||x.conflictReason);}
+  persist(){const snap=[...this.changes.values()].map(cloneChange);this.persistQueue=this.persistQueue.then(()=>this.store.write(this.scopeKey,snap));return this.persistQueue;}
+  async restoreDraft(){const rows=await this.store.read(this.scopeKey);this.changes.clear();for(const row of rows)this.changes.set(changeKey(row.table,row.id),row);this.notify();return rows.length;}
+  record(table,id){return this.rows(table,{includeDeleted:true}).find(r=>r.id===id)||null;}
+  setRemoteTable(table,docs){
+    const tableMap=new Map(); for(const [id,data] of docs)tableMap.set(id,{id,...data}); this.remote.set(table,tableMap);
+    for(const op of this.changes.values()){
+      if(op.table!==table)continue; const raw=tableMap.get(op.id);
+      if(op.base===null){if(raw){op.conflictReason="Un document distant possède déjà cet identifiant.";op.conflictRemote=cleanFirestoreDocument(raw);}else{op.conflictReason=null;op.conflictRemote=null;}continue;}
+      if(!raw){op.conflictReason="Cet enregistrement a été supprimé à distance.";op.conflictRemote=null;continue;}
+      const remote=cleanFirestoreDocument(raw);
+      if(remote.deleted===true&&op.local?.deleted!==true){op.conflictReason="Cet enregistrement a été supprimé à distance.";op.conflictRemote=remote;continue;}
+      const m=mergeThreeWay(op.base,op.local,remote);
+      if(m.conflicts.length){op.conflicts=m.conflicts;op.conflictRemote=remote;}
+      else{op.base=remote;op.baseVersion=Number(raw.version)||0;op.local=m.merged;op.conflicts=[];op.conflictReason=null;op.conflictRemote=null;}
+    }
+    void this.persist().catch(e=>console.error("Brouillon CBPManagement :",e)); this.notify();
+  }
+  rows(table,{includeDeleted=false}={}){
+    const rows=new Map(this.remote.get(table)||[]);
+    for(const op of this.changes.values())if(op.table===table){if(op.local===null)rows.delete(op.id);else rows.set(op.id,{id:op.id,...op.local,version:op.baseVersion??0,_pending:true,_conflict:Boolean(op.conflicts?.length||op.conflictReason)});}
+    const out=[...rows.values()];return includeDeleted?out:out.filter(r=>!r.deleted);
+  }
+  create(table,id,data){const k=changeKey(table,id);if(this.remote.get(table)?.has(id)||this.changes.has(k))throw new Error("Identifiant déjà utilisé.");this.changes.set(k,{table,id,base:null,baseVersion:null,local:cleanFirestoreDocument(data),conflicts:[],conflictReason:null});void this.persist().catch(console.error);this.notify();}
+  createMany(entries){
+    const seen=new Set();
+    for(const x of entries){const k=changeKey(x.table,x.id);if(seen.has(k)||this.remote.get(x.table)?.has(x.id)||this.changes.has(k))throw new Error(`Identifiant déjà utilisé dans ${x.table} : ${x.id}`);seen.add(k);}
+    for(const x of entries){const k=changeKey(x.table,x.id);this.changes.set(k,{table:x.table,id:x.id,base:null,baseVersion:null,local:cleanFirestoreDocument(x.data),conflicts:[],conflictReason:null});}
+    void this.persist().catch(console.error);this.notify();
+  }
+  update(table,id,patch){
+    const k=changeKey(table,id),old=this.changes.get(k),raw=this.remote.get(table)?.get(id);
+    if(!old&&!raw)throw new Error("Enregistrement introuvable dans la copie de travail.");
+    const base=old?old.base:cleanFirestoreDocument(raw);
+    if(base===null){this.changes.set(k,{...old,local:{...old.local,...cleanFirestoreDocument(patch)}});}
+    else this.changes.set(k,{table,id,base,baseVersion:old?.baseVersion??(Number(raw?.version)||0),local:{...(old?.local??base),...cleanFirestoreDocument(patch)},conflicts:old?.conflicts??[],conflictReason:old?.conflictReason??null,conflictRemote:old?.conflictRemote??null});
+    void this.persist().catch(console.error);this.notify();
+  }
+  softDelete(table,id){
+    const k=changeKey(table,id),old=this.changes.get(k);
+    if(old?.base===null)this.changes.delete(k);
+    else{const raw=this.remote.get(table)?.get(id);if(!old&&!raw)throw new Error("Enregistrement introuvable.");const base=old?.base??cleanFirestoreDocument(raw);this.changes.set(k,{table,id,base,baseVersion:old?.baseVersion??(Number(raw?.version)||0),local:{...(old?.local??base),deleted:true},conflicts:old?.conflicts??[],conflictReason:old?.conflictReason??null,conflictRemote:old?.conflictRemote??null});}
+    void this.persist().catch(console.error);this.notify();
+  }
+  resolveConflict(table,id,choices={}){
+    const k=changeKey(table,id),op=this.changes.get(k);if(!op||!op.conflictRemote)throw new Error("Aucun conflit distant disponible.");
+    const remote=op.conflictRemote,m=mergeThreeWay(op.base??{},op.local??{},remote),local={...m.merged};
+    for(const c of op.conflicts||[]){const choice=choices[c.field];if(choice==="remote"){if(Object.prototype.hasOwnProperty.call(remote,c.field))local[c.field]=remote[c.field];else delete local[c.field];}else if(choice==="local"){if(c.local===undefined)delete local[c.field];else local[c.field]=c.local;}else throw new Error(`Choisissez une valeur pour « ${c.field} ».`);}
+    op.base=remote;op.baseVersion=Number(this.remote.get(table)?.get(id)?.version)||0;op.local=local;op.conflicts=[];op.conflictReason=null;op.conflictRemote=null;this.changes.set(k,op);void this.persist().catch(console.error);this.notify();
+  }
+  resolveStructuralConflict(table,id,choice){const k=changeKey(table,id),op=this.changes.get(k);if(!op?.conflictReason)throw new Error("Aucun conflit structurel à résoudre.");
+    if(choice==="use-remote")this.changes.delete(k);
+    else if(choice==="restore-local"&&op.conflictReason.includes("supprimé à distance")){if(op.conflictRemote?.deleted===true){op.base=op.conflictRemote;op.baseVersion=Number(this.remote.get(table)?.get(id)?.version)||0;op.local={...op.local,deleted:false};}else{op.base=null;op.baseVersion=null;}op.conflicts=[];op.conflictReason=null;op.conflictRemote=null;}
+    else throw new Error("Choix incompatible avec ce conflit.");void this.persist().catch(console.error);this.notify();
+  }
+  async saveAll({db,companyId,userEmail,firestore}){
+    if(this.saving)throw new Error("Une sauvegarde est déjà en cours.");this.saving=true;const summary={saved:0,unchanged:0,conflicts:[],errors:[]};
+    try{
+      for(const [key,current] of [...this.changes.entries()]){
+        if(current.conflicts?.length||current.conflictReason){summary.conflicts.push({table:current.table,id:current.id,fields:(current.conflicts||[]).map(x=>x.field),reason:current.conflictReason||"Conflit de champs."});continue;}
+        const op=cloneChange(current);
+        try{
+          const ref=firestore.doc(db,"entreprises",companyId,op.table,op.id);
+          const result=await firestore.runTransaction(db,async tx=>{
+            const snap=await tx.get(ref), raw=snap.exists()?snap.data():null;
+            if(op.base===null){if(raw)return{status:"conflict",reason:"L'identifiant existe déjà dans Firebase."};const data={...op.local,version:1,majPar:userEmail||"",majLe:firestore.serverTimestamp()};tx.set(ref,data);return{status:"saved",data:{...op.local,version:1,majPar:userEmail||""}};}
+            if(!raw)return{status:"conflict",reason:"L'enregistrement a été supprimé à distance."};
+            const remote=cleanFirestoreDocument(raw);if(remote.deleted===true&&op.local?.deleted!==true)return{status:"conflict",reason:"Cet enregistrement a été supprimé à distance."};
+            const m=mergeThreeWay(op.base,op.local,remote);if(m.conflicts.length)return{status:"conflict",conflicts:m.conflicts};
+            if(isDeepEqual(m.merged,remote))return{status:"unchanged",data:{...remote,version:Number(raw.version)||0}};
+            const version=(Number(raw.version)||0)+1,data={...m.merged,version,majPar:userEmail||"",majLe:firestore.serverTimestamp()};tx.set(ref,data);return{status:"saved",data:{...m.merged,version,majPar:userEmail||""}};
+          });
+          if(result.status==="conflict"){
+            const live=this.changes.get(key);if(live){try{const snap=await firestore.getDoc(ref),raw=snap.exists()?snap.data():null,remote=raw?cleanFirestoreDocument(raw):null;live.conflictRemote=remote;if(raw){this.remote.set(op.table,this.remote.get(op.table)||new Map());this.remote.get(op.table).set(op.id,{id:op.id,...raw});}
+              if(result.reason){live.conflicts=[];live.conflictReason=result.reason;}else if(!remote){live.conflicts=[];live.conflictReason="Cet enregistrement a été supprimé à distance.";}else{const latest=mergeThreeWay(live.base??{},live.local??{},remote);live.conflicts=latest.conflicts;live.conflictReason=null;if(!latest.conflicts.length){live.base=remote;live.baseVersion=Number(raw.version)||0;live.local=latest.merged;live.conflictRemote=null;}}
+            }catch{live.conflicts=result.conflicts||[];live.conflictReason=result.reason||"Conflit distant à vérifier.";}}
+            summary.conflicts.push({table:op.table,id:op.id,fields:(result.conflicts||[]).map(x=>x.field),reason:result.reason||"Conflit de champs."});continue;
+          }
+          this.remote.set(op.table,this.remote.get(op.table)||new Map());this.remote.get(op.table).set(op.id,{id:op.id,...result.data});
+          const live=this.changes.get(key);if(live===current)this.changes.delete(key);else if(live){const committed=cleanFirestoreDocument(result.data),rebased=mergeThreeWay(op.local||{},live.local||{},committed);live.base=committed;live.baseVersion=Number(result.data.version)||0;live.local=rebased.merged;live.conflicts=rebased.conflicts;live.conflictReason=null;live.conflictRemote=rebased.conflicts.length?committed:null;}
+          if(result.status==="saved")summary.saved++;else summary.unchanged++;
+        }catch(e){summary.errors.push({table:op.table,id:op.id,message:e?.message||String(e)});}
+      }
+      await this.persistQueue;await this.persist();this.notify();return summary;
+    }finally{this.saving=false;this.notify();}
+  }
+}
+
+
+
+// ===== Outils de calcul et import CBPM Java embarqués dans index.html =====
+/**
+ * Règles financières recopiées de CBPManagement.java.
+ * Les calculs sont faits en centimes BigInt afin de reproduire BigDecimal
+ * avec RoundingMode.HALF_UP, y compris pour les valeurs négatives.
+ */
+function parseDecimal(value) {
+  if (value === null || value === undefined || value === "") return { coefficient: 0n, scale: 0 };
+  let s = String(value).trim().replace(/[\s\u00a0\u202f]/g, "").replace(",", ".");
+  if (!s) return { coefficient: 0n, scale: 0 };
+  const match = s.match(/^([+-]?)(\d*)(?:\.(\d*))?(?:[eE]([+-]?\d+))?$/);
+  if (!match || (!match[2] && !match[3])) throw new TypeError(`Nombre invalide : ${value}`);
+  const sign = match[1] === "-" ? -1n : 1n;
+  const whole = match[2] || "0";
+  const fraction = match[3] || "";
+  const exponent = Number(match[4] || 0);
+  if (!Number.isSafeInteger(exponent) || Math.abs(exponent) > 100) throw new RangeError("Exposant numérique hors limites.");
+  let digits = `${whole}${fraction}`.replace(/^0+(?=\d)/, "") || "0";
+  let scale = fraction.length - exponent;
+  let coefficient = sign * BigInt(digits);
+  if (scale < 0) { coefficient *= 10n ** BigInt(-scale); scale = 0; }
+  if (scale > 100) throw new RangeError("Précision numérique hors limites.");
+  return { coefficient, scale };
+}
+
+function roundHalfUp(numerator, denominator) {
+  if (denominator <= 0n) throw new RangeError("Dénominateur invalide.");
+  const negative = numerator < 0n;
+  const absolute = negative ? -numerator : numerator;
+  let quotient = absolute / denominator;
+  const remainder = absolute % denominator;
+  if (remainder * 2n >= denominator) quotient += 1n;
+  return negative ? -quotient : quotient;
+}
+
+function toCents(value) {
+  const d = parseDecimal(value);
+  return roundHalfUp(d.coefficient * 100n, 10n ** BigInt(d.scale));
+}
+const fromCents = (cents) => Number(cents) / 100;
+const sumCents = (rows, field) => rows.reduce((sum, row) => sum + toCents(row[field]), 0n);
+const normalizedName = (value) => String(value ?? "").trim().toLocaleLowerCase("fr");
+
+/** Équivalent de CBPManagement.amounts(Rec). */
+function calculateLineAmounts({ qte, pu, tva }, vatRate = 19) {
+  const quantity = parseDecimal(qte);
+  const unitPrice = parseDecimal(pu);
+  const htCents = roundHalfUp(
+    quantity.coefficient * unitPrice.coefficient * 100n,
+    10n ** BigInt(quantity.scale + unitPrice.scale)
+  );
+  const appliesVat = tva === true || tva === 1 || tva === "1";
+  const rate = appliesVat ? parseDecimal(vatRate) : { coefficient: 0n, scale: 0 };
+  const vatCents = roundHalfUp(htCents * rate.coefficient, 100n * (10n ** BigInt(rate.scale)));
+  return {
+    taux: appliesVat ? Number(rate.coefficient) / (10 ** rate.scale) : 0,
+    ht: fromCents(htCents),
+    tvam: fromCents(vatCents),
+    ttc: fromCents(htCents + vatCents)
+  };
+}
+
+/** Net de recette = montant brut - remise. */
+function calculateReceiptNet({ montant, remise }) {
+  return fromCents(toCents(montant) - toCents(remise));
+}
+
+/** Règles exactes de computeClientDebts() dans le code Java. */
+function calculateClientDebts({ clients = [], production = [], receipts = [], expenses = [] }) {
+  const balances = new Map();
+  const ensure = (name) => {
+    const label = String(name ?? "").trim();
+    const key = normalizedName(label);
+    if (!key) return null;
+    if (!balances.has(key)) balances.set(key, { name: label, billedCents: 0n, paidCents: 0n });
+    return balances.get(key);
+  };
+  for (const row of clients) ensure(row.nom);
+  for (const row of production) { const b = ensure(row.client); if (b) b.billedCents += toCents(row.ttc); }
+  for (const row of receipts) { const b = ensure(row.debiteur); if (b) b.paidCents += toCents(row.montant); }
+  for (const row of expenses) {
+    if (row.aff !== "Remboursement client") continue;
+    const b = ensure(row.sousaff);
+    if (b) b.paidCents -= toCents(row.montant);
+  }
+  return [...balances.values()].map((x) => ({
+    name: x.name, billed: fromCents(x.billedCents), paid: fromCents(x.paidCents),
+    balance: fromCents(x.billedCents - x.paidCents)
+  })).sort((a, b) => b.balance - a.balance);
+}
+
+/** Règles exactes de computeSupplierDebts() dans le code Java. */
+function calculateSupplierDebts({ suppliers = [], purchases = [], expenses = [] }) {
+  const balances = new Map();
+  const ensure = (name) => {
+    const label = String(name ?? "").trim();
+    const key = normalizedName(label);
+    if (!key) return null;
+    if (!balances.has(key)) balances.set(key, { name: label, purchasesCents: 0n, paidCents: 0n });
+    return balances.get(key);
+  };
+  for (const row of suppliers) ensure(row.nom);
+  for (const row of purchases) { const b = ensure(row.fournisseur); if (b) b.purchasesCents += toCents(row.ttc); }
+  for (const row of expenses) {
+    if (row.aff !== "Fournisseur") continue;
+    const b = ensure(row.sousaff);
+    if (b) b.paidCents += toCents(row.montant);
+  }
+  return [...balances.values()].map((x) => ({
+    name: x.name, purchases: fromCents(x.purchasesCents), paid: fromCents(x.paidCents),
+    balance: fromCents(x.purchasesCents - x.paidCents)
+  })).sort((a, b) => b.balance - a.balance);
+}
+
+/** Équivalent de DashboardPanel.dispoAt : recettes nettes - dépenses, jusqu'à la date incluse. */
+function calculateAvailability(dateISO, receipts = [], expenses = []) {
+  const income = sumCents(receipts.filter((r) => String(r.date ?? "") <= dateISO), "net");
+  const outgoing = sumCents(expenses.filter((r) => String(r.date ?? "") <= dateISO), "montant");
+  return fromCents(income - outgoing);
+}
+
+function validateTransfer({ source, destination, montant }) {
+  if (!source || !destination) return "Le compte source et le compte destination sont obligatoires.";
+  if (source === destination) return "Les comptes source et destination doivent être différents.";
+  if (toCents(montant) <= 0n) return "Le montant du transfert doit être supérieur à zéro.";
+  return null;
+}
+
+const LIMITS = { bytes: 256 * 1024 * 1024, expandedBytes: 512 * 1024 * 1024, tables: 10000, records: 10000000, fields: 10000, stringBytes: 200 * 1024 * 1024 };
+
+function decodeEscaped(value) {
+  return value.replace(/\\(t|n|r|\\)/g, (_, code) => ({ t: "\t", n: "\n", r: "\r", "\\": "\\" })[code]);
+}
+
+function parseLegacyText(text) {
+  const lines = text.replace(/^\uFEFF/, "").split(/\r?\n/);
+  if (!lines[0]?.startsWith("#CBPM")) throw new Error("En-tête .cbpm texte non reconnu.");
+  const tables = {};
+  for (const line of lines.slice(1)) {
+    if (!line) continue;
+    const parts = line.split("\t");
+    const table = parts.shift();
+    if (!table) continue;
+    const row = {};
+    for (const part of parts) {
+      const i = part.indexOf("=");
+      if (i > 0) row[part.slice(0, i)] = decodeEscaped(part.slice(i + 1));
+    }
+    (tables[table] ??= []).push(row);
+  }
+  return { format: "CBPM-text", version: 1, tables };
+}
+
+async function gunzip(buffer) {
+  if (typeof DecompressionStream !== "function") throw new Error("Ce navigateur ne prend pas en charge la décompression gzip requise pour les fichiers .cbpm.");
+  const stream = new Blob([buffer]).stream().pipeThrough(new DecompressionStream("gzip"));
+  const reader = stream.getReader();
+  const chunks = [];
+  let total = 0;
+  try {
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > LIMITS.expandedBytes) {
+        await reader.cancel();
+        throw new Error("Le fichier .cbpm décompressé dépasse la limite de sécurité.");
+      }
+      chunks.push(value);
+    }
+  } finally { reader.releaseLock(); }
+  const output = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) { output.set(chunk, offset); offset += chunk.byteLength; }
+  return output.buffer;
+}
+
+function parseBinary(buffer) {
+  const view = new DataView(buffer);
+  let offset = 0;
+  const need = (count) => {
+    if (!Number.isSafeInteger(count) || count < 0 || offset + count > view.byteLength) throw new Error("Fichier .cbpm tronqué ou corrompu.");
+  };
+  const readInt = () => { need(4); const value = view.getInt32(offset, false); offset += 4; return value; };
+  const readString = () => {
+    const length = readInt();
+    if (length < 0 || length > LIMITS.stringBytes) throw new Error(`Longueur de chaîne invalide : ${length}.`);
+    need(length);
+    const bytes = new Uint8Array(buffer, offset, length);
+    offset += length;
+    return new TextDecoder("utf-8", { fatal: false }).decode(bytes);
+  };
+
+  need(5);
+  const magic = String.fromCharCode(view.getUint8(0), view.getUint8(1), view.getUint8(2), view.getUint8(3));
+  offset = 4;
+  if (magic !== "CBPM") throw new Error("Signature binaire CBPM invalide.");
+  const version = view.getUint8(offset++);
+  if (version !== 2) throw new Error(`Version .cbpm non prise en charge : ${version}. La version attendue est 2.`);
+  const tableCount = readInt();
+  if (tableCount < 0 || tableCount > LIMITS.tables) throw new Error("Nombre de tables invalide.");
+
+  const tables = {};
+  for (let t = 0; t < tableCount; t++) {
+    const name = readString();
+    if (!name || Object.prototype.hasOwnProperty.call(tables, name)) throw new Error("Nom de table vide ou dupliqué dans le fichier .cbpm.");
+    const recordCount = readInt();
+    if (recordCount < 0 || recordCount > LIMITS.records) throw new Error(`Nombre d'enregistrements invalide dans ${name}.`);
+    const rows = [];
+    for (let r = 0; r < recordCount; r++) {
+      const fieldCount = readInt();
+      if (fieldCount < 0 || fieldCount > LIMITS.fields) throw new Error(`Nombre de champs invalide dans ${name}.`);
+      const row = {};
+      for (let f = 0; f < fieldCount; f++) {
+        const key = readString();
+        if (!key || new TextEncoder().encode(key).byteLength > 4096 || Object.prototype.hasOwnProperty.call(row, key)) {
+          throw new Error(`Clé de champ vide, trop longue ou dupliquée dans ${name}.`);
+        }
+        row[key] = readString();
+      }
+      rows.push(row);
+    }
+    tables[name] = rows;
+  }
+  if (offset !== view.byteLength) throw new Error("Le fichier contient des données supplémentaires non reconnues.");
+  return { format: "CBPM-binary", version, tables };
+}
+
+async function readLegacyCbpm(file) {
+  if (!(file instanceof Blob)) throw new TypeError("Un fichier .cbpm est attendu.");
+  if (file.size <= 0 || file.size > LIMITS.bytes) throw new Error("Taille du fichier .cbpm invalide ou supérieure à la limite d'importation.");
+  const raw = await file.arrayBuffer();
+  const bytes = new Uint8Array(raw, 0, Math.min(4, raw.byteLength));
+  if (bytes[0] === 0x1f && bytes[1] === 0x8b) {
+    const expanded = await gunzip(raw);
+    return parseBinary(expanded);
+  }
+  return parseLegacyText(new TextDecoder("utf-8").decode(raw));
+}
+
+const norm = (value) => String(value ?? "").trim().normalize("NFKC").toLocaleLowerCase("fr");
+const SEP = "\u001f";
+
+const simple = (table, field = "nom", optional = false) => ({
+  table,
+  key: (record) => norm(record[field]),
+  valueKey: (value) => norm(value),
+  optional
+});
+
+/** Relations Java exprimées par des libellés, alors que le Web cible utilise des IDs Firestore. */
+const LEGACY_REFERENCE_RULES = {
+  appro: {
+    fournisseur: simple("fournisseur"),
+    produit: {
+      table: "prod_appro",
+      key: (record) => `${norm(record.nature)}${SEP}${norm(record.nom)}`,
+      valueKey: (value, sourceRow) => `${norm(sourceRow.nature)}${SEP}${norm(value)}`
+    },
+    silo: simple("silo", "nom", true)
+  },
+  prod: {
+    client: simple("client"),
+    produit: {
+      table: "prod_fini",
+      key: (record) => `${norm(record.nature)}${SEP}${norm(record.nom)}`,
+      valueKey: (value, sourceRow) => `${norm(sourceRow.nature === "Production" ? "Produit" : "Service")}${SEP}${norm(value)}`
+    },
+    silo: simple("silo", "nom", true),
+    camion: simple("materiel", "immat", true),
+    chauffeur: {
+      table: "personnel",
+      key: (record) => norm(`${record.nom ?? ""} ${record.prenom ?? ""}`),
+      valueKey: (value) => norm(value),
+      optional: true
+    }
+  },
+  recette: { debiteur: simple("client") },
+  facture: { client: simple("client") },
+  depense: {
+    aff: simple("affect"),
+    sousaff: {
+      table: "sousaff",
+      key: (record) => `${norm(record.aff)}${SEP}${norm(record.nom)}`,
+      valueKey: (value, sourceRow) => `${norm(sourceRow.aff)}${SEP}${norm(value)}`,
+      optional: true
+    },
+    benef: {
+      table: "personnel",
+      key: (record) => norm(`${record.nom ?? ""} ${record.prenom ?? ""}`),
+      valueKey: (value) => norm(value),
+      onlyWhen: (sourceRow) => sourceRow.aff === "Charges du personnel",
+      optional: true
+    }
+  }
+};
+
+function rulesForTargetTable(table) {
+  const matches = Object.values(LEGACY_REFERENCE_RULES).flatMap((rules) => Object.values(rules))
+    .filter((rule) => rule.table === table);
+  return matches.length ? matches : [];
+}
+
+function makeIndex(table, existingByTable, sourceItems) {
+  const byKey = new Map();
+  const rules = rulesForTargetTable(table);
+  const add = (id, row) => {
+    if (!id) return;
+    let indexedRow = row;
+    if (table === "sousaff") {
+      const sourceAff = row.aff;
+      const remoteAff = existingByTable.get("affect")?.get(sourceAff)?.nom;
+      const plannedAff = sourceItems.find((item) => item.table === "affect" && item.id === sourceAff)?.source?.nom;
+      const affName = remoteAff ?? plannedAff;
+      if (affName) indexedRow = { ...row, aff: affName };
+    }
+    for (const rule of rules) {
+      const key = rule.key(indexedRow);
+      if (!key || key === SEP) continue;
+      const list = byKey.get(key) ?? [];
+      if (!list.some((item) => item.id === id)) list.push({ id, row });
+      byKey.set(key, list);
+    }
+  };
+  for (const [id, row] of existingByTable.get(table)?.entries() ?? []) add(id, row);
+  for (const item of sourceItems.filter((x) => x.table === table && x.id && x.source)) add(item.id, item.source);
+  // Un doublon identifié dans le fichier source rend lui aussi la référence ambiguë.
+  for (const item of sourceItems.filter((x) => x.table === table && x.action === "duplicate-in-source" && x.source)) {
+    const rule = rules[0];
+    if (!rule) continue;
+    const key = rule.key(item.source);
+    const list = byKey.get(key) ?? [];
+    list.push({ id: `source-duplicate-${item.sourceIndex}`, row: item.source });
+    byKey.set(key, list);
+  }
+  return byKey;
+}
+
+/** Crée les index à partir des données déjà présentes et de toutes les lignes du plan. */
+function buildLegacyReferenceIndexes(_parsed, existingByTable = new Map(), planItems = []) {
+  const names = new Set(Object.values(LEGACY_REFERENCE_RULES).flatMap((rules) => Object.values(rules).map((rule) => rule.table)));
+  return new Map([...names].map((table) => [table, makeIndex(table, existingByTable, planItems)]));
+}
+
+/**
+ * Convertit les références exactes. Toute absence ou ambiguïté est renvoyée pour revue.
+ * Les noms ne sont jamais rapprochés par simple ressemblance ni par ordre de liste.
+ */
+function mapLegacyReferences(table, row, indexes) {
+  const out = { ...row };
+  const originalRow = { ...row };
+  const review = [];
+  const rules = LEGACY_REFERENCE_RULES[table] ?? {};
+  for (const [field, declaredRule] of Object.entries(rules)) {
+    let rule = declaredRule;
+    if (table === "depense" && field === "sousaff") {
+      if (originalRow.aff === "Fournisseur") rule = simple("fournisseur");
+      else if (originalRow.aff === "Remboursement client") rule = simple("client");
+    }
+    if (rule.onlyWhen && !rule.onlyWhen(originalRow)) continue;
+    const label = out[field];
+    if (label === null || label === undefined || String(label).trim() === "") continue;
+    const key = rule.valueKey(label, originalRow);
+    const candidates = indexes.get(rule.table)?.get(key) ?? [];
+    if (candidates.length === 1) out[field] = candidates[0].id;
+    else {
+      review.push({ table, field, value: label, targetTable: rule.table,
+        status: candidates.length ? "ambiguous" : rule.optional ? "optional-unmatched" : "unmatched",
+        candidateIds: candidates.map((x) => x.id) });
+    }
+  }
+  return { row: out, review };
+}
+
+const COLLECTIONS = new Set([
+  "client", "fournisseur", "appro", "prod", "recette", "depense", "transfert", "personnel", "materiel",
+  "prod_appro", "silo", "prod_fini", "affect", "sousaff", "facture", "regstock", "journal", "app_meta", "param"
+]);
+const NUMBER_FIELDS = new Set(["qte", "pu", "taux", "ht", "tvam", "ttc", "dosage", "montant", "remise", "net", "marge", "theorique", "reel", "ecart"]);
+const BOOLEAN_FIELDS = new Set(["tva", "active", "actif", "deleted"]);
+const UNIQUE_FIELDS = {
+  client: ["nom"], fournisseur: ["nom"], silo: ["nom"], affect: ["nom"],
+  materiel: ["immat"], personnel: ["nom", "prenom"], prod_appro: ["nature", "nom"], prod_fini: ["nature", "nom"]
+};
+
+const normalizeText = (v) => String(v ?? "").trim().normalize("NFKC").toLocaleLowerCase("fr");
+function normalizeValue(key, value) {
+  if (NUMBER_FIELDS.has(key) && value !== "") {
+    const n = Number(String(value).replace(/\s/g, "").replace(",", "."));
+    return Number.isFinite(n) ? n : value;
+  }
+  if (BOOLEAN_FIELDS.has(key)) {
+    if (value === true || value === 1 || value === "1" || value === "true") return true;
+    if (value === false || value === 0 || value === "0" || value === "false") return false;
+    return value; // ne pas convertir arbitrairement « Oui », « Non », etc.
+  }
+  return value;
+}
+function normalizeRow(row) {
+  const out = {};
+  for (const [key, value] of Object.entries(row ?? {})) out[key] = normalizeValue(key, value);
+  return out;
+}
+function uniqueKey(table, row) {
+  const fields = UNIQUE_FIELDS[table];
+  if (!fields || fields.some((f) => !String(row[f] ?? "").trim())) return null;
+  return fields.map((f) => normalizeText(row[f])).join("\u001f");
+}
+async function sha256(text) {
+  const bytes = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return [...new Uint8Array(digest)].map((x) => x.toString(16).padStart(2, "0")).join("");
+}
+
+/**
+ * Produit un plan de migration en lecture seule. Aucune écriture Firestore n'est faite ici.
+ * existingByTable = Map(collection -> Map(docId -> Firestore data)).
+ */
+async function buildLegacyMigrationPlan(parsed, existingByTable = new Map()) {
+  const sourceHash = await sha256(JSON.stringify(parsed.tables));
+  const sourceTables = Object.keys(parsed.tables ?? {});
+  const warnings = [];
+  const items = [];
+
+  for (const table of sourceTables) {
+    if (!COLLECTIONS.has(table)) {
+      warnings.push(`Table ignorée car non reconnue par le schéma métier : ${table}`);
+      continue;
+    }
+    if (table === "param") {
+      warnings.push("Les paramètres Java sont exclus du .cbpm récent et stockés dans les préférences locales. Une fiche paramétrage devra être vérifiée séparément.");
+      continue;
+    }
+    const seenSourceKeys = new Map();
+    for (let index = 0; index < parsed.tables[table].length; index++) {
+      const row = normalizeRow(parsed.tables[table][index]);
+      const unique = uniqueKey(table, row);
+      if (unique && seenSourceKeys.has(unique)) {
+        items.push({ table, sourceIndex: index, id: null, action: "duplicate-in-source", source: row, duplicateOf: seenSourceKeys.get(unique) });
+        continue;
+      }
+      if (unique) seenSourceKeys.set(unique, index);
+      const docs = [...(existingByTable.get(table)?.entries() ?? [])];
+      const matches = unique ? docs.filter(([, data]) => uniqueKey(table, cleanFirestoreDocument(data)) === unique) : [];
+      const identity = `${table}\n${JSON.stringify(row, Object.keys(row).sort())}\n${index}`;
+      const generatedId = `legacy_${(await sha256(identity)).slice(0, 24)}`;
+
+      if (matches.length === 0 && existingByTable.get(table)?.has(generatedId)) {
+        const existingData = existingByTable.get(table).get(generatedId);
+        const remote = cleanFirestoreDocument(existingData);
+        const same = isDeepEqual(row, remote);
+        items.push({ table, sourceIndex: index, id: generatedId, action: same ? "already-present" : "review-existing",
+          source: row, remote, differences: Object.keys({ ...row, ...remote }).filter((k) => !isDeepEqual(row[k], remote[k])) });
+      } else if (matches.length === 1) {
+        const [existingId, existingData] = matches[0];
+        const remote = cleanFirestoreDocument(existingData);
+        const same = isDeepEqual(row, remote);
+        items.push({ table, sourceIndex: index, id: existingId, action: same ? "already-present" : "review-existing",
+          source: row, remote, differences: Object.keys({ ...row, ...remote }).filter((k) => !isDeepEqual(row[k], remote[k])) });
+      } else if (matches.length > 1) {
+        items.push({ table, sourceIndex: index, id: null, action: "ambiguous-match", source: row,
+          candidates: matches.map(([id]) => id) });
+      } else {
+        items.push({ table, sourceIndex: index, id: generatedId, action: "create", source: row });
+      }
+    }
+  }
+
+  const summary = items.reduce((acc, item) => { acc[item.action] = (acc[item.action] ?? 0) + 1; return acc; }, {});
+  return { sourceHash, markerId: `legacy_${sourceHash.slice(0, 24)}`, format: parsed.format, version: parsed.version, summary, warnings, items };
+}
+
+/** Ajoute au plan la conversion des relations texte Java vers les IDs Web. */
+function mapMigrationPlanReferences(plan, parsed, existingByTable = new Map()) {
+  const indexes = buildLegacyReferenceIndexes(parsed, existingByTable, plan.items);
+  const items = plan.items.map((item) => {
+    if (!item.source || !item.id || !["create", "review-existing", "already-present"].includes(item.action)) return item;
+    const mapped = mapLegacyReferences(item.table, item.source, indexes);
+    const next = { ...item, sourceMapped: mapped.row, referenceReview: mapped.review };
+    if (mapped.review.length && item.action === "create") next.action = "review-references";
+    if (item.remote) {
+      const same = isDeepEqual(mapped.row, item.remote);
+      next.action = same ? "already-present" : "review-existing";
+      next.differences = Object.keys({ ...mapped.row, ...item.remote }).filter((key) => !isDeepEqual(mapped.row[key], item.remote[key]));
+    }
+    return next;
+  });
+  const summary = items.reduce((acc, item) => { acc[item.action] = (acc[item.action] ?? 0) + 1; return acc; }, {});
+  return { ...plan, items, summary };
+}
+
+function toFirestoreMigrationDocument(item) {
+  if (item.action !== "create" || !item.id) throw new Error("Seules les nouvelles lignes confirmées peuvent être converties en documents.");
+  if (item.referenceReview?.length) throw new Error("Des références liées doivent être résolues manuellement avant l'importation.");
+  return { ...(item.sourceMapped ?? item.source), origineMigration: "CBPM-Java", migrationId: item.id };
+}
+
+let draftStore=null, changeManager=null, draftScopeKey=null;
+let formDrafts=new Map(), formPersistTimer=null;
+function persistFormDrafts(){if(!draftStore||!draftScopeKey)return Promise.resolve();return draftStore.writeForms(draftScopeKey,[...formDrafts.values()]);}
+function removeFormDraft(table){formDrafts.delete(table);return persistFormDrafts().catch(e=>console.error("Brouillon de formulaire :",e));}
+function scheduleFormDraft(view){if(!draftStore||!draftScopeKey)return;const row={table:view.cfg.table,selectedId:view.sel?.id||null,single:!!view.cfg.single,values:view.read(),savedAt:new Date().toISOString()};formDrafts.set(view.cfg.table,row);clearTimeout(formPersistTimer);formPersistTimer=setTimeout(()=>persistFormDrafts().catch(e=>console.error("Brouillon de formulaire :",e)),150);updateSaveUI();}
+function applyFormDraft(view){const d=formDrafts.get(view.cfg.table);if(!d)return;view.loading++;try{view.sel=d.selectedId?changeManager?.record(view.cfg.table,d.selectedId)||null:null;for(const f of view.fields)if(Object.prototype.hasOwnProperty.call(d.values||{},f.k))view.set(f.k,d.values[f.k]);for(const f of view.fields)view.dep(f.k,false);view.dirty=true;}finally{view.loading--;}view.markSel?.();view.msg("Brouillon local restauré. Il n'a pas encore été envoyé à Firebase.");}
+function hasFormChanges(){return formDrafts.size>0||[...vues].some(v=>v.dirty);}
+function configForTable(table){
+  const item=MODULES.find(x=>x[2]().table===table);
+  if(item)return item[2]();
+  if(table==="prod_appro")return cfgProduitsAppro();
+  if(table==="silo")return cfgSilos();
+  return null;
+}
+function validateStagedRow(cfg,row,selectedId){
+  for(const f of cfg.fields){const value=row[f.k];if(f.req&&(value===""||value==null))return `Le champ « ${f.l} » est obligatoire.`;if(f.t==="nm"&&value!=null&&(!Number.isFinite(value)||value<0))return `Valeur numérique invalide pour « ${f.l} ».`;}
+  const unique=cfg.unique, value=unique?String(row[unique]||"").toLowerCase():"";
+  if(value&&actifs(cfg.table).some(x=>x.id!==selectedId&&String(x[unique]||"").toLowerCase()===value))return `« ${row[unique]} » existe déjà.`;
+  return null;
+}
+async function stageDirtyForms(){
+  // Inclut aussi les formulaires dont l'écran a été quitté : leurs valeurs sont déjà dans IndexedDB.
+  for(const v of vues){if(v.dirty&&!formDrafts.has(v.cfg.table)){formDrafts.set(v.cfg.table,{table:v.cfg.table,selectedId:v.sel?.id||null,single:!!v.cfg.single,values:v.read(),savedAt:new Date().toISOString()});}}
+  for(const draft of [...formDrafts.values()]){
+    const cfg=configForTable(draft.table);if(!cfg)throw new Error(`Configuration introuvable pour le formulaire ${draft.table}.`);
+    const row={...(draft.values||{})},selectedId=draft.selectedId||null;
+    const hasValues=Object.values(row).some(x=>x!==null&&x!==undefined&&x!==""&&x!==false);
+    if(!selectedId&&!cfg.single&&!hasValues){formDrafts.delete(draft.table);continue;}
+    if(cfg.beforeSave)cfg.beforeSave(row);
+    const error=validateStagedRow(cfg,row,selectedId);if(error)throw new Error(`${cfg.titre} : ${error}`);
+    if(cfg.single){const current=changeManager.record(draft.table,"general");if(current)changeManager.update(draft.table,"general",row);else changeManager.create(draft.table,"general",row);}
+    else if(selectedId){if(!changeManager.record(draft.table,selectedId))throw new Error(`${cfg.titre} : l'enregistrement sélectionné n'existe plus dans la copie de travail.`);changeManager.update(draft.table,selectedId,row);}
+    else changeManager.create(draft.table,doc(collection(db,...chemin(draft.table))).id,row);
+    formDrafts.delete(draft.table);
+    const view=[...vues].find(v=>v.cfg.table===draft.table);if(view)view.dirty=false;
+  }
+  await persistFormDrafts();
+}
+function refreshEffectiveTables(){
+  if(!changeManager)return;
+  for(const t of TABLES){const rows=changeManager.rows(t,{includeDeleted:true});tous[t]=new Map(rows.map(r=>[r.id,r]));}
+  vues.forEach(v=>{const draft=formDrafts.get(v.cfg.table);if(draft?.selectedId)v.sel=changeManager.record(v.cfg.table,draft.selectedId);v.reload();});
+}
+function updateSaveUI(state){
+  if(!changeManager)return;
+  const count=changeManager.pendingCount(),forms=formDrafts.size||[...vues].filter(v=>v.dirty).length,dirty=count>0||forms>0;
+  const b=$("btnSaveAll");if(b)b.disabled=!peutEcrire()||!dirty||changeManager.saving;
+  const c=$("saveCount");if(c)c.textContent=dirty?`${count} opération(s) en attente${forms?` · ${forms} formulaire(s) modifié(s)`:""}`:"Aucune modification en attente";
+  const cb=$("btnConflicts");if(cb){const n=changeManager.conflicts().length;cb.hidden=!n;cb.textContent=`Voir les conflits (${n})`;}
+  if(state?.dirty)synchro("p","Modifications locales non envoyées");else if(!dirty)synchro("","Synchronisé");
+}
+function saveAllToFirebase(){return changeManager.saveAll({db,companyId:ent.id,userEmail:user?.email||"",firestore:{doc,runTransaction,serverTimestamp,getDoc}});}
+
+
 
 // ===== Panneau de gestion : fiche en haut, boutons, filtres, tableau, totaux (comme l'application Java) =====
 let uid = 0;
@@ -162,17 +885,17 @@ class Crud {
     this.fields.forEach((f) => this.refreshOptions(f.k));
     // Boutons
     const b = this.q(".btns"), bt = (t, cls, fn) => { const x = el("button", cls); x.type = "button"; x.textContent = t; x.onclick = fn; b.append(x); return x; };
-    if (c.single) { if (peutEcrire()) bt("Enregistrer", "b-teal", () => this.saveSingle()); }
+    if (c.single) { if (peutEcrire()) bt("Appliquer localement", "b-teal", () => this.saveSingle()); }
     else {
-      if (peutEcrire()) { bt("Nouveau", "b-grn", () => { this.clearForm(); this.msg(""); }); bt("Enregistrer", "b-teal", () => this.add());
-        bt("Modifier", "b-blue", () => this.update()); bt("Supprimer", "b-red", () => this.remove()); }
+      if (peutEcrire()) { bt("Nouveau", "b-grn", () => { this.clearForm(); this.msg(""); }); bt("Ajouter localement", "b-teal", () => this.add());
+        bt("Modifier localement", "b-blue", () => this.update()); bt("Supprimer localement", "b-red", () => this.remove()); }
       bt("Imprimer la liste", "b-navy", () => this.printList());
       (c.extra || []).forEach((e) => bt(e.t, "b-navy", e.f));
       this.buildFilters();
       this.q("thead").addEventListener("click", (e) => { const th = e.target.closest("th"); if (!th) return; const k = th.dataset.k; this.sort = { k, d: this.sort.k === k ? -this.sort.d : 1 }; this.refresh(); });
     }
     if (!peutEcrire()) Object.values(this.comp).forEach((x) => { x.disabled = true; });
-    this.clearForm(); this.reload();
+    this.clearForm(true); this.reload();
   }
 
   // ---- Champs de la fiche ----
@@ -203,19 +926,23 @@ class Crud {
   }
   enable(k, on) { this.comp[k].disabled = !on || !peutEcrire(); }
   dep(k, user) { if (this.cfg.dependent) this.cfg.dependent(this, k, user); }
-  chg(k) { if (this.loading) return; this.dirty = true; this.dep(k, true); }
-  clearForm() {
+  chg(k) { if (this.loading) return; this.dirty = true; this.dep(k, true); scheduleFormDraft(this); }
+  clearForm(preserveDraft = false) {
     this.loading++;
     try {
       this.fields.forEach((f) => { let d = f.def; if (d === "@today") d = aujourdhui(); else if (d === "@now") d = maintenant(); this.set(f.k, d ?? (f.t === "ck" ? false : "")); });
       this.fields.forEach((f) => this.dep(f.k, false));
     } finally { this.loading--; }
     this.sel = null; this.dirty = false; this.markSel();
+    if (!preserveDraft) removeFormDraft(this.cfg.table);
+    updateSaveUI();
   }
   loadRec(r) {
     this.loading++;
     try { this.fields.forEach((f) => this.set(f.k, r[f.k])); this.fields.forEach((f) => this.dep(f.k, false)); } finally { this.loading--; }
     this.dirty = false;
+    removeFormDraft(this.cfg.table);
+    updateSaveUI();
   }
   read() { const r = {}; this.fields.forEach((f) => { r[f.k] = this.get(f); }); return r; }
   check(r, ed) {
@@ -231,8 +958,15 @@ class Crud {
 
   // ---- Enregistrer / Modifier / Supprimer ----
   async enregistrer(id, base, r, apres) {
-    try { await ecrire(this.cfg.table, id, base, () => r); this.msg("Enregistré.", true); if (apres) apres(); }
-    catch (e) { this.msg(erreur(e)); }
+    try {
+      const current = changeManager.record(this.cfg.table, id);
+      if (current) changeManager.update(this.cfg.table, id, r);
+      else changeManager.create(this.cfg.table, id, r);
+      this.msg("Modification conservée localement. Cliquez sur « Enregistrer dans Firebase » pour la transmettre.", true);
+      this.dirty=false;removeFormDraft(this.cfg.table);
+      if (apres) apres();
+      updateSaveUI();
+    } catch (e) { this.msg(e.message || "Impossible de conserver la modification localement."); }
   }
   async add() {
     const r = this.read(), e = this.check(r, null); if (e) return this.msg(e);
@@ -247,10 +981,10 @@ class Crud {
   }
   async remove() {
     if (!this.sel) return this.msg("Sélectionnez d’abord une ligne dans le tableau.");
-    if (!confirm("Supprimer définitivement la ligne sélectionnée ?")) return;
+    if (!confirm("Retirer cette ligne de la copie de travail ? La suppression sera transmise à Firebase uniquement après l'enregistrement global.")) return;
     const m = this.cfg.deleteCheck && this.cfg.deleteCheck(this.sel); if (m) return this.msg(m);
-    try { await ecrire(this.cfg.table, this.sel.id, this.sel.version || 0, (a) => ({ ...a, deleted: true })); this.clearForm(); this.msg("Ligne supprimée.", true); }
-    catch (e) { this.msg(erreur(e)); }
+    try { changeManager.softDelete(this.cfg.table, this.sel.id); this.clearForm(); this.msg("Suppression mise en attente localement.", true); }
+    catch (e) { this.msg(e.message || "Suppression locale impossible."); }
   }
   async saveSingle() {   // fiche unique (Paramètres)
     const r = this.read(), e = this.check(r, null); if (e) return this.msg(e);
@@ -310,7 +1044,10 @@ class Crud {
     this.q("tbody").replaceChildren(...view.map((r) => {
       const t = el("tr"); t.dataset.id = r.id;
       cols.forEach((f) => { const td = el("td", f.t === "nm" || f.t === "ro" ? "n" : ""); td.textContent = show(f, r); t.append(td); });
-      t.onclick = () => { this.sel = r; this.loadRec(r); this.markSel(); this.msg(""); };
+      t.onclick = () => {
+        if (this.dirty && !confirm("Abandonner les modifications du formulaire actuellement ouvert pour sélectionner cette ligne ? Le brouillon local sera supprimé.")) return;
+        this.sel = r; this.loadRec(r); this.markSel(); this.msg("");
+      };
       return t;
     }));
     this.markSel();
@@ -330,7 +1067,7 @@ class Crud {
 // ===== Définition des modules (mêmes champs que l'application Java) =====
 const fParty = (t) => [F("nom", "Nom / Raison sociale", "tx", { req: 1 }), F("adr", "Adresse", "tx"), F("tel", "Téléphone", "tx"), F("mob", "Mobile", "tx"), F("email", "E-mail", "tx"),
   F("rc", "RC", "tx"), F("nif", "NIF", "tx"), F("nis", "NIS", "tx"), F("rib", "RIB", "tx"), F("art", "N° article d’imposition", "tx"), F("cat", "Catégorie", "ce", { src: distinct(t, "cat") })];
-const montants = (r) => { const ht = r2(nb(r.qte) * nb(r.pu)), taux = r.tva ? tauxTVA() : 0, tvam = r2(ht * taux / 100); return { taux, ht, tvam, ttc: r2(ht + tvam) }; };
+const montants = (r) => calculateLineAmounts(r, tauxTVA());
 
 const cfgProduitsAppro = () => ({ table: "prod_appro", titre: "Gestion des produits d’approvisionnement", unique: "nom", sort: "nom", filtres: [{ t: "cb", l: "Nature", k: "nature" }],
   fields: [F("nature", "Nature", "cb", { req: 1, opts: [MP, SERV], def: MP }), F("nom", "Nom du produit", "tx", { req: 1 })],
@@ -375,44 +1112,164 @@ function ouvrir(k) {
   if (vueCourante) vueCourante.destroy();
   const m = MODULES.find((x) => x[0] === k); $("vue").replaceChildren(); $("vue").hidden = false; info("");
   vueCourante = new Crud($("vue"), m[2]());
+  applyFormDraft(vueCourante);
+  updateSaveUI();
 }
 function ouvrirSous(fabrique) {
   if (sousVue) sousVue.destroy();
-  const cfg = fabrique(); $("subTitre").textContent = cfg.titre; $("subBody").replaceChildren(); sousVue = new Crud($("subBody"), cfg); $("dlgSub").showModal();
+  const cfg = fabrique(); $("subTitre").textContent = cfg.titre; $("subBody").replaceChildren(); sousVue = new Crud($("subBody"), cfg); applyFormDraft(sousVue); $("dlgSub").showModal();
 }
 $("subFerm").onclick = () => $("dlgSub").close();
 $("dlgSub").addEventListener("close", () => { if (sousVue) { sousVue.destroy(); sousVue = null; } if (vueCourante) vueCourante.reload(); });
-$("btnOut").onclick = () => signOut(auth);
-window.addEventListener("offline", () => synchro("e", "Hors ligne"));
-window.addEventListener("online", () => synchro("", "Synchronisé"));
 
-// ===== Démarrage : compte -> entreprise -> synchronisation en temps réel =====
-const TABLES = ["client", "fournisseur", "appro", "prod_appro", "silo", "personnel", "materiel", "parametres"];
-function demarrerSynchro() {
-  TABLES.forEach((t) => {
-    tous[t] = new Map();
-    onSnapshot(collection(db, "entreprises", ent.id, t), (s) => {
-      tous[t] = new Map(s.docs.map((d) => [d.id, { id: d.id, ...d.data() }]));
-      synchro(s.metadata.hasPendingWrites ? "p" : "", s.metadata.hasPendingWrites ? "Envoi…" : "Synchronisé");
-      vues.forEach((v) => v.reload());
-    }, () => synchro("e", "Erreur de synchronisation"));
+let allowUnload=false;
+async function terminerSession(){try{allowUnload=true;await signOut(auth);}catch(e){allowUnload=false;info("Déconnexion impossible : "+(e.message||e),true);}}
+function ouvrirConflits(){
+  const dlg=$("dlgConflicts");if(dlg.open)dlg.close();
+  const body=$("conflictBody");body.replaceChildren();
+  const conflicts=changeManager?.conflicts()||[];
+  if(!conflicts.length){body.textContent="Aucun conflit à résoudre.";$("dlgConflicts").showModal();return;}
+  for(const op of conflicts){
+    const card=el("section","cbpm-conflict"),title=el("h4"),desc=el("p");title.textContent=`${op.table} — ${op.id}`;card.append(title);
+    if(op.conflictReason){desc.textContent=op.conflictReason;card.append(desc);const actions=el("div","cbpm-actions");
+      const remote=el("button","b-navy");remote.type="button";remote.textContent="Garder la version Firebase";remote.onclick=()=>{try{changeManager.resolveStructuralConflict(op.table,op.id,"use-remote");ouvrirConflits();}catch(e){desc.textContent=e.message;}};actions.append(remote);
+      if(String(op.conflictReason).includes("supprimé à distance")){const local=el("button","b-blue");local.type="button";local.textContent="Restaurer ma version";local.onclick=()=>{try{changeManager.resolveStructuralConflict(op.table,op.id,"restore-local");ouvrirConflits();}catch(e){desc.textContent=e.message;}};actions.append(local);}
+      card.append(actions);
+    }else{
+      const choices={};
+      for(const c of op.conflicts||[]){const row=el("div","cbpm-option"),label=el("strong"),select=el("select");label.textContent=c.field;select.add(new Option("Choisir…",""));select.add(new Option("Ma valeur","local"));select.add(new Option("Valeur Firebase","remote"));select.onchange=()=>choices[c.field]=select.value;const detail=el("small");detail.textContent=`Local : ${String(c.local??"(vide)")} · Firebase : ${String(c.remote??"(vide)")}`;row.append(label,select,detail);card.append(row);}
+      const apply=el("button","b-blue");apply.type="button";apply.textContent="Appliquer mes choix";apply.onclick=()=>{try{changeManager.resolveConflict(op.table,op.id,choices);ouvrirConflits();}catch(e){alert(e.message);}};card.append(apply);
+    }
+    body.append(card);
+  }
+  $("dlgConflicts").showModal();
+}
+let pendingImportPlan=null, pendingImportParsed=null, unreadableImportTables=new Set();
+function countPlan(plan,key){return plan.items.filter(x=>x.action===key).length;}
+function renderImportPlan(plan){
+  const host=$("importSummary");host.replaceChildren();
+  const summary=el("div","card");
+  const safe=countPlan(plan,"create"),present=countPlan(plan,"already-present"),review=countPlan(plan,"review-existing")+countPlan(plan,"review-references")+countPlan(plan,"ambiguous-match")+countPlan(plan,"duplicate-in-source"),unreadable=countPlan(plan,"unreadable");
+  const stats=el("p");stats.textContent=`${safe} nouvelle(s) ligne(s) importable(s) · ${present} déjà présente(s) · ${review} à examiner · ${unreadable} table(s) non lisible(s).`;summary.append(stats);
+  if(plan.warnings?.length){const h=el("strong");h.textContent="Avertissements";summary.append(h);for(const w of plan.warnings){const p=el("p");p.textContent="• "+w;summary.append(p);}}
+  const rows=plan.items.filter(x=>x.action!=="create"&&x.action!=="already-present").slice(0,60);
+  if(rows.length){const h=el("strong");h.textContent="Lignes nécessitant une vérification (60 maximum affichées)";summary.append(h);for(const item of rows){const p=el("p");p.textContent=`${item.table} — ligne ${item.sourceIndex+1} : ${item.action}${item.differences?.length?` (${item.differences.join(", ")})`:""}${item.referenceReview?.length?` — références : ${item.referenceReview.map(x=>x.field+"="+x.value).join(", ")}`:""}`;summary.append(p);}}
+  host.append(summary);
+  $("btnStageImport").disabled=!safe||!peutEcrire();
+  $("importStatus").textContent=`Fichier analysé : ${plan.format}, version ${plan.version}. Aucune donnée n'a été écrite dans Firebase.`;
+}
+async function analyserCbpm(file){
+  pendingImportPlan=null;pendingImportParsed=null;unreadableImportTables=new Set();$("btnStageImport").disabled=true;$("importSummary").replaceChildren();$("importStatus").textContent="Lecture du fichier et comparaison avec Firebase…";$("dlgImport").showModal();
+  try{
+    const parsed=await readLegacyCbpm(file),existing=new Map(),warnings=[];
+    for(const table of Object.keys(parsed.tables||{})){
+      if(table==="param")continue;
+      try{
+        // Relit la collection au moment de l'import : ne pas établir le plan sur une copie distante périmée.
+        const snap=await getDocs(collection(db,...chemin(table)));
+        const remote=new Map(snap.docs.map(d=>[d.id,{...d.data()}]));
+        changeManager.setRemoteTable(table,remote);
+        const effective=new Map(changeManager.rows(table,{includeDeleted:true}).map(row=>[row.id,row]));
+        existing.set(table,effective);
+      }catch(error){unreadableImportTables.add(table);warnings.push(`Lecture impossible pour la table « ${table} » : aucune ligne de cette table ne sera importée. ${error?.message||"Vérifiez les règles Firestore."}`);}
+    }
+    let plan=await buildLegacyMigrationPlan(parsed,existing);
+    plan=mapMigrationPlanReferences(plan,parsed,existing);
+    for(const item of plan.items)if(unreadableImportTables.has(item.table)&&item.action==="create")item.action="unreadable";
+    plan.warnings=[...(plan.warnings||[]),...warnings];
+    plan.summary={};for(const item of plan.items)plan.summary[item.action]=(plan.summary[item.action]||0)+1;
+    pendingImportPlan=plan;pendingImportParsed=parsed;renderImportPlan(plan);
+  }catch(error){$("importStatus").textContent="Importation impossible : "+(error?.message||String(error));}
+}
+$("btnImportCbpm").onclick=()=>{if(!peutEcrire())return info("Votre profil autorise uniquement la consultation.",true);$("inputCbpm").click();};
+$("inputCbpm").addEventListener("change",()=>{const file=$("inputCbpm").files?.[0];if(file)void analyserCbpm(file);$("inputCbpm").value="";});
+$("importClose").onclick=()=>$("dlgImport").close();
+$("btnStageImport").onclick=()=>{
+  if(!pendingImportPlan||!peutEcrire())return;
+  try{
+    const entries=pendingImportPlan.items.filter(x=>x.action==="create").map(x=>({table:x.table,id:x.id,data:toFirestoreMigrationDocument(x)}));
+    changeManager.createMany(entries);$("dlgImport").close();info(`${entries.length} nouvelle(s) ligne(s) ajoutée(s) à la copie locale. Cliquez sur « Enregistrer dans Firebase » pour les transmettre.`);
+    pendingImportPlan=null;pendingImportParsed=null;
+  }catch(error){$("importStatus").textContent="Impossible de préparer l'importation : "+(error?.message||String(error));}
+};
+$("btnConflicts").onclick=ouvrirConflits;
+$("conflictClose").onclick=()=>$("dlgConflicts").close();
+
+async function requestExit(){
+  if(!changeManager||(!changeManager.isDirty()&&!hasFormChanges())){await terminerSession();return;}
+  exitMode="signout";$("exitStatus").textContent="";$("dlgExit").showModal();
+}
+$("btnOut").onclick=()=>void requestExit();
+$("exitCancel").onclick=()=>$("dlgExit").close();
+$("exitLocal").onclick=async()=>{
+  try{await persistFormDrafts();await changeManager.persist();$("dlgExit").close();await terminerSession();}
+  catch(e){$("exitStatus").textContent="Impossible de conserver les brouillons : "+(e.message||e);}
+};
+async function saveAndExit(){
+  const b=$("exitSave");b.disabled=true;$("exitStatus").textContent="Vérification et enregistrement dans Firebase…";
+  try{
+    await stageDirtyForms();await changeManager.persist();const r=await saveAllToFirebase();
+    if(r.conflicts.length||r.errors.length||changeManager.isDirty()){
+      $("exitStatus").textContent=`Enregistrés : ${r.saved}. Conflits : ${r.conflicts.length}. Erreurs : ${r.errors.length}. Résolvez les problèmes avant de quitter.`;
+      if(r.conflicts.length)ouvrirConflits();return;
+    }
+    $("dlgExit").close();await terminerSession();
+  }catch(e){$("exitStatus").textContent=e.message||String(e);}
+  finally{b.disabled=false;updateSaveUI();}
+}
+$("exitSave").onclick=()=>void saveAndExit();
+
+async function saveFromToolbar(){
+  if(!changeManager||!peutEcrire()||changeManager.saving)return;
+  const b=$("btnSaveAll");b.disabled=true;b.textContent="Enregistrement…";
+  try{
+    await stageDirtyForms();await changeManager.persist();const r=await saveAllToFirebase();
+    const message=`${r.saved} enregistré(s) · ${r.unchanged} inchangé(s) · ${r.conflicts.length} conflit(s) · ${r.errors.length} erreur(s)`;
+    synchro((r.conflicts.length||r.errors.length)?"e":"",message);
+    if(r.conflicts.length)ouvrirConflits();
+    if(r.errors.length)console.error("Erreurs de sauvegarde CBPManagement",r.errors);
+  }catch(e){info(e.message||String(e),true);}
+  finally{b.textContent="Enregistrer dans Firebase";updateSaveUI();}
+}
+$("btnSaveAll").onclick=()=>void saveFromToolbar();
+
+window.addEventListener("offline",()=>synchro("e","Hors ligne — brouillons conservés localement"));
+window.addEventListener("online",()=>synchro(changeManager?.isDirty()?"p":"",changeManager?.isDirty()?"Modifications en attente":"Connecté à Firebase"));
+window.addEventListener("beforeunload",(event)=>{
+  if(allowUnload||!changeManager||(!changeManager.isDirty()&&!hasFormChanges()))return;
+  void changeManager.persist().catch(e=>console.error(e));void persistFormDrafts().catch(e=>console.error(e));
+  event.preventDefault();event.returnValue=""; // le navigateur affiche son avertissement générique ; le texte personnalisé n'est plus autorisé.
+});
+
+// ===== Démarrage : comptes Web existants + copie de travail locale =====
+const TABLES = ["client","fournisseur","appro","prod_appro","silo","personnel","materiel","parametres"];
+function demarrerSynchro(){
+  TABLES.forEach(t=>{
+    tous[t]=new Map();
+    onSnapshot(collection(db,"entreprises",ent.id,t),snapshot=>{
+      const docs=new Map(snapshot.docs.map(d=>[d.id,d.data()]));
+      changeManager.setRemoteTable(t,docs);
+      synchro(changeManager.isDirty()?"p":"",changeManager.isDirty()?"Modifications en attente":"Synchronisé");
+    },error=>{console.error("Écoute Firestore "+t,error);synchro("e","Erreur de lecture : "+t);});
   });
 }
-onAuthStateChanged(auth, async (u) => {
-  if (!u) { location.replace("../"); return; }
-  user = u; $("userInfo").textContent = u.email;
-  try {
-    const f = await getDoc(doc(db, "utilisateurs", u.uid));
-    if (!f.exists()) throw new Error("Ce compte n’est rattaché à aucune entreprise.");
-    role = f.data().role;
-    const e = await getDoc(doc(db, "entreprises", f.data().entrepriseId));
-    if (!e.exists()) throw new Error("Entreprise introuvable.");
-    ent = { id: e.id, ...e.data() }; $("entNom").textContent = ent.nom;
-    if (ent.etat === "suspendue") { synchro("e", "Suspendue"); info("Cette entreprise est suspendue. Contactez le fournisseur de l’application.", true); return; }
-    $("menu").textContent = "";
-    MODULES.forEach(([k, t]) => { const b = el("button"); b.textContent = t; b.dataset.k = k; b.onclick = () => ouvrir(k); $("menu").append(b); });
-    demarrerSynchro(); ouvrir("clients");
-  } catch (err) { info(err.message || "Accès refusé.", true); }
+onAuthStateChanged(auth,async u=>{
+  if(!u){location.replace("../");return;}
+  user=u;$("userInfo").textContent=u.email;
+  try{
+    const f=await getDoc(doc(db,"utilisateurs",u.uid));if(!f.exists())throw new Error("Ce compte n’est rattaché à aucune entreprise.");
+    role=f.data().role;
+    const e=await getDoc(doc(db,"entreprises",f.data().entrepriseId));if(!e.exists())throw new Error("Entreprise introuvable.");
+    ent={id:e.id,...e.data()};$("entNom").textContent=ent.nom;
+    if(ent.etat==="suspendue"){synchro("e","Suspendue");info("Cette entreprise est suspendue. Contactez le fournisseur de l’application.",true);return;}
+    draftStore=new DraftStore();draftScopeKey=`${ent.id}:${u.uid}`;changeManager=new ChangeManager({store:draftStore,scopeKey:draftScopeKey});
+    const restored=await changeManager.restoreDraft();formDrafts=new Map((await draftStore.readForms(draftScopeKey)).map(x=>[x.table,x]));
+    changeManager.subscribe(()=>{refreshEffectiveTables();updateSaveUI();});
+    if(!peutEcrire()){$("btnSaveAll").disabled=true;}
+    $("menu").textContent="";MODULES.forEach(([k,t])=>{const b=el("button");b.textContent=t;b.dataset.k=k;b.onclick=()=>ouvrir(k);$("menu").append(b);});
+    demarrerSynchro();ouvrir("clients");updateSaveUI();
+    if(restored||formDrafts.size)info(`${restored} modification(s) en attente et ${formDrafts.size} formulaire(s) récupéré(s) depuis le dernier passage. Rien n'a encore été envoyé à Firebase.`);
+  }catch(err){console.error(err);info(err.message||"Accès refusé.",true);}
 });
 </script>
 </body>
