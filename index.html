@@ -92,6 +92,7 @@ html[dir=rtl] .btns{justify-content:flex-start}
 [hidden]{display:none!important}
 dialog{border:0;border-radius:8px;padding:0;width:min(380px,92vw);background:var(--pap);color:var(--ink);box-shadow:0 24px 50px -20px rgba(23,34,45,.6)}
 dialog::backdrop{background:rgba(23,34,45,.6)}
+dialog:has(#adminPanel.on){width:min(1100px,96vw);max-height:92vh;overflow:auto}
 .dlg{display:grid;gap:14px;padding:26px}
 .dlg h2{margin:0;font-size:20px}
 .dlg form{grid-template-columns:1fr}
@@ -101,6 +102,19 @@ dialog::backdrop{background:rgba(23,34,45,.6)}
 .dlg .lgok{margin:0;font-weight:700;color:var(--acc)}
 #lgUser{margin:0;color:var(--mut);font-size:14px}
 #lgMsg{margin:0;min-height:1.3em;font-size:14px;color:#b3261e}
+
+/* ===== Tableau de bord propriétaire ===== */
+#adminPanel{display:none;margin-top:18px;border-top:1px solid var(--line);padding-top:18px}
+#adminPanel.on{display:block}.ad-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.ad-head h3{margin:0;font-size:20px}.ad-muted{color:var(--mut);font-size:13px}
+.ad-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:16px 0}
+.ad-stat{background:#fff;border:1px solid var(--line);border-radius:6px;padding:13px}.ad-stat b{display:block;font-size:25px;color:var(--ink)}.ad-stat span{font-size:12px;color:var(--mut)}
+.ad-tabs{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0}.ad-tabs button,.ad-action{border:1px solid var(--line);background:#fff;color:var(--ink);padding:8px 11px;border-radius:4px;cursor:pointer;font:inherit;font-size:13px}.ad-tabs button.active,.ad-action.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.ad-view{display:none;padding:0}.ad-view.active{display:block}.ad-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.ad-table-wrap{overflow:auto;background:#fff;border:1px solid var(--line);border-radius:5px}
+.ad-table{width:100%;border-collapse:collapse;font-size:13px;min-width:580px}.ad-table th,.ad-table td{padding:10px;text-align:left;border-bottom:1px solid #e5e8eb}.ad-table th{background:#eef1f4;color:var(--steel)}.ad-table tr:last-child td{border-bottom:0}
+.ad-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;background:#fff;border:1px solid var(--line);padding:14px;border-radius:5px;margin:12px 0}.ad-form label{font-size:12px}.ad-form input,.ad-form select{width:100%;padding:9px;border:1px solid var(--line);border-radius:4px;font:inherit;font-size:14px}.ad-form .wide{grid-column:1/-1}.ad-status{font-size:12px;padding:3px 7px;border-radius:12px;background:#e9f4ed;color:#21643a}.ad-status.off{background:#fcebea;color:#9b2924}#adMsg{font-size:13px;min-height:1.3em;color:var(--mut)}
+@media(max-width:560px){.ad-stats{grid-template-columns:repeat(2,1fr)}.ad-form{grid-template-columns:1fr}.ad-form .wide{grid-column:auto}}
+
 </style>
 </head>
 <body>
@@ -167,7 +181,16 @@ dialog::backdrop{background:rgba(23,34,45,.6)}
 <div><label for="lgPwd" data-i="lgPwdLabel">Mot de passe</label><input id="lgPwd" type="password" autocomplete="current-password" required></div>
 <button class="btn" id="lgSubmit" type="submit" data-i="lgBtn">Se connecter</button>
 </form>
-<div id="lgIn" hidden><p class="lgok" data-i="lgOk">Connexion réussie : vous êtes le propriétaire.</p><p id="lgUser" dir="ltr"></p><button class="btn" id="lgOut" type="button" data-i="lgOutBtn">Se déconnecter</button></div>
+<div id="lgIn" hidden><p class="lgok" data-i="lgOk">Connexion réussie : vous êtes le propriétaire.</p><p id="lgUser" dir="ltr"></p>
+<div id="adminPanel">
+ <div class="ad-head"><h3>Administration CBPManagement</h3><span class="ad-muted">Espace propriétaire</span></div>
+ <div class="ad-stats"><div class="ad-stat"><b id="stCompanies">0</b><span>Entreprises</span></div><div class="ad-stat"><b id="stUsers">0</b><span>Comptes utilisateurs</span></div><div class="ad-stat"><b id="stActive">0</b><span>Entreprises actives</span></div><div class="ad-stat"><b id="stSubs">0</b><span>Abonnements</span></div></div>
+ <div class="ad-tabs"><button class="active" data-tab="companies">Entreprises</button><button data-tab="users">Utilisateurs</button><button data-tab="subs">Abonnements</button></div>
+ <section class="ad-view active" id="view-companies"><div class="ad-toolbar"><button class="ad-action primary" id="addCompany">+ Ajouter une entreprise</button><button class="ad-action" id="refreshAdmin">Actualiser</button></div><div class="ad-table-wrap"><table class="ad-table"><thead><tr><th>Raison sociale</th><th>Wilaya</th><th>Comptes utilisés / quota</th><th>Statut</th><th>Actions</th></tr></thead><tbody id="companiesRows"><tr><td colspan="5">Chargement…</td></tr></tbody></table></div></section>
+ <section class="ad-view" id="view-users"><div class="ad-toolbar"><button class="ad-action primary" id="addUser">+ Créer un compte</button></div><p class="ad-muted">La création utilise Firebase Authentication. Le compte est ensuite rattaché à une entreprise.</p><div class="ad-table-wrap"><table class="ad-table"><thead><tr><th>Nom</th><th>E-mail</th><th>Entreprise</th><th>Rôle</th><th>Statut</th></tr></thead><tbody id="usersRows"><tr><td colspan="5">Chargement…</td></tr></tbody></table></div></section>
+ <section class="ad-view" id="view-subs"><div class="ad-toolbar"><button class="ad-action primary" id="addSub">+ Ajouter / renouveler un abonnement</button></div><div class="ad-table-wrap"><table class="ad-table"><thead><tr><th>Entreprise</th><th>Offre</th><th>Début</th><th>Expiration</th><th>Statut</th></tr></thead><tbody id="subsRows"><tr><td colspan="5">Chargement…</td></tr></tbody></table></div></section>
+ <p id="adMsg" role="status"></p>
+</div><button class="btn" id="lgOut" type="button" data-i="lgOutBtn">Se déconnecter</button></div>
 <p id="lgMsg" role="alert"></p>
 <button class="btn x" id="lgClose" type="button" data-i="lgClose">Fermer</button>
 </div></dialog>
@@ -191,8 +214,8 @@ setLanguage(L==='en'||L==='ar'?L:'fr');
 <!-- Connexion Firebase (ajout) -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, collection, getDocs, addDoc, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
 // Configuration du projet Firebase CBPM (ces valeurs ne sont pas secrètes)
 const app = initializeApp({
@@ -204,6 +227,8 @@ const app = initializeApp({
   appId: "1:14440101768:web:61d42ef693721443cfac3d"
 });
 const auth = getAuth(app), db = getFirestore(app);
+const creatorApp = initializeApp(app.options, "accountCreator");
+const creatorAuth = getAuth(creatorApp);
 const $ = (id) => document.getElementById(id);
 
 // Messages de la fenêtre de connexion (fr, en, ar)
@@ -232,14 +257,42 @@ $("lgForm").addEventListener("submit", async (e) => {
 
 // Après chaque connexion ou déconnexion : vérifier que le compte est propriétaire
 onAuthStateChanged(auth, async (user) => {
-  if (!user) { $("lgForm").hidden = false; $("lgIn").hidden = true; $("lgPwd").value = ""; return; }
+  if (!user) { $("lgForm").hidden = false; $("lgIn").hidden = true; $("adminPanel").classList.remove("on"); $("lgPwd").value = ""; return; }
   try {
     const fiche = await getDoc(doc(db, "proprietaires", user.uid));
-    if (fiche.exists() && fiche.data().role === "proprietaire") {
-      $("lgUser").textContent = user.email; $("lgForm").hidden = true; $("lgIn").hidden = false; msg("");
+    if (fiche.exists() && fiche.data().role === "proprietaire" && (user.email || "").toLowerCase() === OWNER_EMAIL) {
+      $("lgUser").textContent = user.email; $("lgForm").hidden = true; $("lgIn").hidden = false; $("adminPanel").classList.add("on"); msg("");
+      try { await loadAdmin(); } catch (e) { adminMsg("Lecture Firestore impossible. Vérifie les règles de sécurité : " + e.message); }
     } else { await signOut(auth); msg("notOwner"); }
   } catch (err) { await signOut(auth); msg("fail"); }
 });
+
+// Administration : seul le propriétaire authentifié peut charger les données.
+const OWNER_EMAIL = "idir29@gmail.com";
+let companiesCache = [], usersCache = [], subsCache = [];
+const adminMsg = (t) => { $("adMsg").textContent = t || ""; };
+const esc = (v) => String(v == null ? "" : v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dateText = (v) => v && v.toDate ? v.toDate().toLocaleDateString("fr-FR") : (v || "—");
+async function loadAdmin(){
+ adminMsg("Chargement des données…");
+ const [c,u,a] = await Promise.all([getDocs(collection(db,"entreprises")),getDocs(collection(db,"utilisateurs")),getDocs(collection(db,"abonnements"))]);
+ companiesCache=c.docs.map(d=>({id:d.id,...d.data()})); usersCache=u.docs.map(d=>({id:d.id,...d.data()})); subsCache=a.docs.map(d=>({id:d.id,...d.data()}));
+ $("stCompanies").textContent=companiesCache.length; $("stUsers").textContent=usersCache.length; $("stActive").textContent=companiesCache.filter(x=>x.statut!=="suspendue").length; $("stSubs").textContent=subsCache.length;
+ $("companiesRows").innerHTML=companiesCache.length?companiesCache.map(x=>`<tr><td>${esc(x.raisonSociale)}</td><td>${esc(x.wilaya||"—")}</td><td>${usersCache.filter(u=>u.entrepriseId===x.id).length} / ${esc(x.quotaComptes||1)}</td><td><span class="ad-status ${x.statut==='suspendue'?'off':''}">${x.statut==='suspendue'?'Suspendue':'Active'}</span></td><td><button class="ad-action" data-company-edit="${esc(x.id)}">Modifier</button> <button class="ad-action" data-company-toggle="${esc(x.id)}">${x.statut==='suspendue'?'Réactiver':'Suspendre'}</button></td></tr>`).join(""):'<tr><td colspan="5">Aucune entreprise enregistrée.</td></tr>';
+ $("usersRows").innerHTML=usersCache.length?usersCache.map(x=>{const c=companiesCache.find(z=>z.id===x.entrepriseId);return `<tr><td>${esc(x.nom||"—")}</td><td>${esc(x.email)}</td><td>${esc(c?c.raisonSociale:"Non rattachée")}</td><td>${esc(x.role||"Utilisateur")}</td><td><span class="ad-status ${x.actif===false?'off':''}">${x.actif===false?'Désactivé':'Actif'}</span></td></tr>`}).join(""):'<tr><td colspan="5">Aucun compte utilisateur renseigné.</td></tr>';
+ $("subsRows").innerHTML=subsCache.length?subsCache.map(x=>{const c=companiesCache.find(z=>z.id===x.entrepriseId);return `<tr><td>${esc(c?c.raisonSociale:"Entreprise inconnue")}</td><td>${esc(x.offre||"—")}</td><td>${esc(dateText(x.debut))}</td><td>${esc(dateText(x.expiration))}</td><td>${esc(x.statut||"Actif")}</td></tr>`}).join(""):'<tr><td colspan="5">Aucun abonnement enregistré.</td></tr>';
+ adminMsg("Données actualisées.");
+}
+$("adminPanel").querySelectorAll("[data-tab]").forEach(b=>b.addEventListener("click",()=>{ $("adminPanel").querySelectorAll("[data-tab]").forEach(x=>x.classList.toggle("active",x===b)); document.querySelectorAll(".ad-view").forEach(x=>x.classList.toggle("active",x.id==="view-"+b.dataset.tab)); }));
+$("refreshAdmin").addEventListener("click",()=>loadAdmin().catch(e=>adminMsg("Erreur de lecture : "+e.message)));
+$("addCompany").addEventListener("click",async()=>{const raisonSociale=prompt("Raison sociale de l’entreprise :");if(!raisonSociale||!raisonSociale.trim())return;const wilaya=prompt("Wilaya :")||"";const quota=parseInt(prompt("Nombre maximum de comptes utilisateurs :","3"),10);if(!Number.isInteger(quota)||quota<1){adminMsg("Quota invalide.");return;}try{await addDoc(collection(db,"entreprises"),{raisonSociale:raisonSociale.trim(),wilaya:wilaya.trim(),quotaComptes:quota,statut:"active",createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});await loadAdmin();}catch(e){adminMsg("Impossible d’ajouter l’entreprise : "+e.message);}});
+$("companiesRows").addEventListener("click",async e=>{
+ const edit=e.target.closest("[data-company-edit]");
+ if(edit){const c=companiesCache.find(x=>x.id===edit.dataset.companyEdit);if(!c)return;const name=prompt("Raison sociale :",c.raisonSociale||"");if(!name||!name.trim())return;const wilaya=prompt("Wilaya :",c.wilaya||"");const quota=parseInt(prompt("Quota de comptes :",String(c.quotaComptes||1)),10);if(!Number.isInteger(quota)||quota<1){adminMsg("Quota invalide.");return;}try{await updateDoc(doc(db,"entreprises",c.id),{raisonSociale:name.trim(),wilaya:(wilaya||"").trim(),quotaComptes:quota,updatedAt:serverTimestamp()});await loadAdmin();}catch(err){adminMsg("Modification refusée : "+err.message);}return;}
+ const b=e.target.closest("[data-company-toggle]");if(!b)return;const c=companiesCache.find(x=>x.id===b.dataset.companyToggle);if(!c)return;try{await updateDoc(doc(db,"entreprises",c.id),{statut:c.statut==="suspendue"?"active":"suspendue",updatedAt:serverTimestamp()});await loadAdmin();}catch(err){adminMsg("Modification refusée : "+err.message);}});
+$("addUser").addEventListener("click",async()=>{if(!companiesCache.length){adminMsg("Crée d’abord une entreprise.");return;}const email=prompt("Adresse e-mail du nouvel utilisateur :");if(!email)return;const nom=prompt("Nom de l’utilisateur :")||"";const companyChoices=companiesCache.map((c,i)=>(i+1)+". "+c.raisonSociale+" (quota "+c.quotaComptes+")").join("\n");const n=parseInt(prompt("Choisis l’entreprise :\n"+companyChoices,"1"),10)-1;const c=companiesCache[n];if(!c)return;const used=usersCache.filter(u=>u.entrepriseId===c.id).length;if(used>=Number(c.quotaComptes||1)){adminMsg("Quota de comptes atteint pour cette entreprise.");return;}const password=prompt("Mot de passe provisoire (au moins 6 caractères) :");if(!password||password.length<6){adminMsg("Mot de passe trop court.");return;}try{const cred=await createUserWithEmailAndPassword(creatorAuth,email.trim(),password);await addDoc(collection(db,"utilisateurs"),{uid:cred.user.uid,email:email.trim(),nom:nom.trim(),entrepriseId:c.id,role:"utilisateur",actif:true,createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});await signOut(creatorAuth);adminMsg("Compte créé. Communique les identifiants à l’utilisateur de manière sécurisée.");await loadAdmin();}catch(e){adminMsg("Création impossible : "+e.message);}});
+$("addSub").addEventListener("click",async()=>{if(!companiesCache.length){adminMsg("Crée d’abord une entreprise.");return;}const choices=companiesCache.map((c,i)=>(i+1)+". "+c.raisonSociale).join("\n");const n=parseInt(prompt("Entreprise concernée :\n"+choices,"1"),10)-1;const c=companiesCache[n];if(!c)return;const offre=prompt("Nom de l’offre (Essentiel, Pro, Premium…) :","Standard");if(!offre)return;const debut=prompt("Date de début (AAAA-MM-JJ) :",new Date().toISOString().slice(0,10));const expiration=prompt("Date d’expiration (AAAA-MM-JJ) :");if(!debut||!expiration)return;try{await addDoc(collection(db,"abonnements"),{entrepriseId:c.id,offre:offre.trim(),debut,expiration,statut:"actif",createdAt:serverTimestamp(),createdBy:auth.currentUser.uid});await loadAdmin();}catch(e){adminMsg("Enregistrement impossible : "+e.message);}});
+
 </script>
 </body>
 </html>
