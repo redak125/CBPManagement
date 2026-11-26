@@ -66,22 +66,36 @@ const app = initializeApp({
 const auth = getAuth(app), db = getFirestore(app);
 const $ = (id) => document.getElementById(id);
 
-// Définition des modules : [clé, libellé, type]. Le 1er champ est obligatoire.
+// Modules : champs = [clé, libellé, type, obligatoire, valeur par défaut]
+// Types : texte (défaut), tel, email, date, num, sel:A|B, ref:module:champ (lien vers un autre module)
 const TIERS = [["nom","Nom / raison sociale"],["adresse","Adresse"],["tel","Téléphone","tel"],["mobile","Mobile","tel"],["email","E-mail","email"],["rc","RC"],["nif","NIF"],["nis","NIS"],["rib","RIB"],["art","N° article d’imposition"],["categorie","Catégorie"]];
+const r2 = (x) => Math.round((x + Number.EPSILON) * 100) / 100;
+const nb = (x) => Number(x) || 0;
+const fmt = (x) => Number(x).toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const MODULES = {
+  appros: { titre: "Appros et services", tri: "date", desc: true, somme: ["ttc"],
+    cols: ["date","fournisseur","bl","produit","qte","pu","ttc"],
+    champs: [["date","Date","date",true,"today"],["nature","Nature","sel:Approvisionnement|Service"],["fournisseur","Fournisseur","ref:fournisseurs:nom",true],["bl","N° BL"],["produit","Produit","ref:produits:designation",true],["silo","Silo","ref:silos:designation"],["qte","Quantité","num",true],["pu","Prix unitaire","num",true],["tva","TVA (%)","num",false,"19"],["obs","Observation"]],
+    calc: { ht: ["Total HT", (r) => r2(nb(r.qte) * nb(r.pu))], ttc: ["Total TTC", (r) => r2(nb(r.qte) * nb(r.pu) * (1 + nb(r.tva) / 100))] } },
   clients:      { titre: "Clients",      champs: TIERS, cols: ["nom","tel","email","categorie"] },
   fournisseurs: { titre: "Fournisseurs", champs: TIERS, cols: ["nom","tel","email","categorie"] },
-  personnel:    { titre: "Personnel",    cols: ["nom","prenom","poste","statut"],
+  produits: { titre: "Produits", cols: ["designation","type","unite"],
+    champs: [["designation","Désignation"],["type","Type","sel:Matière première|Service|Produit fini"],["unite","Unité","sel:T|kg|m³|L|U"]] },
+  silos: { titre: "Silos", cols: ["designation","produit","capacite"],
+    champs: [["designation","Désignation"],["produit","Produit","ref:produits:designation"],["capacite","Capacité","num"]] },
+  personnel: { titre: "Personnel", cols: ["nom","prenom","poste","statut"],
     champs: [["nom","Nom"],["prenom","Prénom"],["poste","Poste"],["embauche","Date d’embauche","date"],["secu","N° sécurité sociale"],["statut","Statut","sel:Actif|Inactif"],["tel","Téléphone","tel"],["email","E-mail","email"]] },
-  materiels:    { titre: "Matériels",    cols: ["designation","immat"],
+  materiels: { titre: "Matériels", cols: ["designation","immat"],
     champs: [["designation","Désignation"],["immat","Immatriculation"]] }
 };
 
-let user, ent, role, cle, unsub, lignes = [], edition = null;
+let user, ent, role, cle, edition = null;
+const tous = {};   // tous[module] = Map(id -> enregistrement), suppressions comprises (pour garder l'historique)
 const peutEcrire = () => role === "admin";
 const info = (t, err) => { $("info").textContent = t; $("info").className = err ? "e" : ""; $("info").hidden = !t; };
 const synchro = (cls, t) => { $("sync").className = cls; $("sync").textContent = "● " + t; };
 const chemin = (id) => ["entreprises", ent.id, cle, ...(id ? [id] : [])];
+const actifs = (k) => [...(tous[k] || new Map()).values()].filter((r) => !r.deleted);
 
 $("btnOut").onclick = () => signOut(auth);
 window.addEventListener("offline", () => synchro("e", "Hors ligne"));
@@ -101,51 +115,75 @@ onAuthStateChanged(auth, async (u) => {
     if (ent.etat === "suspendue") { synchro("e", "Suspendue"); info("Cette entreprise est suspendue. Contactez le fournisseur de l’application.", true); return; }
     $("menu").textContent = "";
     for (const k in MODULES) { const b = document.createElement("button"); b.textContent = MODULES[k].titre; b.dataset.k = k; b.onclick = () => ouvrir(k); $("menu").append(b); }
-    ouvrir("clients");
+    demarrerSynchro(); ouvrir(Object.keys(MODULES)[0]);
   } catch (err) { info(err.message || "Accès refusé.", true); }
 });
 
-// ---- Affichage d'un module avec synchronisation en temps réel ----
+// ---- Synchronisation en temps réel de tous les modules (les liens entre modules en ont besoin) ----
+function demarrerSynchro() {
+  for (const k in MODULES) {
+    tous[k] = new Map();
+    onSnapshot(collection(db, "entreprises", ent.id, k), (s) => {
+      tous[k] = new Map(s.docs.map((d) => [d.id, { id: d.id, ...d.data() }]));
+      synchro(s.metadata.hasPendingWrites ? "p" : "", s.metadata.hasPendingWrites ? "Envoi…" : "Synchronisé");
+      if (cle) afficher();
+    }, () => synchro("e", "Erreur de synchronisation"));
+  }
+}
+
 function ouvrir(k) {
-  cle = k; if (unsub) unsub();
+  cle = k;
   document.querySelectorAll("#menu button").forEach((b) => b.classList.toggle("on", b.dataset.k === k));
   $("titre").textContent = MODULES[k].titre; $("recherche").value = ""; $("btnNew").hidden = !peutEcrire();
-  $("vue").hidden = false; info("");
-  unsub = onSnapshot(collection(db, ...chemin()), (s) => {
-    lignes = s.docs.map((d) => ({ id: d.id, ...d.data() })).filter((r) => !r.deleted);
-    synchro(s.metadata.hasPendingWrites ? "p" : "", s.metadata.hasPendingWrites ? "Envoi…" : "Synchronisé");
-    afficher();
-  }, () => synchro("e", "Erreur de synchronisation"));
+  $("vue").hidden = false; info(""); afficher();
+}
+
+// Valeur affichée d'une colonne : calcul, lien vers un autre module, nombre ou texte
+function valeur(M, r, k) {
+  if (M.calc && M.calc[k]) return fmt(M.calc[k][1](r));
+  const c = M.champs.find((x) => x[0] === k), t = (c && c[2]) || "";
+  if (t.startsWith("ref:")) { const [, mod, ch] = t.split(":"), x = tous[mod] && tous[mod].get(r[k]); return x ? x[ch] || "" : ""; }
+  if (t === "num") return r[k] == null || r[k] === "" ? "" : fmt(r[k]);
+  return r[k] || "";
 }
 
 function afficher() {
   const M = MODULES[cle], lib = Object.fromEntries(M.champs.map((c) => [c[0], c[1]]));
+  if (M.calc) for (const k in M.calc) lib[k] = M.calc[k][0];
   const tr = document.createElement("tr"); M.cols.forEach((c) => { const th = document.createElement("th"); th.textContent = lib[c]; tr.append(th); });
   $("thead").replaceChildren(tr);
-  const q = $("recherche").value.trim().toLowerCase();
-  const vis = lignes.filter((r) => !q || M.cols.some((c) => String(r[c] || "").toLowerCase().includes(q)))
-                    .sort((a, b) => String(a[M.cols[0]] || "").localeCompare(String(b[M.cols[0]] || "")));
+  const q = $("recherche").value.trim().toLowerCase(), tri = M.tri || M.cols[0], sens = M.desc ? -1 : 1;
+  const vis = actifs(cle).filter((r) => !q || M.cols.some((c) => String(valeur(M, r, c)).toLowerCase().includes(q)))
+    .sort((a, b) => sens * String(valeur(M, a, tri)).localeCompare(String(valeur(M, b, tri))));
   $("tbody").replaceChildren(...vis.map((r) => {
     const t = document.createElement("tr"); t.onclick = () => fiche(r);
-    M.cols.forEach((c) => { const td = document.createElement("td"); td.textContent = r[c] || ""; t.append(td); });
+    M.cols.forEach((c) => { const td = document.createElement("td"); td.textContent = valeur(M, r, c); t.append(td); });
     return t;
   }));
-  $("vide").textContent = vis.length ? "" : "Aucun enregistrement.";
+  $("vide").textContent = !vis.length ? "Aucun enregistrement."
+    : (M.somme || []).map((k) => lib[k] + " : " + fmt(r2(vis.reduce((s, r) => s + M.calc[k][1](r), 0)))).join("     ");
 }
 $("recherche").oninput = afficher;
 $("btnNew").onclick = () => fiche(null);
 
 // ---- Fiche (création / modification / suppression) ----
+const aujourdhui = () => new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 function fiche(r) {
   edition = r; const M = MODULES[cle];
   $("dTitre").textContent = (r ? "Modifier" : "Nouveau") + " — " + M.titre; $("dMsg").textContent = "";
-  $("champs").replaceChildren(...M.champs.map(([k, l, t], i) => {
+  $("champs").replaceChildren(...M.champs.map(([k, l, t = "", req, def], i) => {
     const w = document.createElement("div"), lb = document.createElement("label"); lb.htmlFor = "f_" + k; lb.textContent = l;
     let inp;
-    if (t && t.startsWith("sel:")) { inp = document.createElement("select"); t.slice(4).split("|").forEach((o) => inp.add(new Option(o, o))); }
-    else { inp = document.createElement("input"); inp.type = t || "text"; }
-    inp.id = "f_" + k; inp.name = k; inp.value = (r && r[k]) || (t && t.startsWith("sel:") ? t.slice(4).split("|")[0] : "");
-    inp.required = i === 0; inp.disabled = !peutEcrire(); w.append(lb, inp); return w;
+    if (t.startsWith("sel:")) { inp = document.createElement("select"); t.slice(4).split("|").forEach((o) => inp.add(new Option(o, o))); }
+    else if (t.startsWith("ref:")) {
+      const [, mod, ch] = t.split(":"); inp = document.createElement("select"); inp.add(new Option("—", ""));
+      const liste = actifs(mod); const cur = r && tous[mod] && tous[mod].get(r[k]);
+      if (cur && cur.deleted) liste.push(cur);   // garder le lien d'une fiche liée à un élément supprimé
+      liste.sort((a, b) => String(a[ch]).localeCompare(String(b[ch]))).forEach((x) => inp.add(new Option(x[ch], x.id)));
+    } else { inp = document.createElement("input"); inp.type = t === "num" ? "number" : t || "text"; if (t === "num") { inp.step = "any"; inp.min = "0"; } }
+    inp.id = "f_" + k; inp.name = k;
+    inp.value = r ? (r[k] ?? "") : def === "today" ? aujourdhui() : (def ?? "");
+    inp.required = req === true || (i === 0 && req !== false); inp.disabled = !peutEcrire(); w.append(lb, inp); return w;
   }));
   $("dOk").hidden = !peutEcrire(); $("dSupp").hidden = !(r && peutEcrire());
   $("dlg").showModal();
@@ -166,7 +204,7 @@ const erreur = (e) => e.message === "conflit"
 
 $("frm").onsubmit = async (ev) => {
   ev.preventDefault(); $("dOk").disabled = true; $("dMsg").textContent = "";
-  const d = {}; MODULES[cle].champs.forEach(([k]) => { d[k] = $("f_" + k).value.trim(); });
+  const d = {}; MODULES[cle].champs.forEach(([k, , t = ""]) => { const v = $("f_" + k).value.trim(); d[k] = t === "num" ? (v === "" ? null : Number(v)) : v; });
   const id = edition ? edition.id : doc(collection(db, ...chemin())).id;
   try { await ecrire(id, edition ? edition.version || 0 : 0, () => d); $("dlg").close(); }
   catch (e) { $("dMsg").textContent = erreur(e); } finally { $("dOk").disabled = false; }
