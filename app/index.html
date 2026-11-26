@@ -1120,63 +1120,220 @@ function supplierPaymentName(row) {
   return String(sub);
 }
 
-function ouvrirEtatFournisseur() {
-  const suppliers = actifs("fournisseur").slice().sort((a,b) => String(a.nom||"").localeCompare(String(b.nom||""), "fr"));
-  if (!suppliers.length) { alert("Aucun fournisseur enregistré."); return; }
+function statementMatchesParty(value, party) {
+  const text = String(value ?? "");
+  return text === String(party?.id ?? "") || norm(text) === norm(party?.nom);
+}
+
+function expenseMatchesParty(row, affectationName, table, party) {
+  let affectation = row.aff || "";
+  const affect = tous.affect?.get(affectation);
+  if (affect) affectation = affect.nom || "";
+  if (norm(affectation) !== norm(affectationName)) return false;
+  let sub = row.sousaff || "";
+  const subRecord = tous.sousaff?.get(sub);
+  if (subRecord) sub = subRecord.nom || "";
+  else if (tous[table]?.has(sub)) sub = tous[table].get(sub).nom || "";
+  if (!sub) sub = row.benef || "";
+  return statementMatchesParty(sub, party);
+}
+
+const STATEMENT_CSS = `
+  .statement-sheet{font:13px Arial,sans-serif;color:#172b40;background:#fff;padding:18px;border-radius:7px}
+  .statement-sheet h1{font-size:20px;margin:0 0 4px;text-align:left}
+  .statement-sheet h2{font-size:15px;margin:22px 0 8px;border-bottom:1px solid #9aa8b6;padding-bottom:5px}
+  .statement-sheet p{margin:4px 0 14px;color:#506276}
+  .statement-sheet .meta{display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;margin:12px 0 18px}
+  .statement-sheet .meta b{display:inline-block;min-width:115px}
+  .statement-sheet table{border-collapse:collapse;width:100%;font-size:11px;margin:6px 0 10px}
+  .statement-sheet th,.statement-sheet td{border:1px solid #c7d0d9;padding:6px;text-align:left;white-space:normal}
+  .statement-sheet th{background:#edf2f6;color:#172b40;position:static;cursor:default}
+  .statement-sheet .n{text-align:right;white-space:nowrap}
+  .statement-sheet .total{font-weight:bold;background:#f0f3f6}
+  .statement-sheet .balance{margin-top:10px;border-collapse:collapse;width:100%}
+  .statement-sheet .balance td{font-size:13px}
+  .statement-sheet .muted{color:#66788a}
+`;
+
+function renderStatementInDialog(target, content) {
+  target.innerHTML = `<style>${STATEMENT_CSS}</style><section class="statement-sheet">${content}</section>`;
+  target.hidden = false;
+  target.scrollTop = 0;
+}
+
+function openStatementPrintPreview(title, content, status) {
+  const w = window.open("", "_blank");
+  if (!w) {
+    status.textContent = "Autorisez les fenêtres pop-up pour ouvrir l'aperçu avant impression.";
+    return;
+  }
+  w.document.open();
+  w.document.write(`<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(title)}</title><style>
+    body{font:13px Arial,sans-serif;color:#172b40;background:#eef2f6;margin:0;padding:18px}
+    .toolbar{position:sticky;top:0;display:flex;justify-content:flex-end;gap:8px;padding:10px;background:#fff;border:1px solid #d5dde5;border-radius:8px;margin:0 auto 14px;max-width:1100px}
+    .toolbar button{padding:9px 18px;border:0;border-radius:5px;background:#195d95;color:#fff;font-weight:600;cursor:pointer}
+    .toolbar .secondary{background:#586879}
+    .sheet{max-width:1100px;margin:0 auto;background:#fff;padding:22px;border:1px solid #d5dde5;border-radius:8px}
+    ${STATEMENT_CSS}
+    @media print{body{background:#fff;padding:0}.toolbar{display:none}.sheet{border:0;border-radius:0;padding:0;max-width:none}}
+  </style></head><body><div class="toolbar"><button type="button" onclick="window.print()">Imprimer</button><button type="button" class="secondary" onclick="window.close()">Fermer</button></div><main class="sheet"><section class="statement-sheet">${content}</section></main></body></html>`);
+  w.document.close();
+}
+
+function createPartyStatementDialog({ title, description, partyLabel, parties, buildReport }) {
+  if (!parties.length) { alert(`Aucun ${partyLabel.toLocaleLowerCase("fr")} enregistré.`); return; }
   const dlg = el("dialog", "cbpm-dialog");
-  dlg.style.maxWidth = "760px";
-  const title = el("h2"); title.textContent = "État des fournisseurs";
-  const description = el("p", "cbpm-status"); description.textContent = "Situation détaillée : approvisionnements, versements, solde reporté et solde final. Les opérations déjà présentes dans la copie locale sont prises en compte.";
+  dlg.style.maxWidth = "1100px";
+  dlg.style.width = "min(1100px,96vw)";
+  dlg.style.maxHeight = "92vh";
+  dlg.style.overflow = "hidden";
+  const heading = el("h2"); heading.textContent = title;
+  const descriptionNode = el("p", "cbpm-status"); descriptionNode.textContent = description;
   const form = el("div", "grille");
-  const supplierWrap = el("div", "champ"), supplierLabel = el("label"), supplierSelect = el("select");
-  supplierLabel.textContent = "Fournisseur"; supplierSelect.append(new Option("", ""));
-  suppliers.forEach(r => supplierSelect.add(new Option(r.nom, r.id)));
-  supplierSelect.value = suppliers[0].id; supplierLabel.htmlFor = "cbpmSupplierStatementSelect"; supplierSelect.id = "cbpmSupplierStatementSelect"; supplierWrap.append(supplierLabel, supplierSelect);
-  const fromWrap = el("div", "champ"), fromLabel = el("label"), fromInput = el("input"); fromLabel.textContent = "Du"; fromLabel.htmlFor = "cbpmSupplierStatementFrom"; fromInput.type = "date"; fromInput.id = "cbpmSupplierStatementFrom"; fromInput.value = aujourdhui().slice(0, 7) + "-01"; fromWrap.append(fromLabel, fromInput);
-  const toWrap = el("div", "champ"), toLabel = el("label"), toInput = el("input"); toLabel.textContent = "Au"; toLabel.htmlFor = "cbpmSupplierStatementTo"; toInput.type = "date"; toInput.id = "cbpmSupplierStatementTo"; toInput.value = aujourdhui(); toWrap.append(toLabel, toInput);
-  form.append(supplierWrap, fromWrap, toWrap);
-  const actions = el("div", "cbpm-actions"), showButton = el("button", "b-blue"), closeButton = el("button", "b-navy");
-  showButton.type = closeButton.type = "button"; showButton.textContent = "Afficher l'état"; closeButton.textContent = "Fermer"; actions.append(showButton, closeButton);
-  const status = el("p", "msg");
-  dlg.append(title, description, form, actions, status);
+  const partyWrap = el("div", "champ"), partyTitle = el("label"), partySelect = el("select");
+  partyTitle.textContent = partyLabel; partySelect.append(new Option("", ""));
+  parties.forEach(r => partySelect.add(new Option(r.nom, r.id)));
+  partySelect.value = parties[0].id;
+  partyWrap.append(partyTitle, partySelect);
+  const fromWrap = el("div", "champ"), fromLabel = el("label"), fromInput = el("input");
+  fromLabel.textContent = "Du"; fromInput.type = "date"; fromInput.value = aujourdhui().slice(0, 7) + "-01"; fromWrap.append(fromLabel, fromInput);
+  const toWrap = el("div", "champ"), toLabel = el("label"), toInput = el("input");
+  toLabel.textContent = "Au"; toInput.type = "date"; toInput.value = aujourdhui(); toWrap.append(toLabel, toInput);
+  form.append(partyWrap, fromWrap, toWrap);
+  const result = el("div");
+  result.hidden = true;
+  result.style.cssText = "max-height:54vh;overflow:auto;margin-top:12px;border:1px solid var(--line);border-radius:8px;background:#fff";
+  const actions = el("div", "cbpm-actions");
+  const showButton = el("button", "b-blue"), printButton = el("button", "b-grn"), closeButton = el("button", "b-navy");
+  showButton.type = printButton.type = closeButton.type = "button";
+  showButton.textContent = "Afficher l'état"; printButton.textContent = "Imprimer"; closeButton.textContent = "Fermer";
+  printButton.hidden = true;
+  actions.append(showButton, printButton, closeButton);
+  const status = el("p", "msg"); status.setAttribute("role", "status");
+  dlg.append(heading, descriptionNode, form, actions, status, result);
   document.body.append(dlg);
   closeButton.onclick = () => { dlg.close(); dlg.remove(); };
   dlg.addEventListener("click", e => { if (e.target === dlg) { dlg.close(); dlg.remove(); } });
+  let currentReport = null;
+  const invalidateReport = () => {
+    currentReport = null;
+    printButton.hidden = true;
+    result.hidden = true;
+    status.textContent = "Les critères ont changé. Cliquez sur « Afficher l'état » pour actualiser le relevé.";
+  };
+  partySelect.addEventListener("change", invalidateReport);
+  fromInput.addEventListener("change", invalidateReport);
+  toInput.addEventListener("change", invalidateReport);
   showButton.onclick = () => {
-    const supplier = tous.fournisseur?.get(supplierSelect.value);
+    const party = parties.find(r => r.id === partySelect.value);
     const from = fromInput.value, to = toInput.value;
-    if (!supplier) { status.textContent = "Sélectionnez un fournisseur."; return; }
+    if (!party) { status.textContent = `Sélectionnez ${partyLabel.toLocaleLowerCase("fr")}.`; return; }
     if (!from || !to || from > to) { status.textContent = "La date de début doit précéder ou être égale à la date de fin."; return; }
-    const purchases = actifs("appro").filter(r => r.fournisseur === supplier.id || r.fournisseur === supplier.nom);
-    const payments = actifs("depense").filter(r => norm(supplierPaymentName(r)) === norm(supplier.nom));
-    const inside = (r) => String(r.date || "") >= from && String(r.date || "") <= to;
-    const before = (r) => String(r.date || "") && String(r.date) < from;
-    const grouped = new Map();
-    const collectPurchase = (r) => {
-      const product = nomDe("prod_appro", r.produit, "nom") || r.produit || "";
-      const rate = nb(r.tvam) > 0 ? (nb(r.taux) || (nb(r.ht) > 0 ? r2(nb(r.tvam) / nb(r.ht) * 100) : 0)) : 0;
-      const key = [r.date || "", product, r.nature || "", nb(r.pu), rate].join("");
-      const g = grouped.get(key) || {date:r.date||"", product, nature:r.nature||"", qte:0, pu:nb(r.pu), taux:rate, ht:0, tvam:0, ttc:0};
-      g.qte += nb(r.qte); g.ht += nb(r.ht); g.tvam += nb(r.tvam); g.ttc += nb(r.ttc); grouped.set(key,g);
-    };
-    const currentPurchases = purchases.filter(inside); currentPurchases.forEach(collectPurchase);
-    const currentPayments = payments.filter(inside);
-    const openingPurchases = purchases.filter(before).reduce((s,r)=>s+nb(r.ttc),0);
-    const openingPayments = payments.filter(before).reduce((s,r)=>s+nb(r.montant),0);
-    const opening = r2(openingPurchases-openingPayments);
-    const purchaseTotal = r2(currentPurchases.reduce((s,r)=>s+nb(r.ttc),0));
-    const paymentTotal = r2(currentPayments.reduce((s,r)=>s+nb(r.montant),0));
-    const movement = r2(purchaseTotal-paymentTotal), closing = r2(opening+movement);
-    const rows = [...grouped.values()].sort((a,b)=>a.date.localeCompare(b.date)||a.product.localeCompare(b.product,"fr"));
-    const purchaseRows = rows.map(r=>`<tr><td>${esc(frDate(r.date))}</td><td>${esc(r.product)}</td><td>${esc(r.nature)}</td><td class="n">${fmt(r.qte)}</td><td class="n">${fmt(r.pu)}</td><td class="n">${r.taux?fmt(r.taux)+" %":"—"}</td><td class="n">${fmt(r.ht)}</td><td class="n">${fmt(r.tvam)}</td><td class="n">${fmt(r.ttc)}</td></tr>`).join("");
-    const payRows = currentPayments.slice().sort((a,b)=>String(a.date||"").localeCompare(String(b.date||""))).map(r=>`<tr><td>${esc(frDate(r.date))}</td><td>${esc(r.mode||"")}</td><td>${esc(r.info||"")}</td><td>${esc(r.motif||"")}</td><td class="n">${fmt(r.montant)}</td></tr>`).join("");
-    const balanceLabel = closing > 0 ? "Solde réel dû au fournisseur" : closing < 0 ? "Avance versée au fournisseur" : "Solde à la fin de la période";
-    const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8"><title>État du fournisseur - ${esc(supplier.nom)}</title><style>body{font:13px Arial,sans-serif;color:#172b40;margin:22px}h1{font-size:20px;margin:0 0 4px}h2{font-size:15px;margin:22px 0 8px;border-bottom:1px solid #9aa8b6;padding-bottom:5px}p{margin:4px 0 14px;color:#506276}.meta{display:grid;grid-template-columns:1fr 1fr;gap:5px 20px;margin:12px 0 18px}.meta b{display:inline-block;min-width:115px}table{border-collapse:collapse;width:100%;font-size:11px}th,td{border:1px solid #c7d0d9;padding:6px;text-align:left}th{background:#edf2f6}.n{text-align:right;white-space:nowrap}.total{font-weight:bold;background:#f0f3f6}.balance{margin-top:10px;border-collapse:collapse;width:100%}.balance td{font-size:13px}.toolbar{display:flex;justify-content:flex-end;margin-bottom:16px}.toolbar button{padding:8px 16px;border:0;background:#195d95;color:white;border-radius:5px;cursor:pointer}@media print{.toolbar{display:none}body{margin:10mm}}</style></head><body><div class="toolbar"><button onclick="window.print()">Imprimer</button></div><h1>${esc(ent?.nom||"CBPManagement")} — ÉTAT DU FOURNISSEUR</h1><p>Période du ${esc(frDate(from))} au ${esc(frDate(to))}</p><div class="meta"><div><b>Fournisseur :</b> ${esc(supplier.nom)}</div><div><b>Téléphone :</b> ${esc(supplier.tel||supplier.mob||"—")}</div><div><b>Adresse :</b> ${esc(supplier.adr||"—")}</div><div><b>E-mail :</b> ${esc(supplier.email||"—")}</div></div><h2>A. Approvisionnements et services</h2><table><thead><tr><th>Date</th><th>Produit</th><th>Nature</th><th>Quantité</th><th>P.U.</th><th>TVA</th><th>HT</th><th>TVA</th><th>TTC</th></tr></thead><tbody>${purchaseRows||'<tr><td colspan="9">Aucun approvisionnement sur cette période.</td></tr>'}<tr class="total"><td colspan="3">TOTAL</td><td class="n">${fmt(rows.reduce((s,r)=>s+r.qte,0))}</td><td></td><td></td><td class="n">${fmt(rows.reduce((s,r)=>s+r.ht,0))}</td><td class="n">${fmt(rows.reduce((s,r)=>s+r.tvam,0))}</td><td class="n">${fmt(purchaseTotal)}</td></tr></tbody></table><h2>B. Versements</h2><table><thead><tr><th>Date</th><th>Mode de paiement</th><th>Référence</th><th>Motif</th><th>Montant</th></tr></thead><tbody>${payRows||'<tr><td colspan="5">Aucun versement sur cette période.</td></tr>'}<tr class="total"><td colspan="4">TOTAL</td><td class="n">${fmt(paymentTotal)}</td></tr></tbody></table><h2>C. Situation financière</h2><table class="balance"><tbody><tr><td>Solde reporté au début de la période</td><td class="n">${fmt(opening)} DA</td></tr><tr><td>Total des approvisionnements TTC</td><td class="n">${fmt(purchaseTotal)} DA</td></tr><tr><td>Total des versements</td><td class="n">− ${fmt(paymentTotal)} DA</td></tr><tr><td>Mouvement net de la période</td><td class="n">${fmt(movement)} DA</td></tr><tr class="total"><td>${esc(balanceLabel)}</td><td class="n">${fmt(Math.abs(closing))} DA</td></tr></tbody></table><p>Généré le ${esc(frDate(aujourdhui()))} par CBPManagement.</p></body></html>`;
-    const w = window.open("", "_blank");
-    if (!w) { status.textContent = "Autorisez les fenêtres pop-up pour afficher et imprimer l'état."; return; }
-    w.document.open(); w.document.write(html); w.document.close();
+    try {
+      currentReport = buildReport(party, from, to);
+      renderStatementInDialog(result, currentReport.content);
+      printButton.hidden = false;
+      status.textContent = "État affiché ci-dessus. Cliquez sur Imprimer pour ouvrir l'aperçu dans une autre fenêtre.";
+    } catch (error) {
+      currentReport = null; printButton.hidden = true;
+      status.textContent = `Impossible de préparer l'état : ${error?.message || error}`;
+    }
+  };
+  printButton.onclick = () => {
+    if (currentReport) openStatementPrintPreview(currentReport.title, currentReport.content, status);
   };
   dlg.showModal();
+}
+
+function ouvrirEtatClient() {
+  const clients = actifs("client").slice().sort((a,b) => String(a.nom||"").localeCompare(String(b.nom||""), "fr"));
+  createPartyStatementDialog({
+    title: "État des clients",
+    description: "Situation détaillée : livraisons, versements, remises, remboursements et solde final. Les opérations présentes dans la copie locale sont prises en compte.",
+    partyLabel: "Client",
+    parties: clients,
+    buildReport: (client, from, to) => {
+      const production = actifs("prod").filter(r => statementMatchesParty(r.client, client));
+      const receipts = actifs("recette").filter(r => statementMatchesParty(r.debiteur, client));
+      const refunds = actifs("depense").filter(r => expenseMatchesParty(r, "Remboursement client", "client", client));
+      const inside = r => String(r.date || "") >= from && String(r.date || "") <= to;
+      const before = r => String(r.date || "") !== "" && String(r.date) < from;
+      const periodProduction = production.filter(inside);
+      const grouped = new Map();
+      for (const r of periodProduction) {
+        const product = nomDe("prod_fini", r.produit, "nom") || r.produit || "";
+        const rateLabel = nb(r.tvam) > 0 ? fmt(r.taux) + " %" : "—";
+        const key = [r.date || "", product, r.nature || "", nb(r.pu), rateLabel].join("\u001f");
+        const g = grouped.get(key) || {date:r.date||"", product, nature:r.nature||"", qte:0, pu:nb(r.pu), rateLabel, ht:0, tvam:0, ttc:0};
+        g.qte += nb(r.qte); g.ht += nb(r.ht); g.tvam += nb(r.tvam); g.ttc += nb(r.ttc); grouped.set(key,g);
+      }
+      const deliveryRows = [...grouped.values()].sort((a,b)=>a.date.localeCompare(b.date)||a.product.localeCompare(b.product,"fr"));
+      const deliveryTotal = r2(periodProduction.reduce((sum,r)=>sum+nb(r.ttc),0));
+      const receiptPeriod = receipts.filter(inside);
+      const receiptGroups = new Map();
+      for (const r of receiptPeriod) {
+        const key = [r.date || "", r.mode || ""].join("\u001f");
+        const g = receiptGroups.get(key) || {date:r.date||"", mode:r.mode||"", montant:0, remise:0, net:0};
+        g.montant += nb(r.montant); g.remise += nb(r.remise); g.net += nb(r.net); receiptGroups.set(key,g);
+      }
+      const receiptRows = [...receiptGroups.values()].sort((a,b)=>a.date.localeCompare(b.date)||a.mode.localeCompare(b.mode,"fr"));
+      const receiptTotal = r2(receiptPeriod.reduce((sum,r)=>sum+nb(r.montant),0));
+      const discountTotal = r2(receiptPeriod.reduce((sum,r)=>sum+nb(r.remise),0));
+      const netTotal = r2(receiptPeriod.reduce((sum,r)=>sum+nb(r.net),0));
+      const refundPeriod = refunds.filter(inside).sort((a,b)=>String(a.date||"").localeCompare(String(b.date||"")));
+      const refundTotal = r2(refundPeriod.reduce((sum,r)=>sum+nb(r.montant),0));
+      const openingDeliveries = production.filter(before).reduce((sum,r)=>sum+nb(r.ttc),0);
+      const openingReceipts = receipts.filter(before).reduce((sum,r)=>sum+nb(r.montant),0);
+      const openingRefunds = refunds.filter(before).reduce((sum,r)=>sum+nb(r.montant),0);
+      const opening = r2(openingDeliveries-openingReceipts+openingRefunds);
+      const movement = r2(deliveryTotal-receiptTotal+refundTotal);
+      const closing = r2(opening+movement);
+      const deliveryHtml = deliveryRows.map(r=>`<tr><td>${esc(frDate(r.date))}</td><td>${esc(r.product)}</td><td>${esc(r.nature)}</td><td class="n">${fmt(r.qte)}</td><td class="n">${fmt(r.pu)}</td><td class="n">${esc(r.rateLabel)}</td><td class="n">${fmt(r.ht)}</td><td class="n">${fmt(r.tvam)}</td><td class="n">${fmt(r.ttc)}</td></tr>`).join("");
+      const receiptHtml = receiptRows.map(r=>`<tr><td>${esc(frDate(r.date))}</td><td>${esc(r.mode)}</td><td class="n">${fmt(r.montant)}</td><td class="n">${fmt(r.remise)}</td><td class="n">${fmt(r.net)}</td></tr>`).join("");
+      const refundHtml = refundPeriod.map(r=>`<tr><td>${esc(frDate(r.date))}</td><td>${esc(r.mode||"")}</td><td>${esc(r.info||"")}</td><td>${esc(r.motif||"")}</td><td class="n">${fmt(r.montant)}</td></tr>`).join("");
+      const balanceLabel = closing > 0 ? "Solde réel à la fin de la période" : closing < 0 ? "Crédit du client à la fin de la période" : "Solde à la fin de la période";
+      const content = `<h1>${esc(ent?.nom||"CBPManagement")} — ÉTAT DU CLIENT</h1><p>Période du ${esc(frDate(from))} au ${esc(frDate(to))}</p><div class="meta"><div><b>Client :</b> ${esc(client.nom)}</div><div><b>Téléphone :</b> ${esc(client.tel||client.mob||"—")}</div><div><b>Adresse :</b> ${esc(client.adr||"—")}</div><div><b>E-mail :</b> ${esc(client.email||"—")}</div></div><h2>A. Livraisons</h2><table><thead><tr><th>Date</th><th>Produit</th><th>Nature</th><th>Quantité</th><th>P.U.</th><th>TVA</th><th>HT</th><th>TVA</th><th>TTC</th></tr></thead><tbody>${deliveryHtml||'<tr><td colspan="9">Aucune livraison sur cette période.</td></tr>'}<tr class="total"><td colspan="3">TOTAL</td><td class="n">${fmt(deliveryRows.reduce((s,r)=>s+r.qte,0))}</td><td></td><td></td><td class="n">${fmt(deliveryRows.reduce((s,r)=>s+r.ht,0))}</td><td class="n">${fmt(deliveryRows.reduce((s,r)=>s+r.tvam,0))}</td><td class="n">${fmt(deliveryTotal)}</td></tr></tbody></table><h2>B. Versements</h2><table><thead><tr><th>Date</th><th>Mode de paiement</th><th>Montant</th><th>Remise</th><th>Net versé</th></tr></thead><tbody>${receiptHtml||'<tr><td colspan="5">Aucun versement sur cette période.</td></tr>'}<tr class="total"><td colspan="2">TOTAL</td><td class="n">${fmt(receiptTotal)}</td><td class="n">${fmt(discountTotal)}</td><td class="n">${fmt(netTotal)}</td></tr></tbody></table><h2>C. Remboursements au client</h2><table><thead><tr><th>Date</th><th>Mode de paiement</th><th>Référence</th><th>Motif</th><th>Montant</th></tr></thead><tbody>${refundHtml||'<tr><td colspan="5">Aucun remboursement sur cette période.</td></tr>'}<tr class="total"><td colspan="4">TOTAL</td><td class="n">${fmt(refundTotal)}</td></tr></tbody></table><h2>D. Situation financière</h2><table class="balance"><tbody><tr><td>Solde reporté au début de la période</td><td class="n">${fmt(opening)} DA</td></tr><tr><td>Total des livraisons (TTC)</td><td class="n">${fmt(deliveryTotal)} DA</td></tr><tr><td>Total des versements (montant)</td><td class="n">− ${fmt(receiptTotal)} DA</td></tr><tr><td>Dont remises accordées</td><td class="n">${fmt(discountTotal)} DA</td></tr><tr><td>Total des remboursements au client</td><td class="n">${fmt(refundTotal)} DA</td></tr><tr><td>Mouvement net de la période</td><td class="n">${fmt(movement)} DA</td></tr><tr class="total"><td>${esc(balanceLabel)}</td><td class="n">${fmt(Math.abs(closing))} DA</td></tr></tbody></table><p class="muted">Généré le ${esc(frDate(aujourdhui()))} par CBPManagement.</p>`;
+      return {title:`État du client - ${client.nom}`, content};
+    }
+  });
+}
+
+function ouvrirEtatFournisseur() {
+  const suppliers = actifs("fournisseur").slice().sort((a,b) => String(a.nom||"").localeCompare(String(b.nom||""), "fr"));
+  createPartyStatementDialog({
+    title: "État des fournisseurs",
+    description: "Situation détaillée : approvisionnements, versements, solde reporté et solde final. Les opérations présentes dans la copie locale sont prises en compte.",
+    partyLabel: "Fournisseur",
+    parties: suppliers,
+    buildReport: (supplier, from, to) => {
+      const purchases = actifs("appro").filter(r => statementMatchesParty(r.fournisseur, supplier));
+      const payments = actifs("depense").filter(r => expenseMatchesParty(r, "Fournisseur", "fournisseur", supplier));
+      const inside = (r) => String(r.date || "") >= from && String(r.date || "") <= to;
+      const before = (r) => String(r.date || "") && String(r.date) < from;
+      const grouped = new Map();
+      const collectPurchase = (r) => {
+        const product = nomDe("prod_appro", r.produit, "nom") || r.produit || "";
+        const rate = nb(r.tvam) > 0 ? (nb(r.taux) || (nb(r.ht) > 0 ? r2(nb(r.tvam) / nb(r.ht) * 100) : 0)) : 0;
+        const key = [r.date || "", product, r.nature || "", nb(r.pu), rate].join("\u001f");
+        const g = grouped.get(key) || {date:r.date||"", product, nature:r.nature||"", qte:0, pu:nb(r.pu), taux:rate, ht:0, tvam:0, ttc:0};
+        g.qte += nb(r.qte); g.ht += nb(r.ht); g.tvam += nb(r.tvam); g.ttc += nb(r.ttc); grouped.set(key,g);
+      };
+      const currentPurchases = purchases.filter(inside); currentPurchases.forEach(collectPurchase);
+      const currentPayments = payments.filter(inside);
+      const openingPurchases = purchases.filter(before).reduce((s,r)=>s+nb(r.ttc),0);
+      const openingPayments = payments.filter(before).reduce((s,r)=>s+nb(r.montant),0);
+      const opening = r2(openingPurchases-openingPayments);
+      const purchaseTotal = r2(currentPurchases.reduce((s,r)=>s+nb(r.ttc),0));
+      const paymentTotal = r2(currentPayments.reduce((s,r)=>s+nb(r.montant),0));
+      const movement = r2(purchaseTotal-paymentTotal), closing = r2(opening+movement);
+      const rows = [...grouped.values()].sort((a,b)=>a.date.localeCompare(b.date)||a.product.localeCompare(b.product,"fr"));
+      const purchaseRows = rows.map(r=>`<tr><td>${esc(frDate(r.date))}</td><td>${esc(r.product)}</td><td>${esc(r.nature)}</td><td class="n">${fmt(r.qte)}</td><td class="n">${fmt(r.pu)}</td><td class="n">${r.taux?fmt(r.taux)+" %":"—"}</td><td class="n">${fmt(r.ht)}</td><td class="n">${fmt(r.tvam)}</td><td class="n">${fmt(r.ttc)}</td></tr>`).join("");
+      const payRows = currentPayments.slice().sort((a,b)=>String(a.date||"").localeCompare(String(b.date||""))).map(r=>`<tr><td>${esc(frDate(r.date))}</td><td>${esc(r.mode||"")}</td><td>${esc(r.info||"")}</td><td>${esc(r.motif||"")}</td><td class="n">${fmt(r.montant)}</td></tr>`).join("");
+      const balanceLabel = closing > 0 ? "Solde réel dû au fournisseur" : closing < 0 ? "Avance versée au fournisseur" : "Solde à la fin de la période";
+      const content = `<h1>${esc(ent?.nom||"CBPManagement")} — ÉTAT DU FOURNISSEUR</h1><p>Période du ${esc(frDate(from))} au ${esc(frDate(to))}</p><div class="meta"><div><b>Fournisseur :</b> ${esc(supplier.nom)}</div><div><b>Téléphone :</b> ${esc(supplier.tel||supplier.mob||"—")}</div><div><b>Adresse :</b> ${esc(supplier.adr||"—")}</div><div><b>E-mail :</b> ${esc(supplier.email||"—")}</div></div><h2>A. Approvisionnements et services</h2><table><thead><tr><th>Date</th><th>Produit</th><th>Nature</th><th>Quantité</th><th>P.U.</th><th>TVA</th><th>HT</th><th>TVA</th><th>TTC</th></tr></thead><tbody>${purchaseRows||'<tr><td colspan="9">Aucun approvisionnement sur cette période.</td></tr>'}<tr class="total"><td colspan="3">TOTAL</td><td class="n">${fmt(rows.reduce((s,r)=>s+r.qte,0))}</td><td></td><td></td><td class="n">${fmt(rows.reduce((s,r)=>s+r.ht,0))}</td><td class="n">${fmt(rows.reduce((s,r)=>s+r.tvam,0))}</td><td class="n">${fmt(purchaseTotal)}</td></tr></tbody></table><h2>B. Versements</h2><table><thead><tr><th>Date</th><th>Mode de paiement</th><th>Référence</th><th>Motif</th><th>Montant</th></tr></thead><tbody>${payRows||'<tr><td colspan="5">Aucun versement sur cette période.</td></tr>'}<tr class="total"><td colspan="4">TOTAL</td><td class="n">${fmt(paymentTotal)}</td></tr></tbody></table><h2>C. Situation financière</h2><table class="balance"><tbody><tr><td>Solde reporté au début de la période</td><td class="n">${fmt(opening)} DA</td></tr><tr><td>Total des approvisionnements TTC</td><td class="n">${fmt(purchaseTotal)} DA</td></tr><tr><td>Total des versements</td><td class="n">− ${fmt(paymentTotal)} DA</td></tr><tr><td>Mouvement net de la période</td><td class="n">${fmt(movement)} DA</td></tr><tr class="total"><td>${esc(balanceLabel)}</td><td class="n">${fmt(Math.abs(closing))} DA</td></tr></tbody></table><p class="muted">Généré le ${esc(frDate(aujourdhui()))} par CBPManagement.</p>`;
+      return {title:`État du fournisseur - ${supplier.nom}`, content};
+    }
+  });
 }
 
 function imprimerBonLivraison() {
@@ -1195,7 +1352,7 @@ function imprimerBonLivraison() {
 }
 
 const MODULES = [
-  ["clients", "Clients", () => ({ table: "client", titre: "Gestion des clients", fields: fParty("client"), unique: "nom", sort: "nom", filtres: [{ t: "cb", l: "Catégorie", k: "cat" }] })],
+  ["clients", "Clients", () => ({ table: "client", titre: "Gestion des clients", fields: fParty("client"), unique: "nom", sort: "nom", filtres: [{ t: "cb", l: "Catégorie", k: "cat" }], extra: [{ t: "État des clients", f: ouvrirEtatClient }] })],
   ["fournisseurs", "Fournisseurs", () => ({ table: "fournisseur", titre: "Gestion des fournisseurs", fields: fParty("fournisseur"), unique: "nom", sort: "nom", filtres: [{ t: "cb", l: "Catégorie", k: "cat" }],
     extra: [{ t: "État des fournisseurs", f: ouvrirEtatFournisseur }] })],
   ["appro", "Appros et service", () => ({
@@ -1393,7 +1550,7 @@ window.addEventListener("beforeunload",(event)=>{
 });
 
 // ===== Démarrage : comptes Web existants + copie de travail locale =====
-const TABLES = ["client","fournisseur","appro","prod","prod_appro","prod_fini","silo","personnel","materiel","parametres","depense","affect","sousaff"];
+const TABLES = ["client","fournisseur","appro","prod","recette","prod_appro","prod_fini","silo","personnel","materiel","parametres","depense","affect","sousaff"];
 function demarrerSynchro(){
   TABLES.forEach(t=>{
     tous[t]=new Map();
