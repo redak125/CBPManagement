@@ -213,15 +213,104 @@ dialog::backdrop{background:rgba(15,27,45,.55);backdrop-filter:blur(2px)}
   .cbpm-aff-dialog{max-height:94vh;overflow:auto}
 }
 @media(max-width:600px){.comp-controls .champ{min-width:100%}.logo-editor{align-items:flex-start}}
+
+/* ===== CBPManagement Web — identité visuelle ERP ===== */
+:root{--ink:#17263b;--steel:#40536b;--sig:#2563eb;--bg:#f4f6fa;--card:#fff;--line:#e3e9f1;--mut:#718096;--r:13px;--shadow:0 3px 14px rgba(23,38,59,.045)}
+body{grid-template-columns:258px minmax(0,1fr);background:#f4f6fa;color:#17263b}
+aside{background:#111e31;padding:18px 0 14px;display:flex;flex-direction:column;box-shadow:4px 0 18px rgba(13,27,46,.08)}
+.logo{padding:2px 20px 22px;gap:12px;align-items:center}
+.mark{width:34px;height:34px;border-radius:10px;flex:0 0 34px;background:linear-gradient(145deg,#60a5fa,#2563eb);box-shadow:0 5px 14px rgba(37,99,235,.3)}
+.mark:after{inset:9px;border-radius:3px}
+.brand-copy{display:flex;flex-direction:column;line-height:1.25}
+.brand-copy b{font-size:16px;letter-spacing:.1px;color:#fff}
+.brand-copy small{font-size:10px;color:#8fa2bb;font-weight:500;margin-top:4px;letter-spacing:.07em;text-transform:uppercase}
+#menu{overflow-y:auto;flex:1;padding:0 7px 14px}
+#menu .nav-section{padding:19px 13px 7px;color:#71849d;font-size:10px;letter-spacing:.13em}
+#menu button{width:100%;margin:2px 0;padding:10px 13px;color:#b7c4d5;border-radius:9px;font-size:13px;display:flex;align-items:center;gap:10px}
+#menu button:before{content:"";width:6px;height:6px;border:1.5px solid currentColor;border-radius:2px;opacity:.7;flex:0 0 6px}
+#menu button:hover{background:rgba(255,255,255,.07);color:#fff}
+#menu button.on{background:linear-gradient(100deg,#2563eb,#3478ee);color:#fff;box-shadow:0 5px 13px rgba(37,99,235,.24)}
+#menu button.on:before{background:#fff;border-color:#fff}
+.sidebar-foot{margin:12px 16px 2px;padding:12px 9px 0;border-top:1px solid rgba(255,255,255,.09);font-size:10px;color:#7e90a8;display:flex;align-items:center;gap:8px}
+.sidebar-dot{width:7px;height:7px;border-radius:50%;background:#27c18a;box-shadow:0 0 0 3px rgba(39,193,138,.13)}
+main{padding:18px 25px 32px;gap:15px;min-width:0}
+.bar{border:1px solid #e5eaf1;border-radius:12px;padding:11px 15px;background:rgba(255,255,255,.96);box-shadow:0 2px 9px rgba(23,38,59,.035)}
+.bar strong{font-size:14px;color:#17263b}.bar small{font-size:11px;color:#77869a;margin-top:2px}
+.bar .bd{gap:7px}
+.bar button{font-size:11px;padding:8px 11px;border-radius:7px}
+#sync{font-size:10px}
+#info{border-radius:9px;font-size:12px}
+#vue{gap:15px}
+.card,.advanced-card,.dash-panel{border:1px solid #e6ebf2;border-radius:13px;box-shadow:0 2px 10px rgba(20,39,66,.035)}
+button{border-radius:7px}
+.advanced-card{padding:18px}
+.advanced-card h3{font-size:14px;color:#243a55}
+.champ input,.champ select,.champ textarea,.advanced-toolbar input,.advanced-toolbar select,.adv-input{border-color:#dce4ee;border-radius:7px}
+th{background:#f5f7fb;color:#52647a}
+.tcard{border-radius:12px}
+@media(max-width:900px){body{grid-template-columns:1fr}aside{height:auto;max-height:none}.sidebar-foot{display:none}#menu{display:flex;flex-wrap:nowrap;overflow-x:auto}#menu button{width:auto;flex:0 0 auto}main{padding:12px}}
+/* Tableau de bord */
+.dash-welcome{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:7px 2px 3px}
+.dash-eyebrow{font-size:10px;letter-spacing:.16em;font-weight:800;color:#66809e}
+.dash-welcome h1{font-size:25px;letter-spacing:-.04em;margin:5px 0 3px;color:#182b43}
+.dash-welcome p{font-size:12px;color:#78879a;margin:0}
+.dash-refresh{background:#fff!important;color:#344b67!important;border:1px solid #dfe6ef!important;box-shadow:none!important;padding:9px 13px!important}
+.dash-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.dash-kpi{background:#fff;border:1px solid #e5eaf1;border-radius:13px;padding:15px 16px;box-shadow:0 2px 10px rgba(20,39,66,.035);min-width:0}
+.dash-kpi-top{display:flex;justify-content:space-between;align-items:center;color:#718096;font-size:11px;font-weight:650;gap:8px}
+.dash-kpi-top i{font-style:normal;width:29px;height:29px;border-radius:9px;background:#edf4ff;color:#2764c7;display:grid;place-items:center;font-size:16px}
+.dash-kpi strong{display:block;font-size:clamp(17px,1.65vw,24px);line-height:1.25;letter-spacing:-.035em;margin:12px 0 6px;color:#1b2d45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-kpi strong small{font-size:12px;color:#718096;font-weight:600}
+.dash-kpi footer{font-size:10px;color:#8b98a9}
+.dash-panels{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.85fr);gap:14px}
+.dash-panel{background:#fff;padding:17px 18px;min-width:0}
+.dash-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:13px}
+.dash-panel-head h3{margin:0;color:#253a54;font-size:13px;font-weight:750}
+.dash-panel-head p{margin:4px 0 0;color:#8794a5;font-size:10px}
+.dash-chip{font-size:10px;color:#54749b;background:#f1f5fa;border-radius:6px;padding:4px 8px}
+.dash-bars{height:180px;display:flex;align-items:stretch;gap:10px;padding:8px 2px 0}
+.dash-bar-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px}
+.dash-bar-col>b{font-size:9px;color:#73849a;font-weight:600}
+.dash-bar-track{flex:1;width:100%;max-width:35px;border-radius:6px;background:#f0f3f8;display:flex;align-items:flex-end;overflow:hidden}
+.dash-bar-track span{display:block;width:100%;min-height:3px;background:linear-gradient(180deg,#65a3ff,#2865d7);border-radius:6px 6px 2px 2px}
+.dash-bar-col>small{font-size:9px;color:#8794a5}
+.dash-fin-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #eef1f5;font-size:11px;color:#75849a}
+.dash-fin-row b{font-size:11px;color:#263b55;white-space:nowrap}
+.dash-fin-row b.positive{color:#13865f}.dash-fin-row b.negative{color:#c05c56}
+.dash-fin-total{display:flex;justify-content:space-between;gap:10px;padding-top:14px;font-size:11px;color:#52647a;font-weight:650}
+.dash-fin-total strong{color:#1e3652;font-size:14px;white-space:nowrap}
+.dash-rank{display:grid;grid-template-columns:minmax(75px,.9fr) minmax(60px,1.3fr) auto;align-items:center;gap:9px;margin:13px 0;font-size:10px;color:#60738a}
+.dash-rank>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dash-rank>div{height:6px;border-radius:9px;background:#eff3f8;overflow:hidden}
+.dash-rank>div i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#76a9f7,#2e6fdc)}
+.dash-rank>b{font-size:10px;color:#405671;white-space:nowrap}
+.dash-alerts{display:flex;flex-direction:column;gap:9px}
+.dash-alert{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;background:#f7f9fc}
+.dash-alert>span{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;flex:0 0 23px}
+.dash-alert.ok>span{background:#e3f5ed;color:#15966a}.dash-alert.warn>span{background:#fff1dc;color:#bd7b20}
+.dash-alert div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.dash-alert b{font-size:10px;color:#435873}.dash-alert small{font-size:9px;color:#8794a5}
+.dash-recent{padding-bottom:7px}
+.dash-link{background:transparent!important;color:#2e68c6!important;padding:3px 0!important;box-shadow:none!important;font-size:10px!important}
+.dash-table-wrap{overflow:auto}
+.dash-table-wrap table{font-size:11px}
+.dash-table-wrap th{font-size:9px;padding:9px 10px}
+.dash-table-wrap td{padding:9px 10px}
+.dash-empty{color:#94a0af;text-align:center;padding:17px!important;font-size:11px}
+@media(max-width:1150px){.dash-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.dash-panels{grid-template-columns:1fr}.dash-welcome h1{font-size:21px}.dash-kpi strong{font-size:18px}}
+@media(max-width:480px){.dash-kpis{grid-template-columns:1fr 1fr;gap:8px}.dash-kpi{padding:12px}.dash-kpi strong{font-size:15px}.dash-fin-row{font-size:10px}}
+
 </style>
 </head>
 <body>
-<aside><div class="logo"><span class="mark"></span>CBPManagement</div><nav id="menu"></nav></aside>
+<aside><div class="logo"><span class="mark"></span><span class="brand-copy"><b>CBPManagement</b><small>Gestion intégrée · BPE</small></span></div>
+<nav id="menu"></nav><div class="sidebar-foot"><span class="sidebar-dot"></span><span>Plateforme de gestion</span></div></aside>
 <main>
   <div class="bar"><div><strong id="entNom">…</strong><small id="userInfo"></small></div>
     <div class="bd"><span id="sync" class="p">● …</span>
       <div class="cbpm-savebar"><button id="btnSaveAll" type="button" disabled>Enregistrer</button><span id="saveCount">Aucune modification en attente</span><button id="btnConflicts" type="button" hidden>Voir les conflits</button><button id="btnExportXlsx" class="b-blue" type="button">Exporter Excel</button><button id="btnImportXlsx" class="b-blue" type="button">Importer Excel</button><input id="inputXlsx" type="file" accept=".xlsx,.xls" hidden></div>
-      <button id="btnHelp" class="b-navy" type="button">Aide</button><button id="btnQuit" class="b-red" type="button">Quitter</button><button id="btnOut" class="b-navy" type="button">Déconnexion</button></div></div>
+      <button id="btnHelp" class="b-navy" type="button">Aide</button><button id="btnOut" class="b-navy" type="button">Déconnexion</button></div></div>
   <p id="info">Chargement…</p>
   <div id="vue" hidden></div>
 </main>
@@ -1400,7 +1489,95 @@ const STATEMENT_CSS = `
 `;
 
 function renderStatementInDialog(target, content) {
-  target.innerHTML = `<style>${STATEMENT_CSS}</style><section class="statement-sheet">${content}</section>`;
+  target.innerHTML = `<style>${STATEMENT_CSS}
+/* ===== CBPManagement Web — identité visuelle ERP ===== */
+:root{--ink:#17263b;--steel:#40536b;--sig:#2563eb;--bg:#f4f6fa;--card:#fff;--line:#e3e9f1;--mut:#718096;--r:13px;--shadow:0 3px 14px rgba(23,38,59,.045)}
+body{grid-template-columns:258px minmax(0,1fr);background:#f4f6fa;color:#17263b}
+aside{background:#111e31;padding:18px 0 14px;display:flex;flex-direction:column;box-shadow:4px 0 18px rgba(13,27,46,.08)}
+.logo{padding:2px 20px 22px;gap:12px;align-items:center}
+.mark{width:34px;height:34px;border-radius:10px;flex:0 0 34px;background:linear-gradient(145deg,#60a5fa,#2563eb);box-shadow:0 5px 14px rgba(37,99,235,.3)}
+.mark:after{inset:9px;border-radius:3px}
+.brand-copy{display:flex;flex-direction:column;line-height:1.25}
+.brand-copy b{font-size:16px;letter-spacing:.1px;color:#fff}
+.brand-copy small{font-size:10px;color:#8fa2bb;font-weight:500;margin-top:4px;letter-spacing:.07em;text-transform:uppercase}
+#menu{overflow-y:auto;flex:1;padding:0 7px 14px}
+#menu .nav-section{padding:19px 13px 7px;color:#71849d;font-size:10px;letter-spacing:.13em}
+#menu button{width:100%;margin:2px 0;padding:10px 13px;color:#b7c4d5;border-radius:9px;font-size:13px;display:flex;align-items:center;gap:10px}
+#menu button:before{content:"";width:6px;height:6px;border:1.5px solid currentColor;border-radius:2px;opacity:.7;flex:0 0 6px}
+#menu button:hover{background:rgba(255,255,255,.07);color:#fff}
+#menu button.on{background:linear-gradient(100deg,#2563eb,#3478ee);color:#fff;box-shadow:0 5px 13px rgba(37,99,235,.24)}
+#menu button.on:before{background:#fff;border-color:#fff}
+.sidebar-foot{margin:12px 16px 2px;padding:12px 9px 0;border-top:1px solid rgba(255,255,255,.09);font-size:10px;color:#7e90a8;display:flex;align-items:center;gap:8px}
+.sidebar-dot{width:7px;height:7px;border-radius:50%;background:#27c18a;box-shadow:0 0 0 3px rgba(39,193,138,.13)}
+main{padding:18px 25px 32px;gap:15px;min-width:0}
+.bar{border:1px solid #e5eaf1;border-radius:12px;padding:11px 15px;background:rgba(255,255,255,.96);box-shadow:0 2px 9px rgba(23,38,59,.035)}
+.bar strong{font-size:14px;color:#17263b}.bar small{font-size:11px;color:#77869a;margin-top:2px}
+.bar .bd{gap:7px}
+.bar button{font-size:11px;padding:8px 11px;border-radius:7px}
+#sync{font-size:10px}
+#info{border-radius:9px;font-size:12px}
+#vue{gap:15px}
+.card,.advanced-card,.dash-panel{border:1px solid #e6ebf2;border-radius:13px;box-shadow:0 2px 10px rgba(20,39,66,.035)}
+button{border-radius:7px}
+.advanced-card{padding:18px}
+.advanced-card h3{font-size:14px;color:#243a55}
+.champ input,.champ select,.champ textarea,.advanced-toolbar input,.advanced-toolbar select,.adv-input{border-color:#dce4ee;border-radius:7px}
+th{background:#f5f7fb;color:#52647a}
+.tcard{border-radius:12px}
+@media(max-width:900px){body{grid-template-columns:1fr}aside{height:auto;max-height:none}.sidebar-foot{display:none}#menu{display:flex;flex-wrap:nowrap;overflow-x:auto}#menu button{width:auto;flex:0 0 auto}main{padding:12px}}
+/* Tableau de bord */
+.dash-welcome{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:7px 2px 3px}
+.dash-eyebrow{font-size:10px;letter-spacing:.16em;font-weight:800;color:#66809e}
+.dash-welcome h1{font-size:25px;letter-spacing:-.04em;margin:5px 0 3px;color:#182b43}
+.dash-welcome p{font-size:12px;color:#78879a;margin:0}
+.dash-refresh{background:#fff!important;color:#344b67!important;border:1px solid #dfe6ef!important;box-shadow:none!important;padding:9px 13px!important}
+.dash-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.dash-kpi{background:#fff;border:1px solid #e5eaf1;border-radius:13px;padding:15px 16px;box-shadow:0 2px 10px rgba(20,39,66,.035);min-width:0}
+.dash-kpi-top{display:flex;justify-content:space-between;align-items:center;color:#718096;font-size:11px;font-weight:650;gap:8px}
+.dash-kpi-top i{font-style:normal;width:29px;height:29px;border-radius:9px;background:#edf4ff;color:#2764c7;display:grid;place-items:center;font-size:16px}
+.dash-kpi strong{display:block;font-size:clamp(17px,1.65vw,24px);line-height:1.25;letter-spacing:-.035em;margin:12px 0 6px;color:#1b2d45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-kpi strong small{font-size:12px;color:#718096;font-weight:600}
+.dash-kpi footer{font-size:10px;color:#8b98a9}
+.dash-panels{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.85fr);gap:14px}
+.dash-panel{background:#fff;padding:17px 18px;min-width:0}
+.dash-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:13px}
+.dash-panel-head h3{margin:0;color:#253a54;font-size:13px;font-weight:750}
+.dash-panel-head p{margin:4px 0 0;color:#8794a5;font-size:10px}
+.dash-chip{font-size:10px;color:#54749b;background:#f1f5fa;border-radius:6px;padding:4px 8px}
+.dash-bars{height:180px;display:flex;align-items:stretch;gap:10px;padding:8px 2px 0}
+.dash-bar-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px}
+.dash-bar-col>b{font-size:9px;color:#73849a;font-weight:600}
+.dash-bar-track{flex:1;width:100%;max-width:35px;border-radius:6px;background:#f0f3f8;display:flex;align-items:flex-end;overflow:hidden}
+.dash-bar-track span{display:block;width:100%;min-height:3px;background:linear-gradient(180deg,#65a3ff,#2865d7);border-radius:6px 6px 2px 2px}
+.dash-bar-col>small{font-size:9px;color:#8794a5}
+.dash-fin-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #eef1f5;font-size:11px;color:#75849a}
+.dash-fin-row b{font-size:11px;color:#263b55;white-space:nowrap}
+.dash-fin-row b.positive{color:#13865f}.dash-fin-row b.negative{color:#c05c56}
+.dash-fin-total{display:flex;justify-content:space-between;gap:10px;padding-top:14px;font-size:11px;color:#52647a;font-weight:650}
+.dash-fin-total strong{color:#1e3652;font-size:14px;white-space:nowrap}
+.dash-rank{display:grid;grid-template-columns:minmax(75px,.9fr) minmax(60px,1.3fr) auto;align-items:center;gap:9px;margin:13px 0;font-size:10px;color:#60738a}
+.dash-rank>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dash-rank>div{height:6px;border-radius:9px;background:#eff3f8;overflow:hidden}
+.dash-rank>div i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#76a9f7,#2e6fdc)}
+.dash-rank>b{font-size:10px;color:#405671;white-space:nowrap}
+.dash-alerts{display:flex;flex-direction:column;gap:9px}
+.dash-alert{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;background:#f7f9fc}
+.dash-alert>span{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;flex:0 0 23px}
+.dash-alert.ok>span{background:#e3f5ed;color:#15966a}.dash-alert.warn>span{background:#fff1dc;color:#bd7b20}
+.dash-alert div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.dash-alert b{font-size:10px;color:#435873}.dash-alert small{font-size:9px;color:#8794a5}
+.dash-recent{padding-bottom:7px}
+.dash-link{background:transparent!important;color:#2e68c6!important;padding:3px 0!important;box-shadow:none!important;font-size:10px!important}
+.dash-table-wrap{overflow:auto}
+.dash-table-wrap table{font-size:11px}
+.dash-table-wrap th{font-size:9px;padding:9px 10px}
+.dash-table-wrap td{padding:9px 10px}
+.dash-empty{color:#94a0af;text-align:center;padding:17px!important;font-size:11px}
+@media(max-width:1150px){.dash-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.dash-panels{grid-template-columns:1fr}.dash-welcome h1{font-size:21px}.dash-kpi strong{font-size:18px}}
+@media(max-width:480px){.dash-kpis{grid-template-columns:1fr 1fr;gap:8px}.dash-kpi{padding:12px}.dash-kpi strong{font-size:15px}.dash-fin-row{font-size:10px}}
+
+</style><section class="statement-sheet">${content}</section>`;
   target.hidden = false;
   target.scrollTop = 0;
 }
@@ -1425,7 +1602,95 @@ function openJavaPrintPreview(title,content,status,options={}){
     .statement-sheet{font:11px Arial,sans-serif;color:#172b40;background:#fff}.statement-sheet h1{font-size:16px;margin:0 0 4px;text-align:center}.statement-sheet h2{font-size:12px;margin:16px 0 7px;border-bottom:1px solid #9aa8b6;padding-bottom:4px;break-after:avoid}.statement-sheet p{margin:4px 0 10px;color:#506276}.statement-sheet .meta{display:grid;grid-template-columns:1fr 1fr;gap:4px 15px;margin:9px 0 13px}.statement-sheet .meta b{display:inline-block;min-width:100px}.statement-sheet table{border-collapse:collapse;width:100%;font-size:9px;margin:5px 0 8px;break-inside:auto}.statement-sheet th,.statement-sheet td{border:1px solid #c7d0d9;padding:4px;text-align:left;white-space:normal}.statement-sheet th{background:#edf2f6;color:#172b40;position:static;cursor:default}.statement-sheet .n{text-align:right;white-space:nowrap}.statement-sheet .total{font-weight:bold;background:#f0f3f6}.statement-sheet .balance{margin-top:8px;width:100%}.statement-sheet .balance td{font-size:11px}.statement-sheet .muted{color:#66788a}
     .receipt-copy{border:1px solid #222;padding:10px 12px;margin:0 0 10px;min-height:calc((${pageHeight}mm - ${margin*2}mm) / 2 - 5mm);break-inside:avoid}.receipt-copy h2,.bl-copy h2{text-align:center;font-size:15px;margin:4px 0 7px}.copy-label{text-align:right;font-style:italic;color:#555;font-size:9px;margin-bottom:5px}.receipt-fields{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.receipt-fields div{padding:5px 2px;border-bottom:1px solid #d2d2d2;min-height:25px}.receipt-fields b{display:inline-block;min-width:112px}.amount-box{border:1px solid #222;padding:8px 10px;margin:9px 0;font-size:14px;font-weight:bold;display:flex;justify-content:space-between}.amount-words{font-style:italic;font-size:10px;margin:8px 0 12px}.signatures{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:12px}.signatures div{height:52px;border:1px solid #aaa;padding:6px;font-weight:bold;font-size:9px}.bl-copy{border:1px solid #333;padding:8px 10px;margin:0 0 9px;break-inside:avoid}.bl-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.bl-grid div{padding:4px;border-bottom:1px solid #ddd}.bl-grid b{display:inline-block;min-width:120px}.visa{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.visa div{border:1px solid #999;height:40px;padding:4px;font-weight:bold;font-size:9px}
     @media print{@page{size:A4 ${orientation};margin:${margin}mm}html,body{background:#fff;width:auto;height:auto}.toolbar{display:none!important}.viewport{height:auto;overflow:visible;padding:0}#scaleBox{width:auto!important;transform:none!important;margin:0}.paper{width:auto!important;min-height:0!important;padding:0!important;box-shadow:none!important}.print-footer{break-inside:avoid}.receipt-copy,.bl-copy{break-inside:avoid}.statement-sheet tr{break-inside:avoid}}
-  </style></head><body><nav class="toolbar"><button id="prev" class="secondary">Précédente</button><span id="pageLabel">Page 1 / 1</span><button id="next" class="secondary">Suivante</button><button id="zoomOut" class="secondary">Zoom −</button><button id="zoomIn" class="secondary">Zoom +</button><button id="print">Imprimer</button><button id="close" class="secondary">Fermer</button></nav><div class="viewport" id="viewport"><div id="scaleBox"><article class="paper" id="paper">${header}<main class="statement-sheet">${content}</main>${footer}</article></div></div>
+  
+/* ===== CBPManagement Web — identité visuelle ERP ===== */
+:root{--ink:#17263b;--steel:#40536b;--sig:#2563eb;--bg:#f4f6fa;--card:#fff;--line:#e3e9f1;--mut:#718096;--r:13px;--shadow:0 3px 14px rgba(23,38,59,.045)}
+body{grid-template-columns:258px minmax(0,1fr);background:#f4f6fa;color:#17263b}
+aside{background:#111e31;padding:18px 0 14px;display:flex;flex-direction:column;box-shadow:4px 0 18px rgba(13,27,46,.08)}
+.logo{padding:2px 20px 22px;gap:12px;align-items:center}
+.mark{width:34px;height:34px;border-radius:10px;flex:0 0 34px;background:linear-gradient(145deg,#60a5fa,#2563eb);box-shadow:0 5px 14px rgba(37,99,235,.3)}
+.mark:after{inset:9px;border-radius:3px}
+.brand-copy{display:flex;flex-direction:column;line-height:1.25}
+.brand-copy b{font-size:16px;letter-spacing:.1px;color:#fff}
+.brand-copy small{font-size:10px;color:#8fa2bb;font-weight:500;margin-top:4px;letter-spacing:.07em;text-transform:uppercase}
+#menu{overflow-y:auto;flex:1;padding:0 7px 14px}
+#menu .nav-section{padding:19px 13px 7px;color:#71849d;font-size:10px;letter-spacing:.13em}
+#menu button{width:100%;margin:2px 0;padding:10px 13px;color:#b7c4d5;border-radius:9px;font-size:13px;display:flex;align-items:center;gap:10px}
+#menu button:before{content:"";width:6px;height:6px;border:1.5px solid currentColor;border-radius:2px;opacity:.7;flex:0 0 6px}
+#menu button:hover{background:rgba(255,255,255,.07);color:#fff}
+#menu button.on{background:linear-gradient(100deg,#2563eb,#3478ee);color:#fff;box-shadow:0 5px 13px rgba(37,99,235,.24)}
+#menu button.on:before{background:#fff;border-color:#fff}
+.sidebar-foot{margin:12px 16px 2px;padding:12px 9px 0;border-top:1px solid rgba(255,255,255,.09);font-size:10px;color:#7e90a8;display:flex;align-items:center;gap:8px}
+.sidebar-dot{width:7px;height:7px;border-radius:50%;background:#27c18a;box-shadow:0 0 0 3px rgba(39,193,138,.13)}
+main{padding:18px 25px 32px;gap:15px;min-width:0}
+.bar{border:1px solid #e5eaf1;border-radius:12px;padding:11px 15px;background:rgba(255,255,255,.96);box-shadow:0 2px 9px rgba(23,38,59,.035)}
+.bar strong{font-size:14px;color:#17263b}.bar small{font-size:11px;color:#77869a;margin-top:2px}
+.bar .bd{gap:7px}
+.bar button{font-size:11px;padding:8px 11px;border-radius:7px}
+#sync{font-size:10px}
+#info{border-radius:9px;font-size:12px}
+#vue{gap:15px}
+.card,.advanced-card,.dash-panel{border:1px solid #e6ebf2;border-radius:13px;box-shadow:0 2px 10px rgba(20,39,66,.035)}
+button{border-radius:7px}
+.advanced-card{padding:18px}
+.advanced-card h3{font-size:14px;color:#243a55}
+.champ input,.champ select,.champ textarea,.advanced-toolbar input,.advanced-toolbar select,.adv-input{border-color:#dce4ee;border-radius:7px}
+th{background:#f5f7fb;color:#52647a}
+.tcard{border-radius:12px}
+@media(max-width:900px){body{grid-template-columns:1fr}aside{height:auto;max-height:none}.sidebar-foot{display:none}#menu{display:flex;flex-wrap:nowrap;overflow-x:auto}#menu button{width:auto;flex:0 0 auto}main{padding:12px}}
+/* Tableau de bord */
+.dash-welcome{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:7px 2px 3px}
+.dash-eyebrow{font-size:10px;letter-spacing:.16em;font-weight:800;color:#66809e}
+.dash-welcome h1{font-size:25px;letter-spacing:-.04em;margin:5px 0 3px;color:#182b43}
+.dash-welcome p{font-size:12px;color:#78879a;margin:0}
+.dash-refresh{background:#fff!important;color:#344b67!important;border:1px solid #dfe6ef!important;box-shadow:none!important;padding:9px 13px!important}
+.dash-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
+.dash-kpi{background:#fff;border:1px solid #e5eaf1;border-radius:13px;padding:15px 16px;box-shadow:0 2px 10px rgba(20,39,66,.035);min-width:0}
+.dash-kpi-top{display:flex;justify-content:space-between;align-items:center;color:#718096;font-size:11px;font-weight:650;gap:8px}
+.dash-kpi-top i{font-style:normal;width:29px;height:29px;border-radius:9px;background:#edf4ff;color:#2764c7;display:grid;place-items:center;font-size:16px}
+.dash-kpi strong{display:block;font-size:clamp(17px,1.65vw,24px);line-height:1.25;letter-spacing:-.035em;margin:12px 0 6px;color:#1b2d45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-kpi strong small{font-size:12px;color:#718096;font-weight:600}
+.dash-kpi footer{font-size:10px;color:#8b98a9}
+.dash-panels{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.85fr);gap:14px}
+.dash-panel{background:#fff;padding:17px 18px;min-width:0}
+.dash-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:13px}
+.dash-panel-head h3{margin:0;color:#253a54;font-size:13px;font-weight:750}
+.dash-panel-head p{margin:4px 0 0;color:#8794a5;font-size:10px}
+.dash-chip{font-size:10px;color:#54749b;background:#f1f5fa;border-radius:6px;padding:4px 8px}
+.dash-bars{height:180px;display:flex;align-items:stretch;gap:10px;padding:8px 2px 0}
+.dash-bar-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px}
+.dash-bar-col>b{font-size:9px;color:#73849a;font-weight:600}
+.dash-bar-track{flex:1;width:100%;max-width:35px;border-radius:6px;background:#f0f3f8;display:flex;align-items:flex-end;overflow:hidden}
+.dash-bar-track span{display:block;width:100%;min-height:3px;background:linear-gradient(180deg,#65a3ff,#2865d7);border-radius:6px 6px 2px 2px}
+.dash-bar-col>small{font-size:9px;color:#8794a5}
+.dash-fin-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #eef1f5;font-size:11px;color:#75849a}
+.dash-fin-row b{font-size:11px;color:#263b55;white-space:nowrap}
+.dash-fin-row b.positive{color:#13865f}.dash-fin-row b.negative{color:#c05c56}
+.dash-fin-total{display:flex;justify-content:space-between;gap:10px;padding-top:14px;font-size:11px;color:#52647a;font-weight:650}
+.dash-fin-total strong{color:#1e3652;font-size:14px;white-space:nowrap}
+.dash-rank{display:grid;grid-template-columns:minmax(75px,.9fr) minmax(60px,1.3fr) auto;align-items:center;gap:9px;margin:13px 0;font-size:10px;color:#60738a}
+.dash-rank>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dash-rank>div{height:6px;border-radius:9px;background:#eff3f8;overflow:hidden}
+.dash-rank>div i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#76a9f7,#2e6fdc)}
+.dash-rank>b{font-size:10px;color:#405671;white-space:nowrap}
+.dash-alerts{display:flex;flex-direction:column;gap:9px}
+.dash-alert{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;background:#f7f9fc}
+.dash-alert>span{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;flex:0 0 23px}
+.dash-alert.ok>span{background:#e3f5ed;color:#15966a}.dash-alert.warn>span{background:#fff1dc;color:#bd7b20}
+.dash-alert div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.dash-alert b{font-size:10px;color:#435873}.dash-alert small{font-size:9px;color:#8794a5}
+.dash-recent{padding-bottom:7px}
+.dash-link{background:transparent!important;color:#2e68c6!important;padding:3px 0!important;box-shadow:none!important;font-size:10px!important}
+.dash-table-wrap{overflow:auto}
+.dash-table-wrap table{font-size:11px}
+.dash-table-wrap th{font-size:9px;padding:9px 10px}
+.dash-table-wrap td{padding:9px 10px}
+.dash-empty{color:#94a0af;text-align:center;padding:17px!important;font-size:11px}
+@media(max-width:1150px){.dash-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:760px){.dash-panels{grid-template-columns:1fr}.dash-welcome h1{font-size:21px}.dash-kpi strong{font-size:18px}}
+@media(max-width:480px){.dash-kpis{grid-template-columns:1fr 1fr;gap:8px}.dash-kpi{padding:12px}.dash-kpi strong{font-size:15px}.dash-fin-row{font-size:10px}}
+
+</style></head><body><nav class="toolbar"><button id="prev" class="secondary">Précédente</button><span id="pageLabel">Page 1 / 1</span><button id="next" class="secondary">Suivante</button><button id="zoomOut" class="secondary">Zoom −</button><button id="zoomIn" class="secondary">Zoom +</button><button id="print">Imprimer</button><button id="close" class="secondary">Fermer</button></nav><div class="viewport" id="viewport"><div id="scaleBox"><article class="paper" id="paper">${header}<main class="statement-sheet">${content}</main>${footer}</article></div></div>
   <script>(function(){const paper=document.getElementById('paper'),box=document.getElementById('scaleBox'),view=document.getElementById('viewport'),label=document.getElementById('pageLabel');let zoom=1,page=0,total=1;const pageH=${pageHeight*3.779527559};function calc(){const h=paper.scrollHeight;total=Math.max(1,Math.ceil(h/pageH));page=Math.min(page,total-1);box.style.height=(h*zoom)+'px';box.style.width=(paper.offsetWidth*zoom)+'px';paper.style.transform='scale('+zoom+')';label.textContent='Page '+(page+1)+' / '+total;document.getElementById('prev').disabled=page===0;document.getElementById('next').disabled=page>=total-1;}function go(n){page=Math.max(0,Math.min(total-1,n));view.scrollTo({top:page*pageH*zoom,behavior:'smooth'});calc();}document.getElementById('prev').onclick=()=>go(page-1);document.getElementById('next').onclick=()=>go(page+1);document.getElementById('zoomIn').onclick=()=>{zoom=Math.min(1.8,zoom+.1);calc();};document.getElementById('zoomOut').onclick=()=>{zoom=Math.max(.55,zoom-.1);calc();};document.getElementById('print').onclick=()=>window.print();document.getElementById('close').onclick=()=>window.close();window.addEventListener('resize',calc);window.addEventListener('load',calc);setTimeout(calc,200);})();<\/script></body></html>`);
   w.document.close();return w;
 }
@@ -2366,7 +2631,73 @@ async function renderUsers(host){
   $u("usrRefresh").onclick=reload;clearForm();await reload();
 }
 function renderHelp(host){host.innerHTML=`<section class="advanced-card"><h3>Aide — CBPManagement</h3><h4>Fonctionnement général</h4><p>Les boutons Ajouter, Modifier et Supprimer préparent les opérations dans la copie de travail de l'entreprise. Cliquez sur Enregistrer pour transmettre l'ensemble des changements.</p><h4>Enregistrement</h4><p>Les brouillons sont conservés automatiquement dans le navigateur. L'enregistrement global synchronise les modifications avec Firebase. Les conflits sont présentés pour arbitrage.</p><h4>Production et stocks</h4><p>Créez les matières premières, les silos et les compositions des produits finis avant la saisie de production. Les mouvements de stock sont calculés à partir des approvisionnements, des consommations et des régularisations.</p><h4>Facturation</h4><p>Choisissez un client, sélectionnez ses opérations non facturées, puis créez et imprimez sa facture.</p><h4>Rôles</h4><p>L'administrateur peut modifier les données. Le profil Consultation peut consulter et imprimer les informations.</p></section>`;}
-const SPECIAL_VIEWS={regstock:renderStock,factures:renderInvoices,dettes_clients:(h)=>renderDebts(h,"client"),dettes_fournisseurs:(h)=>renderDebts(h,"supplier"),rapports:renderReports,journal:renderJournal,controle_gestion:renderControlAudit,mail:renderMail,users:renderUsers,aide:renderHelp};
+
+function renderDashboard(host){
+  const today=aujourdhui(),dateLabel=frDate(today);
+  const rows=(t)=>actifs(t);
+  const todayProd=rows("prod").filter(r=>r.date===today);
+  const todayAppro=rows("appro").filter(r=>r.date===today);
+  const todayIncome=rows("recette").filter(r=>r.date===today);
+  const todayExpense=rows("depense").filter(r=>r.date===today);
+  const monthStart=today.slice(0,7)+"-01";
+  const monthProd=rows("prod").filter(r=>String(r.date||"")>=monthStart&&String(r.date||"")<=today);
+  const monthIncome=rows("recette").filter(r=>String(r.date||"")>=monthStart&&String(r.date||"")<=today);
+  const monthExpense=rows("depense").filter(r=>String(r.date||"")>=monthStart&&String(r.date||"")<=today);
+  const total=(arr,k)=>arr.reduce((s,r)=>s+nb(r[k]),0);
+  const caMonth=total(monthProd,"ttc"),incomeMonth=total(monthIncome,"net"),expenseMonth=total(monthExpense,"montant");
+  const volumeToday=total(todayProd,"qte"),caToday=total(todayProd,"ttc");
+  const stock=allStockRows(today),stockAlerts=stock.filter(r=>nb(r.theoretical)<=0);
+  const debts=calculateClientDebts({clients:rows("client"),production:rows("prod"),receipts:rows("recette"),expenses:rows("depense")});
+  const debtTotal=debts.reduce((s,r)=>s+Math.max(0,r.balance),0);
+  const suppliers=calculateSupplierDebts({suppliers:rows("fournisseur"),purchases:rows("appro"),expenses:rows("depense")});
+  const supplierDebt=suppliers.reduce((s,r)=>s+Math.max(0,r.balance),0);
+  const last7=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));const iso=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);return {date:iso,label:d.toLocaleDateString("fr-FR",{weekday:"short",day:"2-digit"}),q:total(rows("prod").filter(r=>r.date===iso&&r.nature===PROD),"qte")};});
+  const maxQ=Math.max(1,...last7.map(x=>x.q));
+  const topClients=[...monthProd.reduce((m,r)=>{const name=nomDe("client",r.client,"nom")||"Client";m.set(name,(m.get(name)||0)+nb(r.ttc));return m;},new Map())].sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const topMax=Math.max(1,...topClients.map(x=>x[1]));
+  const recent=[...rows("prod")].sort((a,b)=>String(b.date||"").localeCompare(String(a.date||""))||String(b.heure||"").localeCompare(String(a.heure||""))).slice(0,6);
+  const money=x=>`${fmt(x)} DA`;
+  host.innerHTML=`
+  <section class="dash-welcome"><div><div class="dash-eyebrow">VOTRE ESPACE DE PILOTAGE</div><h1>Tableau de bord</h1><p>Vue d’ensemble de l’activité de votre centrale · ${dateLabel}</p></div><button class="dash-refresh" id="dashRefresh">↻ Actualiser</button></section>
+  <section class="dash-kpis">
+    <article class="dash-kpi"><div class="dash-kpi-top"><span>Production du jour</span><i>▦</i></div><strong>${fmt(volumeToday)} <small>m³</small></strong><footer>${todayProd.length} opération(s) enregistrée(s)</footer></article>
+    <article class="dash-kpi"><div class="dash-kpi-top"><span>Chiffre d’affaires du jour</span><i>↗</i></div><strong>${money(caToday)}</strong><footer>Production TTC du jour</footer></article>
+    <article class="dash-kpi"><div class="dash-kpi-top"><span>Encaissements du mois</span><i>◉</i></div><strong>${money(incomeMonth)}</strong><footer>Recettes nettes enregistrées</footer></article>
+    <article class="dash-kpi"><div class="dash-kpi-top"><span>Charges du mois</span><i>↘</i></div><strong>${money(expenseMonth)}</strong><footer>Dépenses enregistrées</footer></article>
+  </section>
+  <section class="dash-panels">
+    <article class="dash-panel dash-chart-panel"><div class="dash-panel-head"><div><h3>Évolution de la production</h3><p>Volume produit · 7 derniers jours</p></div><span class="dash-chip">m³</span></div>
+      <div class="dash-bars">${last7.map(x=>`<div class="dash-bar-col"><b>${fmt(x.q)}</b><div class="dash-bar-track"><span style="height:${Math.max(3,x.q/maxQ*100)}%"></span></div><small>${esc(x.label)}</small></div>`).join("")}</div>
+    </article>
+    <article class="dash-panel"><div class="dash-panel-head"><div><h3>Situation financière</h3><p>Depuis le début du mois</p></div></div>
+      <div class="dash-fin-row"><span>Production facturable (TTC)</span><b>${money(caMonth)}</b></div>
+      <div class="dash-fin-row"><span>Encaissements</span><b class="positive">${money(incomeMonth)}</b></div>
+      <div class="dash-fin-row"><span>Dépenses</span><b class="negative">${money(expenseMonth)}</b></div>
+      <div class="dash-fin-total"><span>Solde des mouvements du mois</span><strong>${money(incomeMonth-expenseMonth)}</strong></div>
+    </article>
+  </section>
+  <section class="dash-panels dash-panels-bottom">
+    <article class="dash-panel"><div class="dash-panel-head"><div><h3>Top clients du mois</h3><p>Classement selon la production TTC</p></div></div>
+      ${topClients.length?topClients.map(([name,val])=>`<div class="dash-rank"><span title="${esc(name)}">${esc(name)}</span><div><i style="width:${Math.max(3,val/topMax*100)}%"></i></div><b>${money(val)}</b></div>`).join(""):'<p class="dash-empty">Aucune production ce mois-ci.</p>'}
+    </article>
+    <article class="dash-panel"><div class="dash-panel-head"><div><h3>Points de vigilance</h3><p>Éléments nécessitant votre attention</p></div></div>
+      <div class="dash-alerts">
+        <div class="dash-alert ${stockAlerts.length?'warn':'ok'}"><span>${stockAlerts.length?'!':'✓'}</span><div><b>Stocks matières premières</b><small>${stockAlerts.length?`${stockAlerts.length} référence(s) avec stock nul ou négatif`:'Aucun stock nul ou négatif'}</small></div></div>
+        <div class="dash-alert ${debtTotal>0?'warn':'ok'}"><span>${debtTotal>0?'!':'✓'}</span><div><b>Créances clients</b><small>${money(debtTotal)} à recouvrer</small></div></div>
+        <div class="dash-alert ${supplierDebt>0?'warn':'ok'}"><span>${supplierDebt>0?'!':'✓'}</span><div><b>Dettes fournisseurs</b><small>${money(supplierDebt)} à régler</small></div></div>
+      </div>
+    </article>
+  </section>
+  <article class="dash-panel dash-recent"><div class="dash-panel-head"><div><h3>Dernières productions</h3><p>Activité récente de la centrale</p></div><button class="dash-link" id="dashAllProd">Voir la production →</button></div>
+    <div class="dash-table-wrap"><table><thead><tr><th>Date</th><th>Client</th><th>Produit</th><th>Quantité</th><th>Montant TTC</th></tr></thead><tbody>
+    ${recent.length?recent.map(r=>`<tr><td>${frDate(r.date)}</td><td>${esc(nomDe("client",r.client,"nom"))}</td><td>${esc(nomDe("prod_fini",r.produit,"nom"))}</td><td class="n">${fmt(r.qte)}</td><td class="n">${money(r.ttc)}</td></tr>`).join(""):'<tr><td colspan="5" class="dash-empty">Aucune production enregistrée.</td></tr>'}
+    </tbody></table></div>
+  </article>`;
+  host.querySelector("#dashRefresh").onclick=()=>renderDashboard(host);
+  host.querySelector("#dashAllProd").onclick=()=>ouvrir("production");
+}
+
+const SPECIAL_VIEWS={dashboard:renderDashboard,regstock:renderStock,factures:renderInvoices,dettes_clients:(h)=>renderDebts(h,"client"),dettes_fournisseurs:(h)=>renderDebts(h,"supplier"),rapports:renderReports,journal:renderJournal,controle_gestion:renderControlAudit,mail:renderMail,users:renderUsers,aide:renderHelp};
 
 // Conversion des références métier et export Excel.
 function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=el("a");a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);}
@@ -2655,6 +2986,7 @@ window.addEventListener("beforeunload",(event)=>{
 
 function buildNavigation(){
   const groups=[
+    ["ESPACE DE TRAVAIL",[["dashboard","Tableau de bord"]]],
     ["GESTION",[["clients","Clients"],["fournisseurs","Fournisseurs"],["appro","Approvisionnements"],["production","Production"],["regstock","Régularisation du stock"]]],
     ["FINANCES",[["factures","Facturation"],["recettes","Recettes"],["depenses","Dépenses"],["transferts","Transferts de trésorerie"],["dettes_clients","Dettes clients"],["dettes_fournisseurs","Dettes fournisseurs"],["controle_gestion","Contrôle de gestion"]]],
     ["RESSOURCES",[["personnel","Personnel"],["materiels","Matériels"],["mail","Messagerie"]]],
@@ -2695,7 +3027,7 @@ onAuthStateChanged(auth,async u=>{
     changeManager.subscribe(()=>{refreshEffectiveTables();updateSaveUI();});
     if(!peutEcrire()){$("btnSaveAll").disabled=true;}
     buildNavigation();
-    demarrerSynchro();ouvrir("clients");updateSaveUI();
+    demarrerSynchro();ouvrir("dashboard");updateSaveUI();
     if(restored||formDrafts.size)info(`${restored} modification(s) en attente et ${formDrafts.size} formulaire(s) récupéré(s) depuis le dernier passage. Rien n'a encore été enregistré.`);
   }catch(err){console.error(err);info(err.message||"Accès refusé.",true);}
 });
