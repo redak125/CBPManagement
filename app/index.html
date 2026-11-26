@@ -2933,7 +2933,7 @@ async function requestExit(action="logout"){
   $("exitStatus").textContent="";$("dlgExit").showModal();
 }
 $("btnOut").onclick=()=>void requestExit("logout");
-$("btnQuit").onclick=()=>void requestExit("quit");
+// Le bouton « Quitter » a été retiré de l’interface : aucune liaison nécessaire.
 $("exitCancel").onclick=()=>$("dlgExit").close();
 $("exitLocal").onclick=async()=>{
   const b=$("exitLocal");b.disabled=true;
