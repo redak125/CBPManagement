@@ -340,6 +340,64 @@ body.theme-dark .b-navy,body.theme-dark .bar .b-blue,body.theme-dark .bar .b-red
 body.theme-dark .bar .b-red{color:#ff9d99}
 body.theme-dark #info{background:#1d2c46;border-color:#2f4670;color:#9cc2ff}
 th{cursor:default}th:hover{background:#f6f8fb}body.theme-dark th:hover{background:#263449}
+
+/* ===== Tableau de bord ERP — ajout sans modifier les modules existants ===== */
+.dashboard{display:grid;gap:14px}
+.dash-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}
+.dash-eyebrow{font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--sig);margin-bottom:3px}
+.dash-title{font-size:22px;font-weight:750;letter-spacing:-.035em;color:var(--ink);margin:0}
+.dash-subtitle{font-size:12px;color:var(--mut);margin:3px 0 0}
+.dash-date{font-size:11px;color:var(--mut);background:var(--card);border:1px solid var(--line);padding:7px 11px;border-radius:8px}
+.dash-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.dash-kpi{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:13px 15px;box-shadow:var(--shadow);min-width:0}
+.dash-kpi:after{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--dash-accent,var(--sig))}
+.dash-kpi-label{font-size:11px;font-weight:650;color:var(--mut);display:flex;align-items:center;gap:7px}
+.dash-kpi-value{font-size:25px;font-weight:760;letter-spacing:-.04em;color:var(--ink);margin-top:5px;line-height:1.2;font-variant-numeric:tabular-nums}
+.dash-kpi-note{font-size:10.5px;color:var(--mut);margin-top:5px}
+.dash-panel{background:var(--card);border:1px solid var(--line);border-radius:11px;box-shadow:var(--shadow);min-width:0;overflow:hidden}
+.dash-panel-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.dash-panel-head h3{margin:0;font-size:13px;font-weight:750;color:var(--ink)}
+.dash-panel-head p{margin:3px 0 0;font-size:10.5px;color:var(--mut)}
+.dash-stock-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:11px 14px;background:var(--bg);border-bottom:1px solid var(--line)}
+.dash-stock-stat{padding:8px 10px;background:var(--card);border:1px solid var(--line);border-radius:8px;min-width:0}
+.dash-stock-stat span{display:block;color:var(--mut);font-size:10px;font-weight:650}
+.dash-stock-stat strong{display:block;margin-top:3px;font-size:18px;color:var(--ink);font-variant-numeric:tabular-nums}
+.dash-toolbar{display:flex;align-items:end;gap:8px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line)}
+.dash-toolbar label{display:flex;flex-direction:column;gap:4px;font-size:10.5px;font-weight:650;color:var(--steel)}
+.dash-toolbar input,.dash-toolbar select{height:31px;min-width:145px;padding:4px 9px;border:1px solid var(--line);border-radius:7px;background:var(--card);color:var(--ink);font:inherit;font-weight:400}
+.dash-toolbar input[type=search]{min-width:220px}
+.dash-table-wrap{overflow:auto;max-height:440px}
+.dash-table{width:100%;border-collapse:collapse;font-size:12px}
+.dash-table th{position:sticky;top:0;z-index:2;background:var(--bg);color:var(--mut);font-size:10px;font-weight:750;text-transform:uppercase;letter-spacing:.04em;text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+.dash-table td{padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;color:var(--ink)}
+.dash-table tbody tr:hover{background:var(--sig-l)}
+.dash-table td.num{text-align:right;font-variant-numeric:tabular-nums}
+.dash-material{font-weight:700}
+.dash-detail{display:block;font-size:10px;color:var(--mut);margin-top:2px;white-space:normal}
+.dash-status{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:3px 8px;font-size:10px;font-weight:750}
+.dash-status:before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.dash-status.ok{background:#e7f6ed;color:#147849}
+.dash-status.zero{background:#fff3d8;color:#946200}
+.dash-status.neg{background:#fde9e8;color:#b42318}
+.dash-empty{padding:28px 12px;text-align:center;color:var(--mut);font-size:12px}
+.dash-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 14px;color:var(--mut);font-size:10.5px}
+.dash-activity{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dash-activity-item{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line);font-size:11px}
+.dash-activity-item:last-child{border-bottom:0}
+.dash-activity-item strong{display:block;color:var(--ink);font-size:11.5px}
+.dash-activity-item small{color:var(--mut)}
+.dash-print{background:var(--sig);color:#fff;border:0}
+body.theme-dark .dash-stock-summary{background:#172334}
+body.theme-dark .dash-stock-stat{background:#1f2937}
+body.theme-dark .dash-table th{background:#263449;color:#c4d0df}
+body.theme-dark .dash-table td{color:#dce5ef}
+body.theme-dark .dash-table tbody tr:hover{background:#26364c}
+body.theme-dark .dash-status.ok{background:#153b30;color:#7dd3a7}
+body.theme-dark .dash-status.zero{background:#493918;color:#f5cc70}
+body.theme-dark .dash-status.neg{background:#4a2427;color:#ffaaa5}
+@media(max-width:1100px){.dash-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:650px){.dash-kpis,.dash-stock-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.dash-activity{grid-template-columns:1fr}.dash-title{font-size:19px}.dash-toolbar input[type=search]{min-width:100%}}
+
 </style>
 </head>
 <body>
@@ -2499,7 +2557,83 @@ async function renderUsers(host){
   $u("usrRefresh").onclick=reload;clearForm();await reload();
 }
 function renderHelp(host){host.innerHTML=`<section class="advanced-card"><h3>Aide — CBPManagement</h3><h4>Fonctionnement général</h4><p>Les boutons Ajouter, Modifier et Supprimer préparent les opérations dans la copie de travail de l'entreprise. Cliquez sur Enregistrer pour transmettre l'ensemble des changements.</p><h4>Enregistrement</h4><p>Les brouillons sont conservés automatiquement dans le navigateur. L'enregistrement global synchronise les modifications avec Firebase : chaque enregistrement est vérifié avant écriture, sans écraser les modifications d'un autre utilisateur. Une sauvegarde automatique est aussi lancée toutes les 10 minutes. Les conflits sont présentés pour arbitrage.</p><h4>Production et stocks</h4><p>Créez les matières premières, les silos et les compositions des produits finis avant la saisie de production. Les mouvements de stock sont calculés à partir des approvisionnements, des consommations et des régularisations.</p><h4>Facturation</h4><p>Choisissez un client, sélectionnez ses opérations non facturées, puis créez et imprimez sa facture.</p><h4>Rôles</h4><p>L'administrateur peut modifier les données. Le profil Consultation peut consulter et imprimer les informations.</p></section>`;}
-const SPECIAL_VIEWS={regstock:renderStock,factures:renderInvoices,dettes_clients:(h)=>renderDebts(h,"client"),dettes_fournisseurs:(h)=>renderDebts(h,"supplier"),rapports:renderReports,journal:renderJournal,controle_gestion:renderControlAudit,mail:renderMail,users:renderUsers,aide:renderHelp};
+
+function renderDashboard(host){
+  const now=aujourdhui(),monthStart=now.slice(0,8)+"01";
+  const stock=allStockRows(now);
+  const materialMap=new Map();
+  for(const row of stock){
+    if(!materialMap.has(row.materialId))materialMap.set(row.materialId,{id:row.materialId,name:row.material,opening:0,incoming:0,consumed:0,adjust:0,theoretical:0,silos:[]});
+    const item=materialMap.get(row.materialId);
+    item.opening+=nb(row.opening);item.incoming+=nb(row.incoming);item.consumed+=nb(row.consumed);item.adjust+=nb(row.adjust);item.theoretical+=nb(row.theoretical);
+    if(row.silo&&row.silo!=="—")item.silos.push(row.silo);
+  }
+  const materials=[...materialMap.values()].map(x=>({...x,opening:r2(x.opening),incoming:r2(x.incoming),consumed:r2(x.consumed),adjust:r2(x.adjust),theoretical:r2(x.theoretical),silos:[...new Set(x.silos)]}));
+  const available=materials.filter(x=>x.theoretical>0),empty=materials.filter(x=>x.theoretical===0),negative=materials.filter(x=>x.theoretical<0);
+  const approMonth=actifs("appro").filter(x=>x.nature===MP&&String(x.date||"")>=monthStart&&String(x.date||"")<=now);
+  const prodMonth=actifs("prod").filter(x=>x.nature===PROD&&String(x.date||"")>=monthStart&&String(x.date||"")<=now);
+  const recent=[...actifs("appro").filter(x=>x.nature===MP).map(x=>({type:"Approvisionnement",date:x.date,name:recordLabel("prod_appro",x.produit),qty:nb(x.qte)})),
+    ...actifs("prod").filter(x=>x.nature===PROD).map(x=>({type:"Production",date:x.date,name:recordLabel("prod_fini",x.produit),qty:nb(x.qte)}))]
+    .sort((a,b)=>String(b.date||"").localeCompare(String(a.date||""))).slice(0,6);
+  const nfmt=x=>fmt(x);
+  host.innerHTML=`<section class="dashboard">
+    <header class="dash-head"><div><div class="dash-eyebrow">Pilotage de l'entreprise</div><h1 class="dash-title">Tableau de bord</h1><p class="dash-subtitle">Vue générale de l'activité et supervision des stocks de matières premières</p></div><div class="dash-date">Mis à jour le ${esc(frDate(now))}</div></header>
+    <div class="dash-kpis">
+      <article class="dash-kpi" style="--dash-accent:#2563eb"><div class="dash-kpi-label">Matières premières suivies</div><div class="dash-kpi-value">${materials.length}</div><div class="dash-kpi-note">Référentiel et matières historiques</div></article>
+      <article class="dash-kpi" style="--dash-accent:#16825a"><div class="dash-kpi-label">Stocks disponibles</div><div class="dash-kpi-value">${available.length}</div><div class="dash-kpi-note">Matières avec quantité positive</div></article>
+      <article class="dash-kpi" style="--dash-accent:#d99a18"><div class="dash-kpi-label">Stocks épuisés</div><div class="dash-kpi-value">${empty.length}</div><div class="dash-kpi-note">Matières à quantité nulle</div></article>
+      <article class="dash-kpi" style="--dash-accent:#c43d3d"><div class="dash-kpi-label">Stocks négatifs</div><div class="dash-kpi-value">${negative.length}</div><div class="dash-kpi-note">Écarts à contrôler en priorité</div></article>
+      <article class="dash-kpi" style="--dash-accent:#0e7490"><div class="dash-kpi-label">Réceptions du mois</div><div class="dash-kpi-value">${approMonth.length}</div><div class="dash-kpi-note">Opérations d'approvisionnement MP</div></article>
+      <article class="dash-kpi" style="--dash-accent:#7c5cc4"><div class="dash-kpi-label">Productions du mois</div><div class="dash-kpi-value">${prodMonth.length}</div><div class="dash-kpi-note">Opérations de production enregistrées</div></article>
+    </div>
+    <section class="dash-panel">
+      <div class="dash-panel-head"><div><h3>État du stock — Matières premières</h3><p>Situation théorique calculée au ${esc(frDate(now))}, toutes les entrées, consommations et régularisations comprises</p></div><button type="button" class="dash-print" id="dashPrint">Imprimer l'état</button></div>
+      <div class="dash-stock-summary">
+        <div class="dash-stock-stat"><span>Matières disponibles</span><strong>${available.length}</strong></div>
+        <div class="dash-stock-stat"><span>Matières épuisées</span><strong>${empty.length}</strong></div>
+        <div class="dash-stock-stat"><span>Matières en négatif</span><strong>${negative.length}</strong></div>
+        <div class="dash-stock-stat"><span>Lignes de stock / silos</span><strong>${stock.length}</strong></div>
+      </div>
+      <div class="dash-toolbar">
+        <label>Rechercher une matière<input id="dashSearch" type="search" placeholder="Nom de la matière…"></label>
+        <label>État du stock<select id="dashStatus"><option value="all">Tous les états</option><option value="ok">Disponible</option><option value="zero">Épuisé</option><option value="neg">Négatif</option></select></label>
+        <label>Tri<select id="dashSort"><option value="name">Nom de la matière</option><option value="asc">Stock croissant</option><option value="desc">Stock décroissant</option></select></label>
+      </div>
+      <div class="dash-table-wrap"><table class="dash-table"><thead><tr><th>Matière première</th><th class="num">Stock initial</th><th class="num">Entrées</th><th class="num">Consommé</th><th class="num">Régularisation</th><th class="num">Stock actuel</th><th>État</th></tr></thead><tbody id="dashStockRows"></tbody></table></div>
+      <div class="dash-foot"><span id="dashCount"></span><span>Les services et produits finis sont exclus de cet état.</span></div>
+    </section>
+    <div class="dash-activity">
+      <section class="dash-panel"><div class="dash-panel-head"><div><h3>Derniers mouvements</h3><p>Réceptions de matières premières et productions récentes</p></div></div><div style="padding:4px 14px" id="dashRecent"></div></section>
+      <section class="dash-panel"><div class="dash-panel-head"><div><h3>Lecture de la situation</h3><p>Points de vigilance calculés à partir du stock actuel</p></div></div><div style="padding:12px 14px;font-size:11.5px;color:var(--mut);line-height:1.7">
+        <p style="margin:0 0 8px"><strong style="color:var(--ink)">Disponible :</strong> stock théorique strictement supérieur à zéro.</p>
+        <p style="margin:0 0 8px"><strong style="color:#946200">Épuisé :</strong> stock théorique égal à zéro.</p>
+        <p style="margin:0"><strong style="color:#b42318">Négatif :</strong> consommation ou régularisation supérieure aux entrées ; vérifier les mouvements et les silos.</p>
+      </div></section>
+    </div>
+  </section>`;
+  const body=host.querySelector("#dashStockRows"),search=host.querySelector("#dashSearch"),status=host.querySelector("#dashStatus"),sort=host.querySelector("#dashSort");
+  const stateOf=x=>x.theoretical<0?"neg":x.theoretical===0?"zero":"ok";
+  const renderRows=()=>{
+    const q=search.value.trim().toLocaleLowerCase("fr"),st=status.value;
+    let rows=materials.filter(x=>(!q||x.name.toLocaleLowerCase("fr").includes(q))&&(st==="all"||stateOf(x)===st));
+    if(sort.value==="asc")rows.sort((a,b)=>a.theoretical-b.theoretical||a.name.localeCompare(b.name,"fr"));
+    else if(sort.value==="desc")rows.sort((a,b)=>b.theoretical-a.theoretical||a.name.localeCompare(b.name,"fr"));
+    else rows.sort((a,b)=>a.name.localeCompare(b.name,"fr"));
+    body.innerHTML=rows.length?rows.map(x=>{const st=stateOf(x),label=st==="neg"?"Négatif":st==="zero"?"Épuisé":"Disponible";
+      return `<tr><td><span class="dash-material">${esc(x.name)}</span><span class="dash-detail">${x.silos.length?`Silo(s) : ${esc(x.silos.join(", "))}`:"Sans silo affecté"}</span></td><td class="num">${nfmt(x.opening)}</td><td class="num">${nfmt(x.incoming)}</td><td class="num">${nfmt(x.consumed)}</td><td class="num">${nfmt(x.adjust)}</td><td class="num"><strong>${nfmt(x.theoretical)}</strong></td><td><span class="dash-status ${st}">${label}</span></td></tr>`;
+    }).join(""):`<tr><td colspan="7" class="dash-empty">Aucune matière première ne correspond à ces critères.</td></tr>`;
+    host.querySelector("#dashCount").textContent=`${rows.length} matière(s) affichée(s) sur ${materials.length}`;
+  };
+  search.oninput=renderRows;status.onchange=renderRows;sort.onchange=renderRows;renderRows();
+  host.querySelector("#dashRecent").innerHTML=recent.length?recent.map(x=>`<div class="dash-activity-item"><div><strong>${esc(x.name||"Matière / produit non identifié")}</strong><small>${esc(x.type)} · ${esc(frDate(x.date))}</small></div><strong>${nfmt(x.qty)}</strong></div>`).join(""):`<div class="dash-empty">Aucun mouvement récent.</div>`;
+  host.querySelector("#dashPrint").onclick=()=>{
+    const rows=materials.slice().sort((a,b)=>a.name.localeCompare(b.name,"fr"));
+    const content=`<h1>ÉTAT DU STOCK — MATIÈRES PREMIÈRES</h1><p>Situation au ${esc(frDate(now))}</p><table><thead><tr><th>Matière première</th><th>Stock initial</th><th>Entrées</th><th>Consommé</th><th>Régularisation</th><th>Stock actuel</th><th>État</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${esc(x.name)}</td><td>${nfmt(x.opening)}</td><td>${nfmt(x.incoming)}</td><td>${nfmt(x.consumed)}</td><td>${nfmt(x.adjust)}</td><td>${nfmt(x.theoretical)}</td><td>${x.theoretical<0?"Négatif":x.theoretical===0?"Épuisé":"Disponible"}</td></tr>`).join("")}</tbody></table>`;
+    openJavaPrintPreview("État du stock — Matières premières",content,null);
+  };
+}
+
+const SPECIAL_VIEWS={dashboard:renderDashboard,regstock:renderStock,factures:renderInvoices,dettes_clients:(h)=>renderDebts(h,"client"),dettes_fournisseurs:(h)=>renderDebts(h,"supplier"),rapports:renderReports,journal:renderJournal,controle_gestion:renderControlAudit,mail:renderMail,users:renderUsers,aide:renderHelp};
 
 // Conversion des références métier et export Excel.
 function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=el("a");a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);}
@@ -2828,6 +2962,7 @@ function autoPrix(c,k,userChange,table,partyField){
 }
 function buildNavigation(){
   const groups=[
+    ["PILOTAGE",[["dashboard","Tableau de bord"]]],
     ["GESTION",[["clients","Clients"],["fournisseurs","Fournisseurs"],["appro","Approvisionnements"],["production","Production"],["regstock","Régularisation du stock"]]],
     ["FINANCES",[["factures","Facturation"],["recettes","Recettes"],["depenses","Dépenses"],["transferts","Transferts de trésorerie"],["dettes_clients","Dettes clients"],["dettes_fournisseurs","Dettes fournisseurs"],["controle_gestion","Contrôle de gestion"]]],
     ["RESSOURCES",[["personnel","Personnel"],["materiels","Matériels"],["mail","Messagerie"]]],
@@ -2868,7 +3003,7 @@ onAuthStateChanged(auth,async u=>{
     changeManager.subscribe(()=>{refreshEffectiveTables();updateSaveUI();});
     if(!peutEcrire()){$("btnSaveAll").disabled=true;}
     buildNavigation();
-    demarrerSynchro();ouvrir("clients");updateSaveUI();
+    demarrerSynchro();ouvrir("dashboard");updateSaveUI();
     if(restored||formDrafts.size)info(`${restored} modification(s) en attente et ${formDrafts.size} formulaire(s) récupéré(s) depuis le dernier passage. Rien n'a encore été enregistré.`);
   }catch(err){console.error(err);info(err.message||"Accès refusé.",true);}
 });
