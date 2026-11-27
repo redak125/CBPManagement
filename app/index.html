@@ -609,29 +609,89 @@ body.theme-dark .dash-refresh{background:#263449!important;color:#dce5ef!importa
 .cbpm-savebar{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
 .cbpm-savebar button{white-space:nowrap}
 @media(max-width:900px){.bar .bd{width:100%}.cbpm-savebar{width:100%}.cbpm-savebar button{flex:0 0 auto}}
+
+/* ===== CBPManagement v4 — ergonomie ERP compacte ===== */
+:root{--sig:#1f5fd0;--bg:#eef1f6}
+body{grid-template-columns:228px minmax(0,1fr);font-size:13px}
+body.menu-collapsed{grid-template-columns:minmax(0,1fr)}
+body.menu-collapsed aside{display:none}
+.logo{padding:14px 16px 12px;margin-bottom:2px}
+.mark{width:30px;height:30px;flex-basis:30px}
+#menu{padding:2px 8px 12px}
+#menu .nav-section{padding:14px 10px 4px;font-size:10px}
+#menu button{min-height:33px;padding:6px 10px;font-size:12.5px;gap:10px}
+.sidebar-foot{padding:10px 16px}
+/* Barre supérieure unique : titre à gauche, actions alignées à droite */
+.bar{display:flex;flex-wrap:nowrap;align-items:center;gap:10px;min-height:48px;padding:6px 16px;border-bottom:1px solid var(--line)}
+.bar>#btnMenu{min-height:30px;padding:3px 10px;font-size:15px;line-height:1}
+.brandline{display:flex;align-items:baseline;gap:10px;min-width:0;flex:1 1 auto;overflow:hidden}
+.bar strong{font-size:15px;font-weight:700;white-space:nowrap}
+.bar small{margin:0;font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar .bd{display:flex;flex-wrap:nowrap;align-items:center;gap:7px;margin-inline-start:auto;flex:0 0 auto}
+.bar button{min-height:30px;padding:4px 12px;font-size:12px;white-space:nowrap}
+#saveCount{font-size:11.5px;color:var(--mut);white-space:nowrap}
+#sync{white-space:nowrap}
+#btnSaveAll{background:#16825a;padding:4px 16px}
+#btnSaveAll:disabled{opacity:.5}
+#info{margin:8px 16px 0;padding:7px 12px;font-size:12px}
+#vue{padding:10px 16px 20px;gap:9px;max-width:none;margin:0;width:100%}
+#vue>*{flex-shrink:0}
+/* Formulaires compacts et repliables */
+.card{padding:9px 13px}
+.fiche h3{display:flex;justify-content:space-between;align-items:center;margin:0 0 8px;padding-bottom:6px;font-size:13px;cursor:pointer;user-select:none}
+.fiche h3:after{content:"▾";font-size:12px;color:var(--mut);transition:transform .15s}
+.fiche.collapsed h3{margin:0;padding:0;border:0}
+.fiche.collapsed h3:after{transform:rotate(-90deg)}
+.fiche.collapsed .grille{display:none}
+.grille{grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:7px 10px}
+.champ.full{grid-column:span 2}
+.champ.full:has(.comp-editor),.champ.full:has(.logo-editor){grid-column:1/-1}
+.champ label{margin-bottom:2px;font-size:11px}
+.champ input,.champ select{height:30px;padding:3px 8px;font-size:12.5px}
+.champ textarea{height:30px;min-height:30px;padding:5px 8px;font-size:12.5px}
+.champ input[type=checkbox]{width:17px;height:17px;margin-top:6px}
+.btns{gap:6px}
+.btns button,.advanced-actions button{min-height:30px;padding:4px 12px;font-size:12px}
+.msg{min-height:0;font-size:12px}
+.msg:empty{display:none}
+.filt{padding:6px 12px;gap:5px 14px;font-size:11.5px}
+.filt input,.filt select{height:28px;font-size:12px}
+.tot{padding:6px 4px}.tot span{padding:1px 14px}
+th,.advanced-table th{padding:8px 12px;font-size:11.5px}
+td,.advanced-table td{padding:7px 12px}
+.tw{max-height:46vh}
+.tcard{min-height:0}
+@media(min-width:901px){
+  html,body{height:100vh;overflow:hidden}
+  main{height:100vh;overflow:hidden}
+  #vue{flex:1 1 auto;min-height:0;overflow:auto}
+  #vue>.tcard{display:flex;flex-direction:column;flex:1 0 230px}
+  #vue>.tcard .tw{flex:1;min-height:0;max-height:none}
+}
+@media(max-width:900px){
+  .bar{flex-wrap:wrap;position:relative}
+  #btnMenu{display:none}
+  .bar .bd{flex-wrap:wrap;width:100%;margin:0}
+  #saveCount{display:none}
+  .tw{max-height:60vh}
+}
+@media(max-width:1250px){#saveCount{display:none}}
+body.theme-dark .bar{background:rgba(31,41,55,.96)}
+body.theme-dark .b-navy,body.theme-dark .bar .b-blue{background:#263449;color:#dce5ef;border-color:#45546a}
+body.theme-dark .tot{background:#1a2636}
+body.theme-dark .brandline small{color:#9aa9bc}
 </style>
 </head>
 <body>
 <aside><div class="logo"><span class="mark"></span><span class="brand-copy"><b>CBPManagement</b><small>Gestion intégrée · BPE</small></span></div>
 <nav id="menu"></nav><div class="sidebar-foot"><span class="sidebar-dot"></span><span>Plateforme de gestion</span></div></aside>
 <main>
-  <div class="bar"><div><strong id="entNom">CBPManagement</strong><small id="userInfo">Espace local · Données enregistrées sur cet appareil</small></div>
-    <div class="bd"><span id="sync" class="p">● …</span>
-      <div class="cbpm-savebar">
-        <button id="btnUndo" class="b-navy" type="button" disabled title="Annuler la dernière action">↶ Annuler</button>
-        <button id="btnRedo" class="b-navy" type="button" disabled title="Rétablir la dernière action annulée">↷ Rétablir</button>
-        <button id="btnSaveAll" type="button" disabled>Enregistrer</button><span id="saveCount">Aucune modification en attente</span>
-        <button id="btnExportJson" class="b-teal" type="button">Sauvegarde JSON</button>
-        <button id="btnImportJson" class="b-teal" type="button">Restaurer JSON</button>
-        <input id="inputJson" type="file" accept=".json,application/json" hidden>
-        <button id="btnExportCbpm" class="b-teal" type="button">Exporter .cbpm</button>
-        <button id="btnImportCbpm" class="b-teal" type="button">Importer .cbpm</button>
-        <input id="inputCbpm" type="file" accept=".cbpm,text/plain,application/gzip" hidden>
-        <button id="btnExportXlsx" class="b-blue" type="button">Exporter Excel</button>
-        <button id="btnImportXlsx" class="b-blue" type="button">Importer Excel</button><input id="inputXlsx" type="file" accept=".xlsx,.xls" hidden>
-      </div>
-      <button id="btnTheme" class="b-navy" type="button" title="Basculer le thème">◐ Thème sombre</button>
-      <button id="btnHelp" class="b-navy" type="button">Aide</button></div></div>
+  <div class="bar"><button id="btnMenu" class="b-navy" type="button" title="Afficher / masquer le menu" aria-label="Menu">☰</button><div class="brandline"><strong id="entNom">CBPManagement</strong><small id="userInfo">Espace local</small></div>
+    <div class="bd"><span id="sync" class="p">● …</span><span id="saveCount">Aucune modification en attente</span>
+      <button id="btnSaveAll" type="button" disabled title="Enregistrer localement puis sauvegarder dans Firebase">Enregistrer</button>
+      <button id="btnExportXlsx" class="b-blue" type="button" title="Exporter vers Excel">⭳ Excel</button>
+      <button id="btnTheme" class="b-navy" type="button" title="Basculer le thème">◐ Sombre</button>
+      <button id="btnHelp" class="b-navy" type="button">? Aide</button></div></div>
   <p id="info">Chargement…</p>
   <div id="vue" hidden></div>
 </main>
@@ -825,7 +885,7 @@ function snapshotLocalState(manager=changeManager){
   }
   return snapshot;
 }
-function pushUndoSnapshot(manager){
+function pushUndoSnapshot(manager){return;
   if(undoHistory.applying||!manager||manager!==changeManager)return;
   const snap=snapshotLocalState(manager);if(!snap)return;
   const last=undoHistory.undo[undoHistory.undo.length-1];
@@ -1404,9 +1464,9 @@ function refreshEffectiveTables(){
 function updateSaveUI(state){
   if(!changeManager)return;
   const count=changeManager.pendingCount(),forms=formDrafts.size||[...vues].filter(v=>v.dirty).length,dirty=count>0||forms>0;
-  const b=$("btnSaveAll");if(b)b.disabled=!peutEcrire()||!dirty||changeManager.saving;
+  const b=$("btnSaveAll");if(b)b.disabled=!!changeManager.saving;
   const c=$("saveCount");if(c)c.textContent=dirty?`${count} opération(s) en attente${forms?` · ${forms} formulaire(s) modifié(s)`:""}`:"Aucune modification en attente";
-  if(state?.dirty)synchro("p","Modifications locales en attente");else if(!dirty)synchro("","Base locale synchronisée");
+  if(state?.dirty)synchro("p","Modifications locales en attente");else if(!dirty)synchro(cloudErr?"e":"",cloudStatus);
   updateUndoRedoUI();
 }
 
@@ -1502,13 +1562,13 @@ function updateCompanyBranding(settings=currentCompanySettings()){
 function applySavedTheme(){
   let dark=false;try{dark=localStorage.getItem("cbpm-theme")==="dark";}catch(error){console.warn("Préférence de thème inaccessible :",error);}
   document.body.classList.toggle("theme-dark",dark);
-  const button=$("btnTheme");if(button)button.textContent=dark?"☀ Thème clair":"◐ Thème sombre";
+  const button=$("btnTheme");if(button)button.textContent=dark?"☀ Clair":"◐ Sombre";
 }
 function toggleTheme(){
   const dark=!document.body.classList.contains("theme-dark");
   try{localStorage.setItem("cbpm-theme",dark?"dark":"light");}catch(error){console.warn("Impossible d'enregistrer le thème :",error);}
   document.body.classList.toggle("theme-dark",dark);
-  const button=$("btnTheme");if(button)button.textContent=dark?"☀ Thème clair":"◐ Thème sombre";
+  const button=$("btnTheme");if(button)button.textContent=dark?"☀ Clair":"◐ Sombre";
 }
 
 // ===== Journal d'audit : chaque opération métier est tracée =====
@@ -3039,11 +3099,11 @@ function renderHelp(host){
   host.innerHTML=`<section class="advanced-card"><h3>Aide — CBPManagement</h3>
     <h4>Organisation générale</h4><p>Les modules opérationnels, financiers et de ressources sont accessibles depuis le menu latéral. Les fiches peuvent être ajoutées, modifiées, filtrées, imprimées et supprimées selon les règles métier.</p>
     <h4>Enregistrement et sauvegarde</h4><p>Les modifications sont préparées dans une copie de travail. Cliquez sur « Enregistrer » pour les conserver dans la base locale du navigateur. Les brouillons de formulaires sont récupérés automatiquement après rechargement.</p>
-    <p>Utilisez « Sauvegarde JSON » pour exporter une copie complète de la base, et « Restaurer JSON » pour la réimporter sur cet appareil ou un autre navigateur. L'export Excel reste disponible pour l'analyse et les échanges tabulaires.</p>
+    <p>« Enregistrer » conserve les données dans le navigateur puis les sauvegarde dans Firebase après vérification de l'existant : les données déjà présentes dans le cloud sont fusionnées, jamais écrasées. Une sauvegarde automatique est aussi lancée toutes les 10 minutes. « Excel » exporte les données pour l'analyse.</p>
     <h4>Production et stocks</h4><p>Créez d'abord les matières premières, les silos et les compositions des produits finis. Les entrées, consommations et régularisations alimentent automatiquement le stock théorique. Les régularisations exigent une date, un stock réel non négatif et un motif.</p>
     <h4>Facturation</h4><p>Créez une facture à partir des opérations de production non encore facturées ou ajoutez des lignes manuelles. Une facture annulée libère les opérations de production liées sans effacer le numéro historique.</p>
     <h4>Calculs</h4><p>Les montants sont calculés avec une précision au centime et un arrondi commercial de type HALF_UP. Les dettes clients et fournisseurs sont reconstituées depuis les livraisons/achats, règlements, remboursements et paiements.</p>
-    <h4>Portabilité des données</h4><p>Les données sont enregistrées sur l'appareil et dans le navigateur courant. Pour travailler sur un autre poste, exportez une sauvegarde JSON puis restaurez-la sur l'autre poste.</p>
+    <h4>Portabilité des données</h4><p>Les données sont enregistrées sur l'appareil et dans le navigateur courant. Avec Firebase configuré, les données sont retrouvées automatiquement sur un autre poste (restauration si la base locale est vide).</p>
   </section>`;
 }
 
@@ -3414,25 +3474,15 @@ async function saveFromToolbar(){
   try{
     await stageDirtyForms();
     const result=await saveAllLocal();
-    synchro("","Sauvegarde locale effectuée");
-    info(`${result.saved} modification(s) enregistrée(s) dans ce navigateur.`);
+    
+    const cloud=await cloudSave({manual:true});info(cloudMessage(result.saved,cloud),!!cloud.error);
   }catch(error){info(error?.message||String(error),true);}
   finally{b.textContent="Enregistrer";updateSaveUI();}
 }
 $("btnSaveAll").onclick=()=>void saveFromToolbar();
 $("btnExportXlsx").onclick=()=>void exportXlsx();
-$("btnImportXlsx").onclick=()=>$("inputXlsx").click();
 $("btnHelp").onclick=()=>ouvrir("aide");
-$("inputXlsx").addEventListener("change",()=>{const file=$("inputXlsx").files?.[0];if(file)void importXlsxFile(file);$("inputXlsx").value="";});
-$("btnExportJson").onclick=()=>void exportJsonBackup();
-$("btnImportJson").onclick=()=>$("inputJson").click();
-$("inputJson").addEventListener("change",()=>{const file=$("inputJson").files?.[0];if(file)void importJsonBackup(file);$("inputJson").value="";});
-$("btnExportCbpm").onclick=()=>void exportCbpmBackup();
-$("btnImportCbpm").onclick=()=>$("inputCbpm").click();
-$("inputCbpm").addEventListener("change",()=>{const file=$("inputCbpm").files?.[0];if(file)void importCbpmFile(file);$("inputCbpm").value="";});
 $("btnTheme").onclick=()=>toggleTheme();
-$("btnUndo").onclick=()=>applyUndoRedo("undo");
-$("btnRedo").onclick=()=>applyUndoRedo("redo");
 
 window.addEventListener("offline",()=>synchro("e","Hors ligne — brouillons conservés localement"));
 window.addEventListener("online",()=>synchro(changeManager?.isDirty()?"p":"",changeManager?.isDirty()?"Modifications en attente":"Navigateur en ligne"));
@@ -3444,6 +3494,102 @@ window.addEventListener("beforeunload",(event)=>{
   event.preventDefault();event.returnValue="";
 });
 
+
+
+// ===== Sauvegarde Firebase (Firestore) avec vérification anti-écrasement =====
+// Renseignez ici les paramètres de votre projet Firebase (Console > Paramètres du projet > Vos applications).
+const FIREBASE_CONFIG={apiKey:"",authDomain:"",projectId:"",storageBucket:"",messagingSenderId:"",appId:""};
+const FIREBASE_WORKSPACE="cbpmanagement-principal";
+const FB_BASE="https://www.gstatic.com/firebasejs/10.12.2/";
+const firebaseConfigured=()=>!!(FIREBASE_CONFIG.apiKey&&FIREBASE_CONFIG.projectId);
+let fbHandle=null,cloudBusy=false,cloudErr=false,cloudStatus="Base locale",lastCloudRevision=null,lastCloudSig=null;
+async function getFirebase(){
+  if(fbHandle)return fbHandle;
+  const [appM,fsM,authM]=await Promise.all([import(FB_BASE+"firebase-app.js"),import(FB_BASE+"firebase-firestore.js"),import(FB_BASE+"firebase-auth.js")]);
+  const app=appM.initializeApp(FIREBASE_CONFIG),db=fsM.getFirestore(app);
+  try{const a=authM.getAuth(app);if(!a.currentUser)await authM.signInAnonymously(a);}catch(e){console.warn("Authentification anonyme Firebase :",e?.code||e);}
+  return fbHandle={db,fs:fsM};
+}
+function textHash(t){let h=5381;for(let i=0;i<t.length;i++)h=((h<<5)+h+t.charCodeAt(i))|0;return (h>>>0).toString(16);}
+function committedDataset(){const out={};for(const t of TABLES)out[t]=[...(changeManager.remote.get(t)?.values()||[])].map(r=>({...r}));return out;}
+const countRows=ds=>TABLES.reduce((n,t)=>n+(ds[t]?.length||0),0);
+function datasetSig(ds){const x=TABLES.map(t=>(ds[t]||[]).slice().sort((a,b)=>String(a.id)<String(b.id)?-1:1).map(r=>JSON.stringify(canonical(r))).join("\n")).join("\u0001");return textHash(x)+":"+x.length;}
+function mergeDatasets(remote,local){
+  const out={};
+  for(const t of TABLES){
+    const m=new Map();
+    for(const r of remote?.[t]||[])if(r&&r.id)m.set(String(r.id),r);
+    for(const r of local?.[t]||[]){if(!r||!r.id)continue;const id=String(r.id),o=m.get(id);if(!o||String(r.majLe||"")>=String(o.majLe||""))m.set(id,r);}
+    out[t]=[...m.values()];
+  }
+  return out;
+}
+async function readSlot(db,fs,slot,meta){
+  const info=meta.slots?.[slot];if(!info)throw new Error("Copie cloud introuvable.");
+  const parts=await Promise.all(Array.from({length:info.n},(_,i)=>fs.getDoc(fs.doc(db,"cbpm_chunks",`${FIREBASE_WORKSPACE}_${slot}_${i}`))));
+  const text=parts.map(p=>{if(!p.exists())throw new Error("Segment cloud manquant.");return p.data().d;}).join("");
+  if(text.length!==info.len||textHash(text)!==info.hash)throw new Error("Contrôle d'intégrité cloud échoué.");
+  return JSON.parse(text);
+}
+async function readRemoteDataset(db,fs,meta){
+  try{return await readSlot(db,fs,meta.active,meta);}
+  catch(e){const other=meta.active==="A"?"B":"A";console.warn("Copie active illisible, essai de la copie précédente :",e);return await readSlot(db,fs,other,meta);}
+}
+async function applyDataset(next){
+  await draftStore.writeDataset(draftScopeKey,next);
+  for(const t of TABLES)changeManager.setRemoteTable(t,(next[t]||[]).filter(r=>r&&r.id).map(r=>[String(r.id),r]));
+  refreshEffectiveTables();updateCompanyBranding(changeManager.record("parametres","general")||{});
+}
+function markCloudOk(revision,sig){cloudErr=false;lastCloudRevision=revision;lastCloudSig=sig;cloudStatus=`Cloud ✓ ${maintenant()}`;}
+async function cloudSave({manual=false}={}){
+  if(!firebaseConfigured())return {skipped:"not-configured"};
+  if(cloudBusy)return {skipped:"busy"};
+  cloudBusy=true;synchro("p","Cloud : sauvegarde…");
+  try{
+    const {db,fs}=await getFirebase(),metaRef=fs.doc(db,"cbpm_meta",FIREBASE_WORKSPACE);
+    const snap=await fs.getDoc(metaRef),meta=snap.exists()?snap.data():null,local=committedDataset(),localSig=datasetSig(local);
+    if(!manual&&meta&&meta.revision===lastCloudRevision&&localSig===lastCloudSig){markCloudOk(meta.revision,localSig);return {unchanged:true,revision:meta.revision};}
+    const remote=meta?await readRemoteDataset(db,fs,meta):null;   // une copie illisible interrompt tout : rien n'est écrasé
+    const localRows=countRows(local),remoteRows=remote?countRows(remote):0;
+    if(remote&&localRows===0&&remoteRows>0){await applyDataset(remote);markCloudOk(meta.revision,datasetSig(remote));return {restored:true,revision:meta.revision};}
+    if(!remote&&localRows===0)return {unchanged:true};
+    const merged=remote?mergeDatasets(remote,local):local;
+    if(countRows(merged)<Math.max(localRows,remoteRows))throw new Error("contrôle anti-écrasement : fusion incohérente, sauvegarde annulée.");
+    const mergedSig=datasetSig(merged),contributed=!!remote&&mergedSig!==localSig;
+    if(remote&&mergedSig===datasetSig(remote)){if(contributed)await applyDataset(merged);markCloudOk(meta.revision,mergedSig);return {unchanged:true,revision:meta.revision,merged:contributed};}
+    const text=JSON.stringify(merged),chunks=[];for(let i=0;i<text.length;i+=250000)chunks.push(text.slice(i,i+250000));
+    const slot=meta?.active==="A"?"B":"A",oldN=meta?.slots?.[slot]?.n||0,ids=chunks.map((c,i)=>[`${FIREBASE_WORKSPACE}_${slot}_${i}`,c]);
+    for(let k=0;k<ids.length;k+=8){const b=fs.writeBatch(db);ids.slice(k,k+8).forEach(([id,c])=>b.set(fs.doc(db,"cbpm_chunks",id),{d:c}));await b.commit();}
+    const revision=(meta?.revision||0)+1,iso=new Date().toISOString();
+    await fs.setDoc(metaRef,{active:slot,revision,savedAt:iso,rows:countRows(merged),schemaVersion:1,slots:{...(meta?.slots||{}),[slot]:{n:chunks.length,len:text.length,hash:textHash(text),revision,savedAt:iso}}});
+    if(oldN>chunks.length){const b=fs.writeBatch(db);for(let i=chunks.length;i<oldN;i++)b.delete(fs.doc(db,"cbpm_chunks",`${FIREBASE_WORKSPACE}_${slot}_${i}`));await b.commit().catch(()=>{});}
+    if(contributed)await applyDataset(merged);
+    markCloudOk(revision,mergedSig);return {revision,merged:contributed};
+  }catch(e){cloudErr=true;cloudStatus="Cloud : échec";console.error("Sauvegarde Firebase :",e);return {error:e?.message||String(e)};}
+  finally{cloudBusy=false;updateSaveUI();}
+}
+function cloudMessage(n,c){
+  if(c.skipped==="not-configured")return `${n} modification(s) enregistrée(s) localement. Firebase n'est pas configuré : renseignez FIREBASE_CONFIG dans index.html.`;
+  if(c.skipped==="busy")return `${n} modification(s) enregistrée(s) localement. Une sauvegarde Firebase est déjà en cours.`;
+  if(c.error)return `${n} modification(s) enregistrée(s) localement, mais la sauvegarde Firebase a échoué : ${c.error}`;
+  if(c.restored)return "Base locale vide : les données ont été restaurées depuis Firebase (rien n'a été écrasé).";
+  return `${n} modification(s) enregistrée(s) · Firebase vérifié${c.revision?` (v${c.revision})`:""}${c.merged?" · fusionné avec les données déjà présentes dans le cloud":""}.`;
+}
+async function autoBackup(){
+  if(!changeManager||changeManager.saving||cloudBusy)return;
+  try{if(changeManager.changes.size>0)await saveAllLocal();}catch(e){console.error("Sauvegarde auto :",e);}
+  await cloudSave({manual:false});
+}
+function startCloudSync(){
+  if(!firebaseConfigured()){cloudStatus="Local · Firebase non configuré";updateSaveUI();return;}
+  cloudStatus="Cloud : connexion…";updateSaveUI();
+  void cloudSave({manual:true}).then(r=>{if(r.restored)info("Données restaurées depuis Firebase.");else if(r.error)info("Firebase : "+r.error,true);});
+  setInterval(()=>void autoBackup(),10*60*1000);
+}
+// Fiche repliable et menu masquable
+document.addEventListener("click",e=>{const h=e.target.closest(".fiche > h3");if(h)h.parentElement.classList.toggle("collapsed");});
+(function(){const b=$("btnMenu");if(!b)return;try{if(localStorage.getItem("cbpm-menu")==="0")document.body.classList.add("menu-collapsed");}catch(e){}
+  b.onclick=()=>{const c=document.body.classList.toggle("menu-collapsed");try{localStorage.setItem("cbpm-menu",c?"0":"1");}catch(e){}};})();
 
 function buildNavigation(){
   const groups=[
@@ -3488,7 +3634,7 @@ async function demarrerApplicationLocale(){
     if(restored||formDrafts.size)info(`${restored} modification(s) en attente et ${formDrafts.size} formulaire(s) récupéré(s) depuis le dernier passage. Rien n'a encore été validé dans la sauvegarde principale.`);
     else if(!Object.values(dataset||{}).some(rows=>Array.isArray(rows)&&rows.length))info("Bienvenue dans CBPManagement. Commencez par renseigner les paramètres de l'entreprise et vos référentiels.");
     else info("Base locale chargée avec succès.");
-    synchro(changeManager.isDirty()?"p":"","Stockage local prêt");
+    synchro(changeManager.isDirty()?"p":"","Stockage local prêt");startCloudSync();
   }catch(error){
     console.error("Démarrage local CBPManagement :",error);
     synchro("e","Stockage local indisponible");
