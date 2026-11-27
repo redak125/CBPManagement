@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>CBPManagement — Application</title>
-<meta name="theme-color" content="#0e1a2b">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
 /* ===== CBPManagement — nouveau design (remplace tout le contenu de <style>) ===== */
 :root{
@@ -103,6 +100,7 @@ dialog::backdrop{background:rgba(15,27,45,.55);backdrop-filter:blur(2px)}
 .cbpm-savebar{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
 #btnSaveAll{background:#15803d}
 #saveCount{font-size:12px;color:var(--mut)}
+#btnConflicts{background:#b45309}
 .cbpm-dialog{max-width:720px;width:min(720px,95vw)}
 .cbpm-dialog h2{margin:0 0 8px;font-size:20px}
 .cbpm-dialog p{line-height:1.55}
@@ -215,423 +213,15 @@ dialog::backdrop{background:rgba(15,27,45,.55);backdrop-filter:blur(2px)}
   .cbpm-aff-dialog{max-height:94vh;overflow:auto}
 }
 @media(max-width:600px){.comp-controls .champ{min-width:100%}.logo-editor{align-items:flex-start}}
-
-/* ===== CBPManagement Web — identité visuelle ERP ===== */
-:root{--ink:#17263b;--steel:#40536b;--sig:#2563eb;--bg:#f4f6fa;--card:#fff;--line:#e3e9f1;--mut:#718096;--r:13px;--shadow:0 3px 14px rgba(23,38,59,.045)}
-body{grid-template-columns:258px minmax(0,1fr);background:#f4f6fa;color:#17263b}
-aside{background:#111e31;padding:18px 0 14px;display:flex;flex-direction:column;box-shadow:4px 0 18px rgba(13,27,46,.08)}
-.logo{padding:2px 20px 22px;gap:12px;align-items:center}
-.mark{width:34px;height:34px;border-radius:10px;flex:0 0 34px;background:linear-gradient(145deg,#60a5fa,#2563eb);box-shadow:0 5px 14px rgba(37,99,235,.3)}
-.mark:after{inset:9px;border-radius:3px}
-.brand-copy{display:flex;flex-direction:column;line-height:1.25}
-.brand-copy b{font-size:16px;letter-spacing:.1px;color:#fff}
-.brand-copy small{font-size:10px;color:#8fa2bb;font-weight:500;margin-top:4px;letter-spacing:.07em;text-transform:uppercase}
-#menu{overflow-y:auto;flex:1;padding:0 7px 14px}
-#menu .nav-section{padding:19px 13px 7px;color:#71849d;font-size:10px;letter-spacing:.13em}
-#menu button{width:100%;margin:2px 0;padding:10px 13px;color:#b7c4d5;border-radius:9px;font-size:13px;display:flex;align-items:center;gap:10px}
-#menu button:before{content:"";width:6px;height:6px;border:1.5px solid currentColor;border-radius:2px;opacity:.7;flex:0 0 6px}
-#menu button:hover{background:rgba(255,255,255,.07);color:#fff}
-#menu button.on{background:linear-gradient(100deg,#2563eb,#3478ee);color:#fff;box-shadow:0 5px 13px rgba(37,99,235,.24)}
-#menu button.on:before{background:#fff;border-color:#fff}
-.sidebar-foot{margin:12px 16px 2px;padding:12px 9px 0;border-top:1px solid rgba(255,255,255,.09);font-size:10px;color:#7e90a8;display:flex;align-items:center;gap:8px}
-.sidebar-dot{width:7px;height:7px;border-radius:50%;background:#27c18a;box-shadow:0 0 0 3px rgba(39,193,138,.13)}
-main{padding:18px 25px 32px;gap:15px;min-width:0}
-.bar{border:1px solid #e5eaf1;border-radius:12px;padding:11px 15px;background:rgba(255,255,255,.96);box-shadow:0 2px 9px rgba(23,38,59,.035)}
-.bar strong{font-size:14px;color:#17263b}.bar small{font-size:11px;color:#77869a;margin-top:2px}
-.bar .bd{gap:7px}
-.bar button{font-size:11px;padding:8px 11px;border-radius:7px}
-#sync{font-size:10px}
-#info{border-radius:9px;font-size:12px}
-#vue{gap:15px}
-.card,.advanced-card,.dash-panel{border:1px solid #e6ebf2;border-radius:13px;box-shadow:0 2px 10px rgba(20,39,66,.035)}
-button{border-radius:7px}
-.advanced-card{padding:18px}
-.advanced-card h3{font-size:14px;color:#243a55}
-.champ input,.champ select,.champ textarea,.advanced-toolbar input,.advanced-toolbar select,.adv-input{border-color:#dce4ee;border-radius:7px}
-th{background:#f5f7fb;color:#52647a}
-.tcard{border-radius:12px}
-@media(max-width:900px){body{grid-template-columns:1fr}aside{height:auto;max-height:none}.sidebar-foot{display:none}#menu{display:flex;flex-wrap:nowrap;overflow-x:auto}#menu button{width:auto;flex:0 0 auto}main{padding:12px}}
-/* Tableau de bord */
-.dash-welcome{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:7px 2px 3px}
-.dash-eyebrow{font-size:10px;letter-spacing:.16em;font-weight:800;color:#66809e}
-.dash-welcome h1{font-size:25px;letter-spacing:-.04em;margin:5px 0 3px;color:#182b43}
-.dash-welcome p{font-size:12px;color:#78879a;margin:0}
-.dash-refresh{background:#fff!important;color:#344b67!important;border:1px solid #dfe6ef!important;box-shadow:none!important;padding:9px 13px!important}
-.dash-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
-.dash-kpi{background:#fff;border:1px solid #e5eaf1;border-radius:13px;padding:15px 16px;box-shadow:0 2px 10px rgba(20,39,66,.035);min-width:0}
-.dash-kpi-top{display:flex;justify-content:space-between;align-items:center;color:#718096;font-size:11px;font-weight:650;gap:8px}
-.dash-kpi-top i{font-style:normal;width:29px;height:29px;border-radius:9px;background:#edf4ff;color:#2764c7;display:grid;place-items:center;font-size:16px}
-.dash-kpi strong{display:block;font-size:clamp(17px,1.65vw,24px);line-height:1.25;letter-spacing:-.035em;margin:12px 0 6px;color:#1b2d45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dash-kpi strong small{font-size:12px;color:#718096;font-weight:600}
-.dash-kpi footer{font-size:10px;color:#8b98a9}
-.dash-panels{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.85fr);gap:14px}
-.dash-panel{background:#fff;padding:17px 18px;min-width:0}
-.dash-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:13px}
-.dash-panel-head h3{margin:0;color:#253a54;font-size:13px;font-weight:750}
-.dash-panel-head p{margin:4px 0 0;color:#8794a5;font-size:10px}
-.dash-chip{font-size:10px;color:#54749b;background:#f1f5fa;border-radius:6px;padding:4px 8px}
-.dash-bars{height:180px;display:flex;align-items:stretch;gap:10px;padding:8px 2px 0}
-.dash-bar-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px}
-.dash-bar-col>b{font-size:9px;color:#73849a;font-weight:600}
-.dash-bar-track{flex:1;width:100%;max-width:35px;border-radius:6px;background:#f0f3f8;display:flex;align-items:flex-end;overflow:hidden}
-.dash-bar-track span{display:block;width:100%;min-height:3px;background:linear-gradient(180deg,#65a3ff,#2865d7);border-radius:6px 6px 2px 2px}
-.dash-bar-col>small{font-size:9px;color:#8794a5}
-.dash-fin-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #eef1f5;font-size:11px;color:#75849a}
-.dash-fin-row b{font-size:11px;color:#263b55;white-space:nowrap}
-.dash-fin-row b.positive{color:#13865f}.dash-fin-row b.negative{color:#c05c56}
-.dash-fin-total{display:flex;justify-content:space-between;gap:10px;padding-top:14px;font-size:11px;color:#52647a;font-weight:650}
-.dash-fin-total strong{color:#1e3652;font-size:14px;white-space:nowrap}
-.dash-rank{display:grid;grid-template-columns:minmax(75px,.9fr) minmax(60px,1.3fr) auto;align-items:center;gap:9px;margin:13px 0;font-size:10px;color:#60738a}
-.dash-rank>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dash-rank>div{height:6px;border-radius:9px;background:#eff3f8;overflow:hidden}
-.dash-rank>div i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#76a9f7,#2e6fdc)}
-.dash-rank>b{font-size:10px;color:#405671;white-space:nowrap}
-.dash-alerts{display:flex;flex-direction:column;gap:9px}
-.dash-alert{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;background:#f7f9fc}
-.dash-alert>span{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;flex:0 0 23px}
-.dash-alert.ok>span{background:#e3f5ed;color:#15966a}.dash-alert.warn>span{background:#fff1dc;color:#bd7b20}
-.dash-alert div{display:flex;flex-direction:column;gap:2px;min-width:0}
-.dash-alert b{font-size:10px;color:#435873}.dash-alert small{font-size:9px;color:#8794a5}
-.dash-recent{padding-bottom:7px}
-.dash-link{background:transparent!important;color:#2e68c6!important;padding:3px 0!important;box-shadow:none!important;font-size:10px!important}
-.dash-table-wrap{overflow:auto}
-.dash-table-wrap table{font-size:11px}
-.dash-table-wrap th{font-size:9px;padding:9px 10px}
-.dash-table-wrap td{padding:9px 10px}
-.dash-empty{color:#94a0af;text-align:center;padding:17px!important;font-size:11px}
-@media(max-width:1150px){.dash-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.dash-panels{grid-template-columns:1fr}.dash-welcome h1{font-size:21px}.dash-kpi strong{font-size:18px}}
-@media(max-width:480px){.dash-kpis{grid-template-columns:1fr 1fr;gap:8px}.dash-kpi{padding:12px}.dash-kpi strong{font-size:15px}.dash-fin-row{font-size:10px}}
-
-
-/* ===== Finition visuelle CBPManagement — sans modification du fonctionnement ===== */
-:root{
-  --ink:#17263b;
-  --steel:#40536b;
-  --sig:#2866d7;
-  --bg:#f5f7fb;
-  --card:#fff;
-  --line:#e4eaf2;
-  --mut:#718096;
-  --r:12px;
-  --shadow:0 2px 10px rgba(24,42,66,.045),0 1px 2px rgba(24,42,66,.025);
-  --shadow-hover:0 8px 22px rgba(24,42,66,.075),0 2px 5px rgba(24,42,66,.035);
-}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--ink);grid-template-columns:252px minmax(0,1fr)}
-aside{background:#111d30;box-shadow:3px 0 18px rgba(13,27,46,.07)}
-.logo{padding:5px 19px 20px}
-.brand-copy b{font-size:15px;letter-spacing:.15px}
-.brand-copy small{font-size:9px;letter-spacing:.11em}
-#menu{scrollbar-width:thin;scrollbar-color:#34445b transparent}
-#menu button{min-height:38px;position:relative;transition:background .18s ease,color .18s ease,transform .18s ease}
-#menu button:before{width:5px;height:5px;flex-basis:5px;border-radius:2px;opacity:.62}
-#menu button.on{background:linear-gradient(105deg,#245fc8,#3479e9);box-shadow:0 4px 12px rgba(37,99,235,.2)}
-#menu button.on:after{content:"";position:absolute;inset:8px auto 8px 0;width:3px;border-radius:0 4px 4px 0;background:#fff;opacity:.9}
-main{padding:19px clamp(14px,2.2vw,30px) 34px;gap:14px;max-width:1900px;width:100%;margin:0 auto}
-.bar{min-height:64px;border:1px solid #e4eaf2;border-radius:12px;padding:10px 14px;background:rgba(255,255,255,.97);box-shadow:0 2px 9px rgba(23,38,59,.035);gap:12px}
-.bar>div:first-child{min-width:150px}
-.bar strong{font-size:14px;font-weight:750;letter-spacing:-.01em}
-.bar small{font-size:11px;line-height:1.45}
-.bar .bd{gap:7px}
-.bar button{min-height:34px;padding:7px 11px;font-size:11px;font-weight:650;border-radius:7px}
-.cbpm-savebar{gap:7px}
-#btnSaveAll{min-width:104px;background:#16845e}
-#saveCount{font-size:10px;color:#77869a}
-#sync{padding:5px 9px;font-size:10px;white-space:nowrap}
-#info{padding:10px 13px;border-radius:9px;font-size:12px;box-shadow:0 1px 2px rgba(24,42,66,.025)}
-#vue{gap:14px}
-.card,.advanced-card,.dash-panel,.dash-kpi{border-color:#e5eaf1;box-shadow:var(--shadow)}
-.card{padding:16px 17px}
-.fiche h3,.advanced-card h3{color:#304761;letter-spacing:.035em}
-.fiche h3{font-size:13px}
-.advanced-card{padding:17px}
-.advanced-card h3{font-size:14px;font-weight:750}
-.grille{gap:13px 15px}
-.champ label,.advanced-toolbar label,.stock-entry-grid label{color:#53677f;font-size:11.5px;font-weight:650}
-.champ input,.champ select,.champ textarea,
-.filt input,.filt select,
-.advanced-toolbar input,.advanced-toolbar select,.adv-input,
-.stock-entry-grid input,.stock-entry-grid select,
-.aff-manager-input input{
-  border:1px solid #dce4ee;border-radius:7px;background:#fff;color:#24364d;
-  transition:border-color .16s ease,box-shadow .16s ease,background .16s ease;
-}
-.champ input,.champ select{height:37px;padding:7px 10px}
-.champ textarea{min-height:76px;padding:8px 10px}
-.champ input:hover,.champ select:hover,.champ textarea:hover,
-.filt input:hover,.filt select:hover,.advanced-toolbar input:hover,.advanced-toolbar select:hover{border-color:#b9c8da}
-.champ input:focus,.champ select:focus,.champ textarea:focus,
-.filt input:focus,.filt select:focus,.advanced-toolbar input:focus,.advanced-toolbar select:focus,
-.adv-input:focus,.stock-entry-grid input:focus,.stock-entry-grid select:focus{
-  outline:0;border-color:#6c9ce9;box-shadow:0 0 0 3px rgba(40,102,215,.11)
-}
-button{font-weight:650;letter-spacing:.005em;box-shadow:none}
-button:hover:not(:disabled){filter:brightness(1.035);box-shadow:0 3px 9px rgba(20,39,66,.11)}
-button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid rgba(40,102,215,.2);outline-offset:1px}
-.btns{gap:7px}
-.btns button,.advanced-actions button{min-height:34px;padding:8px 12px;font-size:11.5px}
-.b-grn{background:#16845e}.b-teal{background:#087f91}.b-blue{background:#2866d7}.b-red{background:#c94b50}.b-navy{background:#40536b}
-.tcard{border:1px solid #e4eaf2;border-radius:11px;box-shadow:var(--shadow)}
-.tw,.advanced-table-wrap{scrollbar-width:thin;scrollbar-color:#c8d2df transparent}
-table{font-size:12px}
-th{padding:10px 11px;background:#f5f7fb;color:#586b82;font-size:10px;letter-spacing:.055em}
-td{padding:9px 11px;color:#33465e}
-tbody tr:nth-child(even) td{background:#fbfcfe}
-tbody tr:hover td{background:#f0f5fd}
-tbody tr.sel td{background:#e6efff}
-.tot{padding:11px 7px}
-.tot span{font-size:11px;padding:3px 15px}
-.tot b{font-size:13px}
-.filt{gap:9px 15px;color:#52667f}
-.filt input,.filt select{height:33px}
-.status-pill{padding:4px 9px;font-size:10px;letter-spacing:.01em}
-dialog{border:1px solid #e2e8f0;border-radius:14px;padding:19px;background:#f7f9fc;box-shadow:0 22px 65px rgba(15,27,45,.24)}
-dialog::backdrop{background:rgba(13,25,42,.48);backdrop-filter:blur(3px)}
-.sh{padding-bottom:11px;border-bottom:1px solid #e5eaf1;margin-bottom:14px}
-.sh h3{font-size:15px;color:#263d58}
-.cbpm-conflict,.aff-manager-panel,.comp-editor,.logo-editor,.report-preview{border-color:#e3e9f1;box-shadow:0 1px 3px rgba(24,42,66,.025)}
-.aff-manager-panel{padding:15px}
-.aff-manager-panel h4{color:#304761}
-.dash-welcome{padding:8px 2px 5px}
-.dash-eyebrow{color:#6480a1;font-size:9px;letter-spacing:.17em}
-.dash-welcome h1{font-size:clamp(21px,2vw,26px);font-weight:750;letter-spacing:-.045em}
-.dash-welcome p{font-size:11px}
-.dash-kpi{border-radius:12px;padding:15px 16px;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
-.dash-kpi:hover{transform:translateY(-2px);box-shadow:var(--shadow-hover);border-color:#d8e2ef}
-.dash-kpi-top{font-size:10.5px}
-.dash-kpi-top i{background:#eff4fb;color:#3168bc}
-.dash-kpi strong{font-size:clamp(18px,1.7vw,24px);margin:13px 0 5px}
-.dash-panel{border-radius:12px;padding:17px}
-.dash-panel-head h3{font-size:13px}
-.dash-chip{border:1px solid #e8edf4;background:#f7f9fc}
-.dash-alert{border:1px solid #edf1f6;background:#fafbfd}
-.empty-note{font-size:12px}
-@media(max-width:1100px){
-  body{grid-template-columns:225px minmax(0,1fr)}
-  main{padding:15px 16px 28px}
-  .bar{align-items:flex-start}
-}
-@media(max-width:900px){
-  body{grid-template-columns:minmax(0,1fr)}
-  aside{position:relative;z-index:30;padding:9px 0 7px;box-shadow:0 3px 12px rgba(13,27,46,.1)}
-  .logo{padding:3px 14px 10px}
-  #menu{padding:0 9px 5px;gap:5px}
-  #menu button{min-height:34px;padding:8px 10px;font-size:11.5px}
-  #menu button.on:after{display:none}
-  main{padding:12px;gap:11px}
-  .bar{position:relative;flex-direction:column;align-items:stretch}
-  .bar .bd{width:100%}
-  .cbpm-savebar{width:auto;flex-wrap:wrap}
-  #saveCount{flex:1 1 100%}
-}
-@media(max-width:600px){
-  .bar .bd{gap:6px}
-  .bar button{min-height:33px}
-  .card,.advanced-card{padding:13px}
-  .grille{grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:10px}
-  .tw{max-height:58vh}
-  th,td{padding:8px 9px}
-  .dash-welcome{align-items:flex-start}
-  .dash-kpis{gap:8px}
-  .dash-kpi{padding:11px}
-  .dash-kpi-top i{width:25px;height:25px}
-  .dash-kpi strong{font-size:15px}
-  dialog{padding:14px;width:calc(100vw - 18px);max-height:94vh;overflow:auto}
-}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
-
-:root{--dot:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='3'/%3E%3C/svg%3E");--bld:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231f5fd0' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 21V5l8-2v18M12 8h8v13M8 9h1M8 13h1M8 17h1M16 12h1M16 16h1M3 21h18'/%3E%3C/svg%3E")}
-#menu button[data-k="dashboard"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='7' height='9' rx='1'/%3E%3Crect x='14' y='3' width='7' height='5' rx='1'/%3E%3Crect x='14' y='12' width='7' height='9' rx='1'/%3E%3Crect x='3' y='16' width='7' height='5' rx='1'/%3E%3C/svg%3E")}
-#menu button[data-k="clients"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='8' r='3.5'/%3E%3Cpath d='M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.6a3.5 3.5 0 0 1 0 6.8M18 14.3c2 .7 3.5 2.6 3.5 5.7'/%3E%3C/svg%3E")}
-#menu button[data-k="fournisseurs"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 6h11v11H2zM13 10h4.5l3.5 3.5V17h-8'/%3E%3Ccircle cx='6.5' cy='18' r='2'/%3E%3Ccircle cx='17' cy='18' r='2'/%3E%3C/svg%3E")}
-#menu button[data-k="appro"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3 3 7.5v9L12 21l9-4.5v-9L12 3zM3 7.5l9 4.5 9-4.5M12 12v9'/%3E%3C/svg%3E")}
-#menu button[data-k="production"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 21V10l6 3.5V10l6 3.5V5h6v16zM7 17h2M12 17h2M17 17h2'/%3E%3C/svg%3E")}
-#menu button[data-k="regstock"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 11a8 8 0 0 0-14.5-4M4 4v4h4M4 13a8 8 0 0 0 14.5 4M20 20v-4h-4'/%3E%3C/svg%3E")}
-#menu button[data-k="factures"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 3h8l5 5v13H6zM14 3v5h5M9 13h7M9 17h7'/%3E%3C/svg%3E")}
-#menu button[data-k="recettes"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 17l6-6 4 4 8-8M15 7h6v6'/%3E%3C/svg%3E")}
-#menu button[data-k="depenses"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 7l6 6 4-4 8 8M15 17h6v-6'/%3E%3C/svg%3E")}
-#menu button[data-k="transferts"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 8h15M15 4l4 4-4 4M20 16H5M9 12l-4 4 4 4'/%3E%3C/svg%3E")}
-#menu button[data-k="dettes_clients"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='6' width='18' height='14' rx='2'/%3E%3Cpath d='M3 10h18M16 15h2'/%3E%3C/svg%3E")}
-#menu button[data-k="dettes_fournisseurs"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M14.5 9c-.6-.7-1.5-1-2.5-1-1.5 0-2.5.8-2.5 2s1 1.7 2.5 2 2.5.8 2.5 2-1 2-2.5 2c-1 0-1.9-.3-2.5-1M12 6.5V8M12 16v1.5'/%3E%3C/svg%3E")}
-#menu button[data-k="controle_gestion"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 20V11M11 20V4M17 20v-6M3 20h18'/%3E%3C/svg%3E")}
-#menu button[data-k="personnel"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='3' width='16' height='18' rx='2'/%3E%3Ccircle cx='12' cy='10' r='2.5'/%3E%3Cpath d='M8 17c.6-2 2.2-3 4-3s3.4 1 4 3'/%3E%3C/svg%3E")}
-#menu button[data-k="materiels"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z'/%3E%3C/svg%3E")}
-#menu button[data-k="parametres"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 7h9M17 7h3M4 17h3M11 17h9'/%3E%3Ccircle cx='15' cy='7' r='2'/%3E%3Ccircle cx='9' cy='17' r='2'/%3E%3C/svg%3E")}
-#menu button[data-k="rapports"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21 12A9 9 0 1 1 12 3v9z'/%3E%3Cpath d='M15 3.5A9 9 0 0 1 20.5 9H15z'/%3E%3C/svg%3E")}
-#menu button[data-k="journal"]{--i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 7v5l3 2'/%3E%3C/svg%3E")}
-
-/* ===== CBPManagement — habillage ERP v3 (surcouche visuelle uniquement) ===== */
-:root{--ink:#1a2b42;--steel:#4a5d75;--mut:#6b7c93;--line:#e2e8f0;--bg:#eef1f6;--card:#fff;
- --sig:#1f5fd0;--sig-d:#1749a3;--sig-l:#e8f0fd;--amb:#f2b01e;--ok:#157a54;--err:#c0392b;
- --r:10px;--shadow:0 1px 2px rgba(16,32,56,.05),0 1px 1px rgba(16,32,56,.03);--shadow-hover:0 6px 18px rgba(16,32,56,.08)}
-*{scrollbar-width:thin;scrollbar-color:#c3cedc transparent}
-body{font:13.5px/1.55 Inter,"Segoe UI",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);grid-template-columns:264px minmax(0,1fr);-webkit-font-smoothing:antialiased}
-
-/* Menu latéral */
-aside{background:linear-gradient(180deg,#0e1a2b,#112036);padding:0;box-shadow:none;border-inline-end:1px solid #0a1422}
-.logo{padding:20px 20px 18px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,.06)}
-.mark{width:34px;height:34px;flex:0 0 34px;border-radius:9px;background:linear-gradient(145deg,#3b82f6,#1d4ed8);box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
-.mark:after{inset:9px;border-radius:3px;background:var(--amb)}
-.brand-copy b{font-size:15.5px;font-weight:700;letter-spacing:.1px}
-.brand-copy small{font-size:10px;letter-spacing:.06em;color:#8396ae}
-#menu{padding:6px 10px 16px;scrollbar-color:#2c3e57 transparent}
-#menu .nav-section{padding:20px 12px 6px;font-size:10.5px;font-weight:600;letter-spacing:.12em;color:#6f829c}
-#menu button{min-height:38px;margin:1px 0;padding:8px 12px;gap:11px;border-radius:8px;color:#aebcd0;font-size:13px;font-weight:500;box-shadow:none;position:relative}
-#menu button:before{content:"";width:17px;height:17px;flex:0 0 17px;border:0;border-radius:0;opacity:.8;background:currentColor;-webkit-mask:var(--i,var(--dot)) center/contain no-repeat;mask:var(--i,var(--dot)) center/contain no-repeat}
-#menu button:hover:not(:disabled){background:rgba(255,255,255,.06);color:#fff;box-shadow:none}
-#menu button.on{background:rgba(59,130,246,.17);color:#fff;font-weight:600;box-shadow:none}
-#menu button.on:before{background:#8ab8ff;opacity:1}
-#menu button.on:after{content:"";position:absolute;inset-block:8px;inset-inline-start:-10px;width:3px;border-radius:3px;background:var(--amb)}
-.sidebar-foot{margin:0;padding:14px 20px;border-top:1px solid rgba(255,255,255,.06);font-size:11px;color:#7d8fa8}
-
-/* Barre supérieure */
-main{padding:0;gap:0;max-width:none;margin:0}
-.bar{min-height:62px;margin:0;padding:10px 28px;border:0;border-bottom:1px solid var(--line);border-radius:0;background:rgba(255,255,255,.9);backdrop-filter:saturate(1.4) blur(10px);box-shadow:none}
-.bar>div:first-child{display:grid;grid-template-columns:auto 1fr;column-gap:12px;align-items:center}
-.bar>div:first-child:before{content:"";grid-row:1/3;width:38px;height:38px;border-radius:10px;border:1px solid #d6e3fa;background:var(--sig-l) var(--bld) center/19px no-repeat}
-.bar strong{font-size:14.5px;font-weight:650;line-height:1.25}
-.bar small{font-size:12px;color:var(--mut);margin:0}
-.bar .bd,.cbpm-savebar{gap:8px}
-.bar button{font-size:12px;padding:7px 13px}
-.bar .b-blue{background:#fff;color:var(--sig);border:1px solid #c9d8f3;box-shadow:none}
-.bar .b-blue:hover:not(:disabled){background:var(--sig-l);box-shadow:none}
-#saveCount{font-size:12px;color:var(--mut)}
-#sync{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;font-size:11.5px;border:1px solid #bfe6d0;background:#eaf7f0;color:var(--ok)}
-#sync.p{border-color:#f3dba5;background:#fdf3dc;color:#92600a}
-#sync.e{border-color:#f3c3c0;background:#fdeceb;color:var(--err)}
-#info{margin:16px 28px 0;padding:10px 14px;border-radius:8px;border:1px solid #cfe0fb;background:#f0f6ff;color:#1b4a9c;font-size:12.5px}
-#info.e{border-color:#f3c3c0;background:#fdeceb;color:var(--err)}
-#vue{padding:22px 28px 48px;gap:18px;max-width:1680px;width:100%;margin:0 auto}
-
-/* Cartes et formulaires */
-.card,.advanced-card,.dash-panel,.dash-kpi,.kpi,.aff-manager-panel,.tcard{background:#fff;border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
-.card{padding:18px 20px}.advanced-card{padding:18px 20px}
-.fiche h3,.advanced-card h3{margin:0 0 14px;padding-bottom:10px;border-bottom:1px solid #edf1f6;font-size:13.5px;font-weight:650;letter-spacing:0;text-transform:none;color:var(--ink)}
-.grille{gap:14px 16px}
-.champ label,.advanced-toolbar label,.stock-entry-grid label,.aff-manager-input label{font-size:12px;font-weight:600;color:var(--steel);margin-bottom:5px}
-.req{color:#c4423f}
-.champ input,.champ select,.champ textarea,.filt input,.filt select,.advanced-toolbar input,.advanced-toolbar select,.adv-input,.stock-entry-grid input,.stock-entry-grid select,.aff-manager-input input,.comp-controls input,.comp-controls select{border:1px solid #d6dee9;border-radius:7px;background:#fff;color:var(--ink)}
-.champ input,.champ select{height:38px}
-.champ input:focus,.champ select:focus,.champ textarea:focus,.filt input:focus,.filt select:focus,.advanced-toolbar input:focus,.advanced-toolbar select:focus,.adv-input:focus,.stock-entry-grid input:focus,.stock-entry-grid select:focus,.aff-manager-input input:focus{outline:0;border-color:var(--sig);box-shadow:0 0 0 3px rgba(31,95,208,.14)}
-.champ input[readonly]{background:#f3f6fa;color:#33465f}
-.champ :disabled{background:#f3f5f8;color:#9aa8ba}
-.kpi{border-top:3px solid var(--sig);background:#fff}
-.kpi strong{font-size:24px;font-weight:700;letter-spacing:-.02em}
-
-/* Boutons */
-button{min-height:34px;padding:8px 14px;border-radius:7px;font-size:12.5px;font-weight:600;letter-spacing:0;box-shadow:0 1px 0 rgba(16,32,56,.1)}
-button:hover:not(:disabled){filter:none;box-shadow:0 2px 6px rgba(16,32,56,.15)}
-button:disabled{opacity:.45}
-.b-grn,#btnSaveAll{background:#16825a}.b-grn:hover:not(:disabled),#btnSaveAll:hover:not(:disabled){background:#126c4a}
-.b-blue{background:var(--sig)}.b-blue:hover:not(:disabled){background:var(--sig-d)}
-.b-teal{background:#0b7c8e}.b-red{background:#c4423f}.b-red:hover:not(:disabled){background:#a93633}
-.b-navy{background:#fff;color:#33465f;border:1px solid #d5dde8;box-shadow:none}
-.b-navy:hover:not(:disabled){background:#f4f7fb;border-color:#b9c6d8;box-shadow:none}
-
-/* Tableaux */
-.tcard{overflow:hidden}
-table{font-size:13px}
-th,.advanced-table th,.comp-table th,.aff-manager-table th{padding:11px 14px;background:#f6f8fb;color:#52657d;font-size:12px;font-weight:650;letter-spacing:0;text-transform:none;text-align:start;border-bottom:1px solid var(--line)}
-th:hover{background:#edf2f8}
-td,.advanced-table td,.comp-table td,.aff-manager-table td{padding:10px 14px;color:#2a3c54;border-bottom:1px solid #eef2f7}
-tbody tr:nth-child(even) td{background:transparent}
-tbody tr:hover td,.advanced-table tbody tr:hover,.aff-manager-table tbody tr:hover td{background:#f4f8ff}
-tbody tr.sel td,.comp-table tr.selected td,.aff-manager-table tbody tr.selected td,.advanced-table tr.selected td{background:#e8f0fd}
-tbody tr.sel td:first-child{border-inline-start:3px solid var(--sig)}
-.tot{padding:12px 8px;background:#f6f8fb;border-top:1px solid var(--line)}
-.tot span{padding:2px 18px;font-size:12px}.tot b{font-size:14px;color:var(--ink)}
-.filt{gap:10px 18px;font-size:12px;color:var(--steel)}
-.advanced-table-wrap,.comp-table-wrap,.aff-manager-table-wrap{border-color:var(--line);border-radius:8px}
-.status-pill{padding:3px 10px;font-size:11.5px;border:1px solid transparent}
-.status-pill.good{border-color:#bfe6d0}.status-pill.warn{border-color:#f3dba5}.status-pill.bad{border-color:#f3c3c0}
-
-/* Dialogues */
-dialog{border:0;border-radius:14px;padding:22px 24px;background:#f6f8fb;box-shadow:0 24px 70px rgba(10,20,36,.35)}
-dialog::backdrop{background:rgba(10,20,36,.5);backdrop-filter:blur(3px)}
-.sh{padding-bottom:14px;margin-bottom:16px;border-bottom:1px solid var(--line)}
-.sh h3,.cbpm-dialog h2{font-size:16px;font-weight:650;color:var(--ink)}
-.cbpm-actions{padding-top:14px;border-top:1px solid #e6ebf2}
-
-/* Tableau de bord */
-.dash-welcome{padding:2px 0 4px}
-.dash-eyebrow{font-size:11px;font-weight:650;letter-spacing:.08em;color:var(--sig)}
-.dash-welcome h1{font-size:clamp(22px,2vw,28px);font-weight:700;letter-spacing:-.02em;color:var(--ink)}
-.dash-welcome p{font-size:13px;color:var(--mut)}
-.dash-kpis{gap:16px}
-.dash-kpi{position:relative;overflow:hidden;padding:18px 20px}
-.dash-kpi:before{content:"";position:absolute;inset-block:0;inset-inline-start:0;width:3px;background:var(--k,var(--sig))}
-.dash-kpi:nth-child(1){--k:#1f5fd0;--kl:#e8f0fd}.dash-kpi:nth-child(2){--k:#0f8a78;--kl:#e2f4f0}
-.dash-kpi:nth-child(3){--k:#c98a0a;--kl:#fdf3dc}.dash-kpi:nth-child(4){--k:#6a4fd1;--kl:#eeeaff}
-.dash-kpi:hover{transform:none;box-shadow:var(--shadow-hover)}
-.dash-kpi-top{font-size:12px;font-weight:600;color:var(--steel)}
-.dash-kpi-top i{width:32px;height:32px;border-radius:9px;background:var(--kl,var(--sig-l));color:var(--k,var(--sig))}
-.dash-kpi strong{margin:14px 0 6px;font-size:clamp(20px,1.9vw,27px);font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.dash-kpi footer{font-size:11.5px;color:var(--mut)}
-.dash-panels{gap:16px}.dash-panel{padding:20px}
-.dash-panel-head h3{font-size:14px;font-weight:650;color:var(--ink)}
-.dash-panel-head p{font-size:12px;color:var(--mut)}
-.dash-chip{font-size:11px}
-.dash-bar-track{background:#eef2f8}
-.dash-bar-track span{background:linear-gradient(180deg,#4f8df0,#1f5fd0)}
-.dash-bar-col>b{font-size:11px}.dash-bar-col>small{font-size:10.5px}
-.dash-fin-row,.dash-fin-total{font-size:12.5px}.dash-fin-row b{font-size:12.5px}
-.dash-rank,.dash-rank>b{font-size:12px}
-.dash-alert b{font-size:12px}.dash-alert small{font-size:11px}
-.dash-table-wrap table,.dash-table-wrap td{font-size:12.5px}.dash-table-wrap th{font-size:11.5px}
-.dash-link{font-size:12px!important}
-
-@media(max-width:1100px){body{grid-template-columns:232px minmax(0,1fr)}.bar{padding:10px 20px}#vue{padding:18px 20px 40px}#info{margin:14px 20px 0}}
-@media(max-width:900px){
- body{grid-template-columns:minmax(0,1fr)}
- aside{border:0}.logo{padding:12px 16px 10px;margin:0;border:0}
- #menu{padding:0 10px 8px}#menu button{width:auto;flex:0 0 auto}#menu button.on{background:var(--sig)}
- .bar{position:relative;padding:12px 14px}#info{margin:12px 14px 0}#vue{padding:14px 14px 32px;gap:14px}
-}
-
-/* ===== Thème sombre optionnel ===== */
-body.theme-dark{--ink:#e7edf5;--steel:#b5c3d4;--bg:#111827;--card:#1f2937;--line:#344256;--mut:#9aa9bc;--shadow:0 3px 14px rgba(0,0,0,.18);background:#111827;color:#e7edf5}
-body.theme-dark main{background:#111827}
-body.theme-dark .bar,body.theme-dark .card,body.theme-dark .advanced-card,body.theme-dark .dash-panel,body.theme-dark .dash-kpi,body.theme-dark .kpi,body.theme-dark .comp-editor,body.theme-dark .logo-editor{background:#1f2937;border-color:#344256;color:#e7edf5}
-body.theme-dark .bar strong,body.theme-dark .dash-welcome h1,body.theme-dark .dash-kpi strong,body.theme-dark .dash-fin-row b,body.theme-dark .dash-fin-total strong,body.theme-dark .advanced-card h3,body.theme-dark .fiche h3{color:#e7edf5}
-body.theme-dark .bar small,body.theme-dark .dash-welcome p,body.theme-dark .dash-kpi footer,body.theme-dark .dash-panel-head p,body.theme-dark .dash-fin-row,body.theme-dark .dash-rank,body.theme-dark .champ label{color:#9aa9bc}
-body.theme-dark .champ input,body.theme-dark .champ select,body.theme-dark .champ textarea,body.theme-dark .advanced-toolbar input,body.theme-dark .advanced-toolbar select,body.theme-dark .adv-input,body.theme-dark .filt input,body.theme-dark .filt select,body.theme-dark .stock-entry-grid input,body.theme-dark .stock-entry-grid select,body.theme-dark .comp-controls input,body.theme-dark .comp-controls select{background:#111b2a;border-color:#45546a;color:#e7edf5}
-body.theme-dark th{background:#263449;color:#c4d0df;border-color:#344256}
-body.theme-dark td{border-color:#2d3a4e;color:#dce5ef}
-body.theme-dark tbody tr:nth-child(even) td{background:#1a2636}
-body.theme-dark tbody tr:hover td{background:#26364c}
-body.theme-dark .tw,body.theme-dark .advanced-table-wrap,body.theme-dark .comp-table-wrap{border-color:#344256}
-body.theme-dark .dash-alert{background:#263449}
-body.theme-dark .dash-rank>div,body.theme-dark .dash-bar-track{background:#344256}
-body.theme-dark dialog{background:#172334;color:#e7edf5}
-body.theme-dark .cbpm-option,body.theme-dark .cbpm-conflict{background:#1f2937;border-color:#344256}
-body.theme-dark .dash-refresh{background:#263449!important;color:#dce5ef!important;border-color:#45546a!important}
-.cbpm-savebar{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
-.cbpm-savebar button{white-space:nowrap}
-@media(max-width:900px){.bar .bd{width:100%}.cbpm-savebar{width:100%}.cbpm-savebar button{flex:0 0 auto}}
 </style>
 </head>
 <body>
-<aside><div class="logo"><span class="mark"></span><span class="brand-copy"><b>CBPManagement</b><small>Gestion intégrée · BPE</small></span></div>
-<nav id="menu"></nav><div class="sidebar-foot"><span class="sidebar-dot"></span><span>Plateforme de gestion</span></div></aside>
+<aside><div class="logo"><span class="mark"></span>CBPManagement</div><nav id="menu"></nav></aside>
 <main>
-  <div class="bar"><div><strong id="entNom">CBPManagement</strong><small id="userInfo">Espace local · Données enregistrées sur cet appareil</small></div>
+  <div class="bar"><div><strong id="entNom">…</strong><small id="userInfo"></small></div>
     <div class="bd"><span id="sync" class="p">● …</span>
-      <div class="cbpm-savebar">
-        <button id="btnUndo" class="b-navy" type="button" disabled title="Annuler la dernière action">↶ Annuler</button>
-        <button id="btnRedo" class="b-navy" type="button" disabled title="Rétablir la dernière action annulée">↷ Rétablir</button>
-        <button id="btnSaveAll" type="button" disabled>Enregistrer</button><span id="saveCount">Aucune modification en attente</span>
-        <button id="btnExportJson" class="b-teal" type="button">Sauvegarde JSON</button>
-        <button id="btnImportJson" class="b-teal" type="button">Restaurer JSON</button>
-        <input id="inputJson" type="file" accept=".json,application/json" hidden>
-        <button id="btnExportCbpm" class="b-teal" type="button">Exporter .cbpm</button>
-        <button id="btnImportCbpm" class="b-teal" type="button">Importer .cbpm</button>
-        <input id="inputCbpm" type="file" accept=".cbpm,text/plain,application/gzip" hidden>
-        <button id="btnExportXlsx" class="b-blue" type="button">Exporter Excel</button>
-        <button id="btnImportXlsx" class="b-blue" type="button">Importer Excel</button><input id="inputXlsx" type="file" accept=".xlsx,.xls" hidden>
-      </div>
-      <button id="btnTheme" class="b-navy" type="button" title="Basculer le thème">◐ Thème sombre</button>
-      <button id="btnHelp" class="b-navy" type="button">Aide</button></div></div>
+      <div class="cbpm-savebar"><button id="btnSaveAll" type="button" disabled>Enregistrer</button><span id="saveCount">Aucune modification en attente</span><button id="btnConflicts" type="button" hidden>Voir les conflits</button><button id="btnExportXlsx" class="b-blue" type="button">Exporter Excel</button><button id="btnImportXlsx" class="b-blue" type="button">Importer Excel</button><input id="inputXlsx" type="file" accept=".xlsx,.xls" hidden></div>
+      <button id="btnHelp" class="b-navy" type="button">Aide</button><button id="btnQuit" class="b-red" type="button">Quitter</button><button id="btnOut" class="b-navy" type="button">Déconnexion</button></div></div>
   <p id="info">Chargement…</p>
   <div id="vue" hidden></div>
 </main>
@@ -655,9 +245,23 @@ body.theme-dark .dash-refresh{background:#263449!important;color:#dce5ef!importa
     </section>
   </div>
 </dialog>
+<dialog id="dlgExit" class="cbpm-dialog"><h2>Modifications non enregistrées</h2><p>Des modifications sont en attente. Voulez-vous les enregistrer avant de quitter l'application ?</p><p class="cbpm-status">« Enregistrer et quitter » transmet les modifications à l'entreprise. « Quitter sans enregistrer » abandonne les modifications en attente.</p><div class="cbpm-actions"><button id="exitSave" class="b-grn" type="button">Enregistrer et quitter</button><button id="exitLocal" class="b-red" type="button">Quitter sans enregistrer</button><button id="exitCancel" class="b-blue" type="button">Continuer</button></div><p id="exitStatus" class="msg" role="status"></p></dialog>
+<dialog id="dlgConflicts" class="cbpm-dialog"><div class="sh"><h3>Résolution des conflits Firebase</h3><button id="conflictClose" class="b-navy" type="button">Fermer</button></div><div id="conflictBody"></div></dialog>
 <dialog id="dlgImport" class="cbpm-dialog"><div class="sh"><h3>Importation Excel</h3><button id="importClose" class="b-navy" type="button">Fermer</button></div><p id="importStatus" class="cbpm-status">Choisissez un classeur Excel (.xlsx). L'analyse est effectuée avant toute modification.</p><div id="importSummary"></div><div class="cbpm-actions"><button id="btnStageImport" class="b-grn" type="button" disabled>Ajouter les nouvelles données</button></div></dialog>
 
 <script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, signOut, onAuthStateChanged, createUserWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, doc, getDoc, getDocs, collection, onSnapshot, runTransaction, serverTimestamp, setDoc, updateDoc, deleteDoc, query, where } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAifzXsjpvftlxi3RGAVd0g8zznpzCLAf0", authDomain: "cbpm-8ac0e.firebaseapp.com", projectId: "cbpm-8ac0e",
+  storageBucket: "cbpm-8ac0e.firebasestorage.app", messagingSenderId: "14440101768", appId: "1:14440101768:web:61d42ef693721443cfac3d"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app), db = getFirestore(app);
+let secondaryAuth = null;
+try { secondaryAuth = getAuth(initializeApp(firebaseConfig, "CBPMUserCreator")); } catch (e) { console.warn("Instance secondaire Firebase :", e); }
 const $ = (id) => document.getElementById(id);
 const el = (tag, cls) => { const e = document.createElement(tag); if (cls) e.className = cls; return e; };
 
@@ -709,10 +313,10 @@ function montantEnLettres(value){
   return (negative?"Moins ":"")+out.charAt(0).toLocaleUpperCase("fr")+out.slice(1);
 }
 
-let ent = { id: "local", nom: "CBPManagement" }, vueCourante = null, sousVue = null;
+let user, ent, role, vueCourante = null, sousVue = null;
 const tous = {};            // tous[table] = Map(id -> enregistrement), suppressions comprises
 const vues = new Set();     // écrans ouverts, à rafraîchir à chaque synchronisation
-const peutEcrire = () => true; // Application locale sans profils ni authentification.
+const peutEcrire = () => role === "admin";
 const actifs = (t) => [...(tous[t] || new Map()).values()].filter((r) => !r.deleted);
 const nomDe = (t, id, ch) => { const x = tous[t] && tous[t].get(id); return x ? x[ch] || "" : ""; };
 function expenseSubaffLabel(row){
@@ -723,6 +327,7 @@ function expenseSubaffLabel(row){
 const refs = (t, ch) => () => actifs(t).map((r) => ({ v: r.id, l: r[ch] || "" })).sort((a, b) => a.l.localeCompare(b.l));
 const distinct = (t, k) => () => [...new Set(actifs(t).map((r) => r[k]).filter(Boolean))].sort((a, b) => a.localeCompare(b)).map((s) => ({ v: s, l: s }));
 const tauxTVA = () => { const p = tous.parametres && tous.parametres.get("general"); return p && p.tva != null && p.tva !== "" ? nb(p.tva) : 19; };
+const chemin = (t, id) => ["entreprises", ent.id, t, ...(id ? [id] : [])];
 const synchro = (cls, t) => { $("sync").className = cls; $("sync").textContent = "● " + t; };
 const info = (t, err) => { $("info").textContent = t; $("info").className = err ? "e" : ""; $("info").hidden = !t; };
 
@@ -768,8 +373,6 @@ class DraftStore {
   }
   async read(key) { const r=await this.readRecord(key); return r.changes || []; }
   async readForms(key) { const r=await this.readRecord(key); return r.forms || []; }
-  async readDataset(key) { const r=await this.readRecord(key); return r.dataset || {}; }
-  async writeDataset(key, dataset) { return this.updateRecord(key,{dataset}); }
   async updateRecord(key, patch) {
     const d=await this.open();
     try { await new Promise((resolve,reject)=>{ const tx=d.transaction(STORE_NAME,"readwrite"), st=tx.objectStore(STORE_NAME), req=st.get(key);
@@ -796,7 +399,7 @@ function canonical(value) {
   const out={}; for (const k of Object.keys(value).sort()) out[k]=canonical(value[k]); return out;
 }
 function isDeepEqual(a,b) { return JSON.stringify(canonical(a)) === JSON.stringify(canonical(b)); }
-function cleanRecord(data={}) { const out={}; for (const [k,v] of Object.entries(data||{})) if (!META_FIELDS.has(k) && v !== undefined) out[k]=v; return out; }
+function cleanFirestoreDocument(data={}) { const out={}; for (const [k,v] of Object.entries(data||{})) if (!META_FIELDS.has(k) && v !== undefined) out[k]=v; return out; }
 function mergeThreeWay(base={},local={},remote={}) {
   const merged={...remote}, conflicts=[];
   for (const k of new Set([...Object.keys(base),...Object.keys(local),...Object.keys(remote)])) {
@@ -814,65 +417,6 @@ function mergeThreeWay(base={},local={},remote={}) {
 const changeKey = (table,id) => `${table}\u0000${id}`;
 const cloneChange = (v) => v == null ? v : JSON.parse(JSON.stringify(v));
 
-// Historique local des opérations : annulation / rétablissement en mémoire de session.
-const undoHistory={undo:[],redo:[],applying:false,limit:60};
-function snapshotLocalState(manager=changeManager){
-  if(!manager)return null;
-  const snapshot={};
-  for(const table of (typeof TABLES!=="undefined"?TABLES:[])){
-    if(table==="journal")continue; // Les actions annulées restent traçables dans le journal.
-    snapshot[table]=manager.rows(table,{includeDeleted:true}).map(row=>{const copy={...row};delete copy._pending;delete copy._conflict;return copy;});
-  }
-  return snapshot;
-}
-function pushUndoSnapshot(manager){
-  if(undoHistory.applying||!manager||manager!==changeManager)return;
-  const snap=snapshotLocalState(manager);if(!snap)return;
-  const last=undoHistory.undo[undoHistory.undo.length-1];
-  if(last&&isDeepEqual(last,snap))return;
-  undoHistory.undo.push(snap);if(undoHistory.undo.length>undoHistory.limit)undoHistory.undo.shift();
-  undoHistory.redo.length=0;updateUndoRedoUI();
-}
-function updateUndoRedoUI(){
-  const undo=$("btnUndo"),redo=$("btnRedo");
-  if(undo)undo.disabled=!undoHistory.undo.length;
-  if(redo)redo.disabled=!undoHistory.redo.length;
-}
-async function restoreLocalSnapshot(snapshot){
-  if(!changeManager)throw new Error("Le stockage local n'est pas initialisé.");
-  const manager=changeManager;undoHistory.applying=true;
-  try{
-    const auditOperations=[...manager.changes.values()].filter(op=>op.table==="journal");
-    manager.changes.clear();
-    for(const op of auditOperations)manager.changes.set(changeKey(op.table,op.id),op);
-    for(const table of TABLES){
-      if(table==="journal")continue; // Le journal d'audit n'est jamais réécrit par Annuler/Rétablir.
-      const base=manager.remote.get(table)||new Map();
-      const targetRows=Array.isArray(snapshot?.[table])?snapshot[table]:[];
-      const target=new Map(targetRows.filter(row=>row&&row.id).map(row=>[String(row.id),row]));
-      const ids=new Set([...base.keys(),...target.keys()]);
-      for(const id of ids){
-        const old=base.get(id),next=target.get(id),key=changeKey(table,id);
-        if(!next&&old){manager.changes.set(key,{table,id,base:cleanRecord(old),baseVersion:Number(old.version)||0,local:null,conflicts:[],conflictReason:null});continue;}
-        if(next&&!old){manager.changes.set(key,{table,id,base:null,baseVersion:null,local:cleanRecord(next),conflicts:[],conflictReason:null});continue;}
-        if(next&&old&&!isDeepEqual(cleanRecord(next),cleanRecord(old))){
-          manager.changes.set(key,{table,id,base:cleanRecord(old),baseVersion:Number(old.version)||0,local:cleanRecord(next),conflicts:[],conflictReason:null});
-        }
-      }
-    }
-    await manager.persist();manager.notify();refreshEffectiveTables();updateSaveUI();updateUndoRedoUI();
-  }finally{undoHistory.applying=false;}
-}
-async function applyUndoRedo(direction){
-  const source=direction==="undo"?undoHistory.undo:undoHistory.redo;
-  const target=direction==="undo"?undoHistory.redo:undoHistory.undo;
-  if(!source.length||!changeManager)return;
-  const current=snapshotLocalState();target.push(current);
-  const snapshot=source.pop();
-  await restoreLocalSnapshot(snapshot);
-  info(direction==="undo"?"Dernière action annulée. Enregistrez pour conserver cet état.":"Action rétablie. Enregistrez pour conserver cet état.");
-}
-
 class ChangeManager {
   constructor({store,scopeKey}) { if(!store||!scopeKey) throw new TypeError("store et scopeKey sont obligatoires."); this.store=store; this.scopeKey=scopeKey; this.remote=new Map(); this.changes=new Map(); this.listeners=new Set(); this.persistQueue=Promise.resolve(); this.saving=false; }
   subscribe(fn) { this.listeners.add(fn); return ()=>this.listeners.delete(fn); }
@@ -888,9 +432,9 @@ class ChangeManager {
     const tableMap=new Map(); for(const [id,data] of docs)tableMap.set(id,{id,...data}); this.remote.set(table,tableMap);
     for(const op of this.changes.values()){
       if(op.table!==table)continue; const raw=tableMap.get(op.id);
-      if(op.base===null){if(raw){op.conflictReason="Un document distant possède déjà cet identifiant.";op.conflictRemote=cleanRecord(raw);}else{op.conflictReason=null;op.conflictRemote=null;}continue;}
+      if(op.base===null){if(raw){op.conflictReason="Un document distant possède déjà cet identifiant.";op.conflictRemote=cleanFirestoreDocument(raw);}else{op.conflictReason=null;op.conflictRemote=null;}continue;}
       if(!raw){op.conflictReason="Cet enregistrement a été supprimé à distance.";op.conflictRemote=null;continue;}
-      const remote=cleanRecord(raw);
+      const remote=cleanFirestoreDocument(raw);
       if(remote.deleted===true&&op.local?.deleted!==true){op.conflictReason="Cet enregistrement a été supprimé à distance.";op.conflictRemote=remote;continue;}
       const m=mergeThreeWay(op.base,op.local,remote);
       if(m.conflicts.length){op.conflicts=m.conflicts;op.conflictRemote=remote;}
@@ -903,28 +447,25 @@ class ChangeManager {
     for(const op of this.changes.values())if(op.table===table){if(op.local===null)rows.delete(op.id);else rows.set(op.id,{id:op.id,...op.local,version:op.baseVersion??0,_pending:true,_conflict:Boolean(op.conflicts?.length||op.conflictReason)});}
     const out=[...rows.values()];return includeDeleted?out:out.filter(r=>!r.deleted);
   }
-  create(table,id,data){pushUndoSnapshot(this);const k=changeKey(table,id);if(this.remote.get(table)?.has(id)||this.changes.has(k))throw new Error("Identifiant déjà utilisé.");this.changes.set(k,{table,id,base:null,baseVersion:null,local:cleanRecord(data),conflicts:[],conflictReason:null});void this.persist().catch(console.error);this.notify();}
+  create(table,id,data){const k=changeKey(table,id);if(this.remote.get(table)?.has(id)||this.changes.has(k))throw new Error("Identifiant déjà utilisé.");this.changes.set(k,{table,id,base:null,baseVersion:null,local:cleanFirestoreDocument(data),conflicts:[],conflictReason:null});void this.persist().catch(console.error);this.notify();}
   createMany(entries){
-    pushUndoSnapshot(this);
     const seen=new Set();
     for(const x of entries){const k=changeKey(x.table,x.id);if(seen.has(k)||this.remote.get(x.table)?.has(x.id)||this.changes.has(k))throw new Error(`Identifiant déjà utilisé dans ${x.table} : ${x.id}`);seen.add(k);}
-    for(const x of entries){const k=changeKey(x.table,x.id);this.changes.set(k,{table:x.table,id:x.id,base:null,baseVersion:null,local:cleanRecord(x.data),conflicts:[],conflictReason:null});}
+    for(const x of entries){const k=changeKey(x.table,x.id);this.changes.set(k,{table:x.table,id:x.id,base:null,baseVersion:null,local:cleanFirestoreDocument(x.data),conflicts:[],conflictReason:null});}
     void this.persist().catch(console.error);this.notify();
   }
   update(table,id,patch){
-    pushUndoSnapshot(this);
     const k=changeKey(table,id),old=this.changes.get(k),raw=this.remote.get(table)?.get(id);
     if(!old&&!raw)throw new Error("Enregistrement introuvable dans la copie de travail.");
-    const base=old?old.base:cleanRecord(raw);
-    if(base===null){this.changes.set(k,{...old,local:{...old.local,...cleanRecord(patch)}});}
-    else this.changes.set(k,{table,id,base,baseVersion:old?.baseVersion??(Number(raw?.version)||0),local:{...(old?.local??base),...cleanRecord(patch)},conflicts:old?.conflicts??[],conflictReason:old?.conflictReason??null,conflictRemote:old?.conflictRemote??null});
+    const base=old?old.base:cleanFirestoreDocument(raw);
+    if(base===null){this.changes.set(k,{...old,local:{...old.local,...cleanFirestoreDocument(patch)}});}
+    else this.changes.set(k,{table,id,base,baseVersion:old?.baseVersion??(Number(raw?.version)||0),local:{...(old?.local??base),...cleanFirestoreDocument(patch)},conflicts:old?.conflicts??[],conflictReason:old?.conflictReason??null,conflictRemote:old?.conflictRemote??null});
     void this.persist().catch(console.error);this.notify();
   }
   softDelete(table,id){
-    pushUndoSnapshot(this);
     const k=changeKey(table,id),old=this.changes.get(k);
     if(old?.base===null)this.changes.delete(k);
-    else{const raw=this.remote.get(table)?.get(id);if(!old&&!raw)throw new Error("Enregistrement introuvable.");const base=old?.base??cleanRecord(raw);this.changes.set(k,{table,id,base,baseVersion:old?.baseVersion??(Number(raw?.version)||0),local:{...(old?.local??base),deleted:true},conflicts:old?.conflicts??[],conflictReason:old?.conflictReason??null,conflictRemote:old?.conflictRemote??null});}
+    else{const raw=this.remote.get(table)?.get(id);if(!old&&!raw)throw new Error("Enregistrement introuvable.");const base=old?.base??cleanFirestoreDocument(raw);this.changes.set(k,{table,id,base,baseVersion:old?.baseVersion??(Number(raw?.version)||0),local:{...(old?.local??base),deleted:true},conflicts:old?.conflicts??[],conflictReason:old?.conflictReason??null,conflictRemote:old?.conflictRemote??null});}
     void this.persist().catch(console.error);this.notify();
   }
   resolveConflict(table,id,choices={}){
@@ -937,6 +478,38 @@ class ChangeManager {
     if(choice==="use-remote")this.changes.delete(k);
     else if(choice==="restore-local"&&op.conflictReason.includes("supprimé à distance")){if(op.conflictRemote?.deleted===true){op.base=op.conflictRemote;op.baseVersion=Number(this.remote.get(table)?.get(id)?.version)||0;op.local={...op.local,deleted:false};}else{op.base=null;op.baseVersion=null;}op.conflicts=[];op.conflictReason=null;op.conflictRemote=null;}
     else throw new Error("Choix incompatible avec ce conflit.");void this.persist().catch(console.error);this.notify();
+  }
+  async saveAll({db,companyId,userEmail,firestore}){
+    if(this.saving)throw new Error("Une sauvegarde est déjà en cours.");this.saving=true;const summary={saved:0,unchanged:0,conflicts:[],errors:[]};
+    try{
+      for(const [key,current] of [...this.changes.entries()]){
+        if(current.conflicts?.length||current.conflictReason){summary.conflicts.push({table:current.table,id:current.id,fields:(current.conflicts||[]).map(x=>x.field),reason:current.conflictReason||"Conflit de champs."});continue;}
+        const op=cloneChange(current);
+        try{
+          const ref=firestore.doc(db,"entreprises",companyId,op.table,op.id);
+          const result=await firestore.runTransaction(db,async tx=>{
+            const snap=await tx.get(ref), raw=snap.exists()?snap.data():null;
+            if(op.base===null){if(raw)return{status:"conflict",reason:"L'identifiant existe déjà dans Firebase."};const data={...op.local,version:1,majPar:userEmail||"",majLe:firestore.serverTimestamp()};tx.set(ref,data);return{status:"saved",data:{...op.local,version:1,majPar:userEmail||""}};}
+            if(!raw)return{status:"conflict",reason:"L'enregistrement a été supprimé à distance."};
+            const remote=cleanFirestoreDocument(raw);if(remote.deleted===true&&op.local?.deleted!==true)return{status:"conflict",reason:"Cet enregistrement a été supprimé à distance."};
+            const m=mergeThreeWay(op.base,op.local,remote);if(m.conflicts.length)return{status:"conflict",conflicts:m.conflicts};
+            if(isDeepEqual(m.merged,remote))return{status:"unchanged",data:{...remote,version:Number(raw.version)||0}};
+            const version=(Number(raw.version)||0)+1,data={...m.merged,version,majPar:userEmail||"",majLe:firestore.serverTimestamp()};tx.set(ref,data);return{status:"saved",data:{...m.merged,version,majPar:userEmail||""}};
+          });
+          if(result.status==="conflict"){
+            const live=this.changes.get(key);if(live){try{const snap=await firestore.getDoc(ref),raw=snap.exists()?snap.data():null,remote=raw?cleanFirestoreDocument(raw):null;live.conflictRemote=remote;if(raw){this.remote.set(op.table,this.remote.get(op.table)||new Map());this.remote.get(op.table).set(op.id,{id:op.id,...raw});}
+              if(result.reason){live.conflicts=[];live.conflictReason=result.reason;}else if(!remote){live.conflicts=[];live.conflictReason="Cet enregistrement a été supprimé à distance.";}else{const latest=mergeThreeWay(live.base??{},live.local??{},remote);live.conflicts=latest.conflicts;live.conflictReason=null;if(!latest.conflicts.length){live.base=remote;live.baseVersion=Number(raw.version)||0;live.local=latest.merged;live.conflictRemote=null;}}
+            }catch{live.conflicts=result.conflicts||[];live.conflictReason=result.reason||"Conflit distant à vérifier.";}}
+            summary.conflicts.push({table:op.table,id:op.id,fields:(result.conflicts||[]).map(x=>x.field),reason:result.reason||"Conflit de champs."});continue;
+          }
+          this.remote.set(op.table,this.remote.get(op.table)||new Map());this.remote.get(op.table).set(op.id,{id:op.id,...result.data});
+          const live=this.changes.get(key);if(live===current)this.changes.delete(key);else if(live){const committed=cleanFirestoreDocument(result.data),rebased=mergeThreeWay(op.local||{},live.local||{},committed);live.base=committed;live.baseVersion=Number(result.data.version)||0;live.local=rebased.merged;live.conflicts=rebased.conflicts;live.conflictReason=null;live.conflictRemote=rebased.conflicts.length?committed:null;}
+          if(result.status==="saved")summary.saved++;else summary.unchanged++;
+        }catch(e){summary.errors.push({table:op.table,id:op.id,message:e?.message||String(e)});}
+      }
+      await this.persistQueue;await this.persist();
+      this.notify();return summary;
+    }finally{this.saving=false;this.notify();}
   }
 }
 
@@ -1080,7 +653,7 @@ const simple = (table, field = "nom", optional = false) => ({
   optional
 });
 
-/** Relations Java exprimées par des libellés, alors que le Web cible utilise des IDs base locale. */
+/** Relations Java exprimées par des libellés, alors que le Web cible utilise des IDs Firestore. */
 const LEGACY_REFERENCE_RULES = {
   appro: {
     fournisseur: simple("fournisseur"),
@@ -1199,7 +772,7 @@ function mapLegacyReferences(table, row, indexes) {
 
 const COLLECTIONS = new Set([
   "client", "fournisseur", "appro", "prod", "recette", "depense", "transfert", "personnel", "materiel",
-  "prod_appro", "silo", "prod_fini", "affect", "sousaff", "facture", "regstock", "journal", "app_meta", "param", "parametres"
+  "prod_appro", "silo", "prod_fini", "affect", "sousaff", "facture", "regstock", "journal", "app_meta", "param"
 ]);
 const NUMBER_FIELDS = new Set(["qte", "pu", "taux", "ht", "tvam", "ttc", "dosage", "montant", "remise", "net", "marge", "theorique", "reel", "ecart"]);
 const BOOLEAN_FIELDS = new Set(["tva", "active", "actif", "deleted"]);
@@ -1238,8 +811,8 @@ async function sha256(text) {
 }
 
 /**
- * Produit un plan de migration en lecture seule. Aucune écriture base locale n'est faite ici.
- * existingByTable = Map(collection -> Map(docId -> base locale data)).
+ * Produit un plan de migration en lecture seule. Aucune écriture Firestore n'est faite ici.
+ * existingByTable = Map(collection -> Map(docId -> Firestore data)).
  */
 async function buildLegacyMigrationPlan(parsed, existingByTable = new Map()) {
   const sourceHash = await sha256(JSON.stringify(parsed.tables));
@@ -1266,19 +839,19 @@ async function buildLegacyMigrationPlan(parsed, existingByTable = new Map()) {
       }
       if (unique) seenSourceKeys.set(unique, index);
       const docs = [...(existingByTable.get(table)?.entries() ?? [])];
-      const matches = unique ? docs.filter(([, data]) => uniqueKey(table, cleanRecord(data)) === unique) : [];
+      const matches = unique ? docs.filter(([, data]) => uniqueKey(table, cleanFirestoreDocument(data)) === unique) : [];
       const identity = `${table}\n${JSON.stringify(row, Object.keys(row).sort())}\n${index}`;
       const generatedId = `legacy_${(await sha256(identity)).slice(0, 24)}`;
 
       if (matches.length === 0 && existingByTable.get(table)?.has(generatedId)) {
         const existingData = existingByTable.get(table).get(generatedId);
-        const remote = cleanRecord(existingData);
+        const remote = cleanFirestoreDocument(existingData);
         const same = isDeepEqual(row, remote);
         items.push({ table, sourceIndex: index, id: generatedId, action: same ? "already-present" : "review-existing",
           source: row, remote, differences: Object.keys({ ...row, ...remote }).filter((k) => !isDeepEqual(row[k], remote[k])) });
       } else if (matches.length === 1) {
         const [existingId, existingData] = matches[0];
-        const remote = cleanRecord(existingData);
+        const remote = cleanFirestoreDocument(existingData);
         const same = isDeepEqual(row, remote);
         items.push({ table, sourceIndex: index, id: existingId, action: same ? "already-present" : "review-existing",
           source: row, remote, differences: Object.keys({ ...row, ...remote }).filter((k) => !isDeepEqual(row[k], remote[k])) });
@@ -1332,7 +905,7 @@ function javaInvoiceLines(value){
     return [description,String(nb(line.qte)),String(nb(line.pu)),String(nb(line.taux)),pid].join("~");
   }).join("|");
 }
-function toLocalMigrationRecord(item) {
+function toFirestoreMigrationDocument(item) {
   if (item.action !== "create" || !item.id) throw new Error("Seules les nouvelles lignes confirmées peuvent être converties en documents.");
   if (item.referenceReview?.length) throw new Error("Des références liées doivent être résolues manuellement avant l'importation.");
   const data={ ...(item.sourceMapped ?? item.source), origineMigration: "Importation", migrationId: item.id };
@@ -1388,8 +961,7 @@ async function stageDirtyForms(){
     const error=validateStagedRow(cfg,row,selectedId);if(error)throw new Error(`${cfg.titre} : ${error}`);
     if(cfg.single){const current=changeManager.record(draft.table,"general");if(current)changeManager.update(draft.table,"general",row);else changeManager.create(draft.table,"general",row);}
     else if(selectedId){if(!changeManager.record(draft.table,selectedId))throw new Error(`${cfg.titre} : l'enregistrement sélectionné n'existe plus dans la copie de travail.`);changeManager.update(draft.table,selectedId,row);}
-    else changeManager.create(draft.table,recordId(draft.table),row);
-    if(draft.table==="parametres")updateCompanyBranding(row);
+    else changeManager.create(draft.table,doc(collection(db,...chemin(draft.table))).id,row);
     formDrafts.delete(draft.table);
     const view=[...vues].find(v=>v.cfg.table===draft.table);if(view)view.dirty=false;
   }
@@ -1406,110 +978,13 @@ function updateSaveUI(state){
   const count=changeManager.pendingCount(),forms=formDrafts.size||[...vues].filter(v=>v.dirty).length,dirty=count>0||forms>0;
   const b=$("btnSaveAll");if(b)b.disabled=!peutEcrire()||!dirty||changeManager.saving;
   const c=$("saveCount");if(c)c.textContent=dirty?`${count} opération(s) en attente${forms?` · ${forms} formulaire(s) modifié(s)`:""}`:"Aucune modification en attente";
-  if(state?.dirty)synchro("p","Modifications locales en attente");else if(!dirty)synchro("","Base locale synchronisée");
-  updateUndoRedoUI();
+  const cb=$("btnConflicts");if(cb){const n=changeManager.conflicts().length;cb.hidden=!n;cb.textContent=`Voir les conflits (${n})`;}
+  if(state?.dirty)synchro("p","Modifications locales non envoyées");else if(!dirty)synchro("","Synchronisé");
 }
+function saveAllToFirebase(){return changeManager.saveAll({db,companyId:ent.id,userEmail:user?.email||"",firestore:{doc,runTransaction,serverTimestamp,getDoc}});}
 
 
 
-
-
-// ===== Validation des changements et sauvegarde complète dans IndexedDB =====
-function exportableLocalDataset(){
-  const out={};
-  for(const table of TABLES){
-    out[table]=changeManager.rows(table,{includeDeleted:true}).map(row=>{
-      const copy={...row};delete copy._pending;delete copy._conflict;return copy;
-    });
-  }
-  return out;
-}
-async function saveAllLocal(){
-  if(!changeManager||!draftStore)throw new Error("Le stockage local n'est pas initialisé.");
-  if(changeManager.saving)throw new Error("Une sauvegarde est déjà en cours.");
-  changeManager.saving=true;updateSaveUI();
-  try{
-    await changeManager.persistQueue;
-    const savedCount=changeManager.changes.size,stamp=new Date().toISOString();
-    const dataset=exportableLocalDataset();
-    // Versionner uniquement les lignes concernées par les opérations en attente.
-    for(const op of changeManager.changes.values()){
-      const row=dataset[op.table]?.find(item=>item.id===op.id);
-      if(row){row.version=(Number(op.baseVersion)||0)+1;row.majPar="Local";row.majLe=stamp;}
-    }
-    // L'écriture du snapshot complet précède l'effacement du journal de modifications.
-    await draftStore.writeDataset(draftScopeKey,dataset);
-    for(const table of TABLES){
-      const rows=Array.isArray(dataset[table])?dataset[table]:[];
-      changeManager.remote.set(table,new Map(rows.filter(row=>row&&row.id).map(row=>[String(row.id),{...row,id:String(row.id)}])));
-    }
-    changeManager.changes.clear();
-    await changeManager.persist();
-    await persistFormDrafts();
-    refreshEffectiveTables();
-    return {saved:savedCount,unchanged:0,conflicts:[],errors:[]};
-  }finally{changeManager.saving=false;changeManager.notify();updateSaveUI();}
-}
-
-// ===== Sauvegarde JSON portable : tous les référentiels et mouvements sont inclus =====
-async function exportJsonBackup(){
-  try{
-    await stageDirtyForms();
-    await saveAllLocal();
-    const payload={application:"CBPManagement",schemaVersion:1,exportedAt:new Date().toISOString(),tables:exportableLocalDataset()};
-    const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"});
-    downloadBlob(blob,`CBPManagement_Sauvegarde_${aujourdhui()}.json`);
-    info("Sauvegarde complète JSON exportée.");
-  }catch(error){info("Sauvegarde JSON impossible : "+(error?.message||String(error)),true);}
-}
-async function importJsonBackup(file){
-  try{
-    if(!file) return;
-    if(file.size>100*1024*1024)throw new Error("Le fichier dépasse la limite de 100 Mo.");
-    const payload=JSON.parse(await file.text());
-    if(payload?.application!=="CBPManagement"||payload?.schemaVersion!==1||!payload.tables||typeof payload.tables!=="object")
-      throw new Error("Ce fichier n'est pas une sauvegarde CBPManagement reconnue.");
-    const next={};
-    for(const table of TABLES){
-      const rows=payload.tables[table]??[];
-      if(!Array.isArray(rows))throw new Error(`Structure invalide pour la table ${table}.`);
-      const seen=new Set();
-      next[table]=rows.map((row,index)=>{
-        if(!row||typeof row!=="object"||Array.isArray(row))throw new Error(`Ligne ${index+1} invalide dans ${table}.`);
-        const id=String(row.id||"").trim();if(!id)throw new Error(`Identifiant manquant à la ligne ${index+1} de ${table}.`);
-        if(seen.has(id))throw new Error(`Identifiant répété (${id}) dans ${table}.`);seen.add(id);
-        const copy={...row,id};delete copy._pending;delete copy._conflict;return copy;
-      });
-    }
-    const count=Object.values(next).reduce((n,rows)=>n+rows.filter(row=>!row.deleted).length,0);
-    if(!confirm(`Restaurer cette sauvegarde et remplacer la base locale actuelle ?\n${count} enregistrement(s) actif(s) seront chargés. Cette opération remplace les données actuelles.`))return;
-    await draftStore.writeDataset(draftScopeKey,next);
-    changeManager.changes.clear();
-    for(const table of TABLES)changeManager.remote.set(table,new Map(next[table].map(row=>[row.id,row])));
-    formDrafts.clear();await persistFormDrafts();await changeManager.persist();
-    undoHistory.undo.length=0;undoHistory.redo.length=0;
-    refreshEffectiveTables();
-    updateCompanyBranding(changeManager.record("parametres","general")||{});
-    ouvrir("dashboard");updateSaveUI();info(`Restauration terminée : ${count} enregistrement(s) actif(s) importé(s).`);
-  }catch(error){info("Restauration JSON impossible : "+(error?.message||String(error)),true);}
-}
-
-// ===== Préférences d'affichage et identité de l'entreprise =====
-function updateCompanyBranding(settings=currentCompanySettings()){
-  ent={id:"local",nom:String(settings?.nom||"CBPManagement").trim()||"CBPManagement"};
-  const label=$("entNom");if(label)label.textContent=ent.nom;
-}
-function applySavedTheme(){
-  let dark=false;try{dark=localStorage.getItem("cbpm-theme")==="dark";}catch(error){console.warn("Préférence de thème inaccessible :",error);}
-  document.body.classList.toggle("theme-dark",dark);
-  const button=$("btnTheme");if(button)button.textContent=dark?"☀ Thème clair":"◐ Thème sombre";
-}
-function toggleTheme(){
-  const dark=!document.body.classList.contains("theme-dark");
-  try{localStorage.setItem("cbpm-theme",dark?"dark":"light");}catch(error){console.warn("Impossible d'enregistrer le thème :",error);}
-  document.body.classList.toggle("theme-dark",dark);
-  const button=$("btnTheme");if(button)button.textContent=dark?"☀ Thème clair":"◐ Thème sombre";
-}
 
 // ===== Journal d'audit : chaque opération métier est tracée =====
 function auditSnapshot(table,row){
@@ -1531,18 +1006,10 @@ function journaliser(table,operation,id,before,after){
   const keys=["num","nom","produit","client","fournisseur","date","debiteur","aff","silo"];
   const label=keys.map(k=>String(display[k]??"").trim()).find(Boolean)||`#${actifs("journal").length+1}`;
   const now=new Date(),pad=n=>String(n).padStart(2,"0"),date_heure=`${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
-  const entry={utilisateur:"Application locale",date_heure,module:table,operation,element:String(label||id||""),description:`${operation} dans le module ${table}`,anciennes_valeurs:auditSnapshot(table,before),nouvelles_valeurs:auditSnapshot(table,after)};
-  const wasApplying=undoHistory.applying;
-  try{
-    undoHistory.applying=true;
-    changeManager.create("journal",recordId("journal"),entry);
-  }catch(e){console.error("Journal d'audit :",e);}
-  finally{undoHistory.applying=wasApplying;}
+  const entry={utilisateur:user?.email||"",date_heure,module:table,operation,element:String(label||id||""),description:`${operation} dans le module ${table}`,anciennes_valeurs:auditSnapshot(table,before),nouvelles_valeurs:auditSnapshot(table,after)};
+  try{changeManager.create("journal",doc(collection(db,...chemin("journal"))).id,entry);}catch(e){console.error("Journal d'audit :",e);}
 }
-function recordId(table){
-  const prefix=String(table||"row").replace(/[^a-z0-9_-]/gi,"").slice(0,12)||"row";
-  return `${prefix}_${globalThis.crypto?.randomUUID?.()||`${Date.now().toString(36)}_${Math.random().toString(36).slice(2,12)}`}`;
-}
+function recordId(table){return doc(collection(db,...chemin(table))).id;}
 
 // ===== Panneau de gestion : fiche en haut, boutons, filtres, tableau, totaux (comme l'application Java) =====
 let uid = 0;
@@ -1727,9 +1194,8 @@ class Crud {
       const before=current?{...current}:null;
       if (current) changeManager.update(this.cfg.table, id, r);
       else changeManager.create(this.cfg.table, id, r);
-      if(this.cfg.table==="parametres")updateCompanyBranding(r);
       journaliser(this.cfg.table,current?"Modification":"Ajout",id,before,r);
-      this.msg("Modification conservée. Cliquez sur « Enregistrer » pour la conserver localement.", true);
+      this.msg("Modification conservée. Cliquez sur « Enregistrer » pour la transmettre.", true);
       this.dirty=false;removeFormDraft(this.cfg.table);
       if (apres) apres();
       updateSaveUI();
@@ -1738,7 +1204,7 @@ class Crud {
   async add() {
     const r = this.read(), e = this.check(r, null); if (e) return this.msg(e);
     if (this.cfg.beforeSave) this.cfg.beforeSave(r);
-    await this.enregistrer(recordId(this.cfg.table), 0, r, () => this.clearForm());
+    await this.enregistrer(doc(collection(db, ...chemin(this.cfg.table))).id, 0, r, () => this.clearForm());
   }
   async update() {
     if (!this.sel) return this.msg("Sélectionnez d’abord une ligne dans le tableau.");
@@ -1750,7 +1216,7 @@ class Crud {
   }
   async remove() {
     if (!this.sel) return this.msg("Sélectionnez d’abord une ligne dans le tableau.");
-    if (!confirm("Retirer cette ligne de la copie de travail ? La suppression sera appliquée à la sauvegarde locale lors de l’enregistrement global.")) return;
+    if (!confirm("Retirer cette ligne de la copie de travail ? La suppression sera transmise à Firebase uniquement après l'enregistrement global.")) return;
     const m = this.cfg.deleteCheck && this.cfg.deleteCheck(this.sel); if (m) return this.msg(m);
     try { const before={...this.sel};changeManager.softDelete(this.cfg.table, this.sel.id);journaliser(this.cfg.table,"Suppression",this.sel.id,before,null);this.clearForm(); this.msg("Suppression mise en attente.", true); }
     catch (e) { this.msg(e.message || "Suppression impossible."); }
@@ -1934,95 +1400,7 @@ const STATEMENT_CSS = `
 `;
 
 function renderStatementInDialog(target, content) {
-  target.innerHTML = `<style>${STATEMENT_CSS}
-/* ===== CBPManagement Web — identité visuelle ERP ===== */
-:root{--ink:#17263b;--steel:#40536b;--sig:#2563eb;--bg:#f4f6fa;--card:#fff;--line:#e3e9f1;--mut:#718096;--r:13px;--shadow:0 3px 14px rgba(23,38,59,.045)}
-body{grid-template-columns:258px minmax(0,1fr);background:#f4f6fa;color:#17263b}
-aside{background:#111e31;padding:18px 0 14px;display:flex;flex-direction:column;box-shadow:4px 0 18px rgba(13,27,46,.08)}
-.logo{padding:2px 20px 22px;gap:12px;align-items:center}
-.mark{width:34px;height:34px;border-radius:10px;flex:0 0 34px;background:linear-gradient(145deg,#60a5fa,#2563eb);box-shadow:0 5px 14px rgba(37,99,235,.3)}
-.mark:after{inset:9px;border-radius:3px}
-.brand-copy{display:flex;flex-direction:column;line-height:1.25}
-.brand-copy b{font-size:16px;letter-spacing:.1px;color:#fff}
-.brand-copy small{font-size:10px;color:#8fa2bb;font-weight:500;margin-top:4px;letter-spacing:.07em;text-transform:uppercase}
-#menu{overflow-y:auto;flex:1;padding:0 7px 14px}
-#menu .nav-section{padding:19px 13px 7px;color:#71849d;font-size:10px;letter-spacing:.13em}
-#menu button{width:100%;margin:2px 0;padding:10px 13px;color:#b7c4d5;border-radius:9px;font-size:13px;display:flex;align-items:center;gap:10px}
-#menu button:before{content:"";width:6px;height:6px;border:1.5px solid currentColor;border-radius:2px;opacity:.7;flex:0 0 6px}
-#menu button:hover{background:rgba(255,255,255,.07);color:#fff}
-#menu button.on{background:linear-gradient(100deg,#2563eb,#3478ee);color:#fff;box-shadow:0 5px 13px rgba(37,99,235,.24)}
-#menu button.on:before{background:#fff;border-color:#fff}
-.sidebar-foot{margin:12px 16px 2px;padding:12px 9px 0;border-top:1px solid rgba(255,255,255,.09);font-size:10px;color:#7e90a8;display:flex;align-items:center;gap:8px}
-.sidebar-dot{width:7px;height:7px;border-radius:50%;background:#27c18a;box-shadow:0 0 0 3px rgba(39,193,138,.13)}
-main{padding:18px 25px 32px;gap:15px;min-width:0}
-.bar{border:1px solid #e5eaf1;border-radius:12px;padding:11px 15px;background:rgba(255,255,255,.96);box-shadow:0 2px 9px rgba(23,38,59,.035)}
-.bar strong{font-size:14px;color:#17263b}.bar small{font-size:11px;color:#77869a;margin-top:2px}
-.bar .bd{gap:7px}
-.bar button{font-size:11px;padding:8px 11px;border-radius:7px}
-#sync{font-size:10px}
-#info{border-radius:9px;font-size:12px}
-#vue{gap:15px}
-.card,.advanced-card,.dash-panel{border:1px solid #e6ebf2;border-radius:13px;box-shadow:0 2px 10px rgba(20,39,66,.035)}
-button{border-radius:7px}
-.advanced-card{padding:18px}
-.advanced-card h3{font-size:14px;color:#243a55}
-.champ input,.champ select,.champ textarea,.advanced-toolbar input,.advanced-toolbar select,.adv-input{border-color:#dce4ee;border-radius:7px}
-th{background:#f5f7fb;color:#52647a}
-.tcard{border-radius:12px}
-@media(max-width:900px){body{grid-template-columns:1fr}aside{height:auto;max-height:none}.sidebar-foot{display:none}#menu{display:flex;flex-wrap:nowrap;overflow-x:auto}#menu button{width:auto;flex:0 0 auto}main{padding:12px}}
-/* Tableau de bord */
-.dash-welcome{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:7px 2px 3px}
-.dash-eyebrow{font-size:10px;letter-spacing:.16em;font-weight:800;color:#66809e}
-.dash-welcome h1{font-size:25px;letter-spacing:-.04em;margin:5px 0 3px;color:#182b43}
-.dash-welcome p{font-size:12px;color:#78879a;margin:0}
-.dash-refresh{background:#fff!important;color:#344b67!important;border:1px solid #dfe6ef!important;box-shadow:none!important;padding:9px 13px!important}
-.dash-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
-.dash-kpi{background:#fff;border:1px solid #e5eaf1;border-radius:13px;padding:15px 16px;box-shadow:0 2px 10px rgba(20,39,66,.035);min-width:0}
-.dash-kpi-top{display:flex;justify-content:space-between;align-items:center;color:#718096;font-size:11px;font-weight:650;gap:8px}
-.dash-kpi-top i{font-style:normal;width:29px;height:29px;border-radius:9px;background:#edf4ff;color:#2764c7;display:grid;place-items:center;font-size:16px}
-.dash-kpi strong{display:block;font-size:clamp(17px,1.65vw,24px);line-height:1.25;letter-spacing:-.035em;margin:12px 0 6px;color:#1b2d45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dash-kpi strong small{font-size:12px;color:#718096;font-weight:600}
-.dash-kpi footer{font-size:10px;color:#8b98a9}
-.dash-panels{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.85fr);gap:14px}
-.dash-panel{background:#fff;padding:17px 18px;min-width:0}
-.dash-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:13px}
-.dash-panel-head h3{margin:0;color:#253a54;font-size:13px;font-weight:750}
-.dash-panel-head p{margin:4px 0 0;color:#8794a5;font-size:10px}
-.dash-chip{font-size:10px;color:#54749b;background:#f1f5fa;border-radius:6px;padding:4px 8px}
-.dash-bars{height:180px;display:flex;align-items:stretch;gap:10px;padding:8px 2px 0}
-.dash-bar-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px}
-.dash-bar-col>b{font-size:9px;color:#73849a;font-weight:600}
-.dash-bar-track{flex:1;width:100%;max-width:35px;border-radius:6px;background:#f0f3f8;display:flex;align-items:flex-end;overflow:hidden}
-.dash-bar-track span{display:block;width:100%;min-height:3px;background:linear-gradient(180deg,#65a3ff,#2865d7);border-radius:6px 6px 2px 2px}
-.dash-bar-col>small{font-size:9px;color:#8794a5}
-.dash-fin-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #eef1f5;font-size:11px;color:#75849a}
-.dash-fin-row b{font-size:11px;color:#263b55;white-space:nowrap}
-.dash-fin-row b.positive{color:#13865f}.dash-fin-row b.negative{color:#c05c56}
-.dash-fin-total{display:flex;justify-content:space-between;gap:10px;padding-top:14px;font-size:11px;color:#52647a;font-weight:650}
-.dash-fin-total strong{color:#1e3652;font-size:14px;white-space:nowrap}
-.dash-rank{display:grid;grid-template-columns:minmax(75px,.9fr) minmax(60px,1.3fr) auto;align-items:center;gap:9px;margin:13px 0;font-size:10px;color:#60738a}
-.dash-rank>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dash-rank>div{height:6px;border-radius:9px;background:#eff3f8;overflow:hidden}
-.dash-rank>div i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#76a9f7,#2e6fdc)}
-.dash-rank>b{font-size:10px;color:#405671;white-space:nowrap}
-.dash-alerts{display:flex;flex-direction:column;gap:9px}
-.dash-alert{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;background:#f7f9fc}
-.dash-alert>span{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;flex:0 0 23px}
-.dash-alert.ok>span{background:#e3f5ed;color:#15966a}.dash-alert.warn>span{background:#fff1dc;color:#bd7b20}
-.dash-alert div{display:flex;flex-direction:column;gap:2px;min-width:0}
-.dash-alert b{font-size:10px;color:#435873}.dash-alert small{font-size:9px;color:#8794a5}
-.dash-recent{padding-bottom:7px}
-.dash-link{background:transparent!important;color:#2e68c6!important;padding:3px 0!important;box-shadow:none!important;font-size:10px!important}
-.dash-table-wrap{overflow:auto}
-.dash-table-wrap table{font-size:11px}
-.dash-table-wrap th{font-size:9px;padding:9px 10px}
-.dash-table-wrap td{padding:9px 10px}
-.dash-empty{color:#94a0af;text-align:center;padding:17px!important;font-size:11px}
-@media(max-width:1150px){.dash-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.dash-panels{grid-template-columns:1fr}.dash-welcome h1{font-size:21px}.dash-kpi strong{font-size:18px}}
-@media(max-width:480px){.dash-kpis{grid-template-columns:1fr 1fr;gap:8px}.dash-kpi{padding:12px}.dash-kpi strong{font-size:15px}.dash-fin-row{font-size:10px}}
-
-</style><section class="statement-sheet">${content}</section>`;
+  target.innerHTML = `<style>${STATEMENT_CSS}</style><section class="statement-sheet">${content}</section>`;
   target.hidden = false;
   target.scrollTop = 0;
 }
@@ -2047,95 +1425,7 @@ function openJavaPrintPreview(title,content,status,options={}){
     .statement-sheet{font:11px Arial,sans-serif;color:#172b40;background:#fff}.statement-sheet h1{font-size:16px;margin:0 0 4px;text-align:center}.statement-sheet h2{font-size:12px;margin:16px 0 7px;border-bottom:1px solid #9aa8b6;padding-bottom:4px;break-after:avoid}.statement-sheet p{margin:4px 0 10px;color:#506276}.statement-sheet .meta{display:grid;grid-template-columns:1fr 1fr;gap:4px 15px;margin:9px 0 13px}.statement-sheet .meta b{display:inline-block;min-width:100px}.statement-sheet table{border-collapse:collapse;width:100%;font-size:9px;margin:5px 0 8px;break-inside:auto}.statement-sheet th,.statement-sheet td{border:1px solid #c7d0d9;padding:4px;text-align:left;white-space:normal}.statement-sheet th{background:#edf2f6;color:#172b40;position:static;cursor:default}.statement-sheet .n{text-align:right;white-space:nowrap}.statement-sheet .total{font-weight:bold;background:#f0f3f6}.statement-sheet .balance{margin-top:8px;width:100%}.statement-sheet .balance td{font-size:11px}.statement-sheet .muted{color:#66788a}
     .receipt-copy{border:1px solid #222;padding:10px 12px;margin:0 0 10px;min-height:calc((${pageHeight}mm - ${margin*2}mm) / 2 - 5mm);break-inside:avoid}.receipt-copy h2,.bl-copy h2{text-align:center;font-size:15px;margin:4px 0 7px}.copy-label{text-align:right;font-style:italic;color:#555;font-size:9px;margin-bottom:5px}.receipt-fields{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.receipt-fields div{padding:5px 2px;border-bottom:1px solid #d2d2d2;min-height:25px}.receipt-fields b{display:inline-block;min-width:112px}.amount-box{border:1px solid #222;padding:8px 10px;margin:9px 0;font-size:14px;font-weight:bold;display:flex;justify-content:space-between}.amount-words{font-style:italic;font-size:10px;margin:8px 0 12px}.signatures{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:12px}.signatures div{height:52px;border:1px solid #aaa;padding:6px;font-weight:bold;font-size:9px}.bl-copy{border:1px solid #333;padding:8px 10px;margin:0 0 9px;break-inside:avoid}.bl-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}.bl-grid div{padding:4px;border-bottom:1px solid #ddd}.bl-grid b{display:inline-block;min-width:120px}.visa{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}.visa div{border:1px solid #999;height:40px;padding:4px;font-weight:bold;font-size:9px}
     @media print{@page{size:A4 ${orientation};margin:${margin}mm}html,body{background:#fff;width:auto;height:auto}.toolbar{display:none!important}.viewport{height:auto;overflow:visible;padding:0}#scaleBox{width:auto!important;transform:none!important;margin:0}.paper{width:auto!important;min-height:0!important;padding:0!important;box-shadow:none!important}.print-footer{break-inside:avoid}.receipt-copy,.bl-copy{break-inside:avoid}.statement-sheet tr{break-inside:avoid}}
-  
-/* ===== CBPManagement Web — identité visuelle ERP ===== */
-:root{--ink:#17263b;--steel:#40536b;--sig:#2563eb;--bg:#f4f6fa;--card:#fff;--line:#e3e9f1;--mut:#718096;--r:13px;--shadow:0 3px 14px rgba(23,38,59,.045)}
-body{grid-template-columns:258px minmax(0,1fr);background:#f4f6fa;color:#17263b}
-aside{background:#111e31;padding:18px 0 14px;display:flex;flex-direction:column;box-shadow:4px 0 18px rgba(13,27,46,.08)}
-.logo{padding:2px 20px 22px;gap:12px;align-items:center}
-.mark{width:34px;height:34px;border-radius:10px;flex:0 0 34px;background:linear-gradient(145deg,#60a5fa,#2563eb);box-shadow:0 5px 14px rgba(37,99,235,.3)}
-.mark:after{inset:9px;border-radius:3px}
-.brand-copy{display:flex;flex-direction:column;line-height:1.25}
-.brand-copy b{font-size:16px;letter-spacing:.1px;color:#fff}
-.brand-copy small{font-size:10px;color:#8fa2bb;font-weight:500;margin-top:4px;letter-spacing:.07em;text-transform:uppercase}
-#menu{overflow-y:auto;flex:1;padding:0 7px 14px}
-#menu .nav-section{padding:19px 13px 7px;color:#71849d;font-size:10px;letter-spacing:.13em}
-#menu button{width:100%;margin:2px 0;padding:10px 13px;color:#b7c4d5;border-radius:9px;font-size:13px;display:flex;align-items:center;gap:10px}
-#menu button:before{content:"";width:6px;height:6px;border:1.5px solid currentColor;border-radius:2px;opacity:.7;flex:0 0 6px}
-#menu button:hover{background:rgba(255,255,255,.07);color:#fff}
-#menu button.on{background:linear-gradient(100deg,#2563eb,#3478ee);color:#fff;box-shadow:0 5px 13px rgba(37,99,235,.24)}
-#menu button.on:before{background:#fff;border-color:#fff}
-.sidebar-foot{margin:12px 16px 2px;padding:12px 9px 0;border-top:1px solid rgba(255,255,255,.09);font-size:10px;color:#7e90a8;display:flex;align-items:center;gap:8px}
-.sidebar-dot{width:7px;height:7px;border-radius:50%;background:#27c18a;box-shadow:0 0 0 3px rgba(39,193,138,.13)}
-main{padding:18px 25px 32px;gap:15px;min-width:0}
-.bar{border:1px solid #e5eaf1;border-radius:12px;padding:11px 15px;background:rgba(255,255,255,.96);box-shadow:0 2px 9px rgba(23,38,59,.035)}
-.bar strong{font-size:14px;color:#17263b}.bar small{font-size:11px;color:#77869a;margin-top:2px}
-.bar .bd{gap:7px}
-.bar button{font-size:11px;padding:8px 11px;border-radius:7px}
-#sync{font-size:10px}
-#info{border-radius:9px;font-size:12px}
-#vue{gap:15px}
-.card,.advanced-card,.dash-panel{border:1px solid #e6ebf2;border-radius:13px;box-shadow:0 2px 10px rgba(20,39,66,.035)}
-button{border-radius:7px}
-.advanced-card{padding:18px}
-.advanced-card h3{font-size:14px;color:#243a55}
-.champ input,.champ select,.champ textarea,.advanced-toolbar input,.advanced-toolbar select,.adv-input{border-color:#dce4ee;border-radius:7px}
-th{background:#f5f7fb;color:#52647a}
-.tcard{border-radius:12px}
-@media(max-width:900px){body{grid-template-columns:1fr}aside{height:auto;max-height:none}.sidebar-foot{display:none}#menu{display:flex;flex-wrap:nowrap;overflow-x:auto}#menu button{width:auto;flex:0 0 auto}main{padding:12px}}
-/* Tableau de bord */
-.dash-welcome{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:7px 2px 3px}
-.dash-eyebrow{font-size:10px;letter-spacing:.16em;font-weight:800;color:#66809e}
-.dash-welcome h1{font-size:25px;letter-spacing:-.04em;margin:5px 0 3px;color:#182b43}
-.dash-welcome p{font-size:12px;color:#78879a;margin:0}
-.dash-refresh{background:#fff!important;color:#344b67!important;border:1px solid #dfe6ef!important;box-shadow:none!important;padding:9px 13px!important}
-.dash-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:13px}
-.dash-kpi{background:#fff;border:1px solid #e5eaf1;border-radius:13px;padding:15px 16px;box-shadow:0 2px 10px rgba(20,39,66,.035);min-width:0}
-.dash-kpi-top{display:flex;justify-content:space-between;align-items:center;color:#718096;font-size:11px;font-weight:650;gap:8px}
-.dash-kpi-top i{font-style:normal;width:29px;height:29px;border-radius:9px;background:#edf4ff;color:#2764c7;display:grid;place-items:center;font-size:16px}
-.dash-kpi strong{display:block;font-size:clamp(17px,1.65vw,24px);line-height:1.25;letter-spacing:-.035em;margin:12px 0 6px;color:#1b2d45;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.dash-kpi strong small{font-size:12px;color:#718096;font-weight:600}
-.dash-kpi footer{font-size:10px;color:#8b98a9}
-.dash-panels{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,.85fr);gap:14px}
-.dash-panel{background:#fff;padding:17px 18px;min-width:0}
-.dash-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:13px}
-.dash-panel-head h3{margin:0;color:#253a54;font-size:13px;font-weight:750}
-.dash-panel-head p{margin:4px 0 0;color:#8794a5;font-size:10px}
-.dash-chip{font-size:10px;color:#54749b;background:#f1f5fa;border-radius:6px;padding:4px 8px}
-.dash-bars{height:180px;display:flex;align-items:stretch;gap:10px;padding:8px 2px 0}
-.dash-bar-col{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px}
-.dash-bar-col>b{font-size:9px;color:#73849a;font-weight:600}
-.dash-bar-track{flex:1;width:100%;max-width:35px;border-radius:6px;background:#f0f3f8;display:flex;align-items:flex-end;overflow:hidden}
-.dash-bar-track span{display:block;width:100%;min-height:3px;background:linear-gradient(180deg,#65a3ff,#2865d7);border-radius:6px 6px 2px 2px}
-.dash-bar-col>small{font-size:9px;color:#8794a5}
-.dash-fin-row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid #eef1f5;font-size:11px;color:#75849a}
-.dash-fin-row b{font-size:11px;color:#263b55;white-space:nowrap}
-.dash-fin-row b.positive{color:#13865f}.dash-fin-row b.negative{color:#c05c56}
-.dash-fin-total{display:flex;justify-content:space-between;gap:10px;padding-top:14px;font-size:11px;color:#52647a;font-weight:650}
-.dash-fin-total strong{color:#1e3652;font-size:14px;white-space:nowrap}
-.dash-rank{display:grid;grid-template-columns:minmax(75px,.9fr) minmax(60px,1.3fr) auto;align-items:center;gap:9px;margin:13px 0;font-size:10px;color:#60738a}
-.dash-rank>span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.dash-rank>div{height:6px;border-radius:9px;background:#eff3f8;overflow:hidden}
-.dash-rank>div i{display:block;height:100%;border-radius:9px;background:linear-gradient(90deg,#76a9f7,#2e6fdc)}
-.dash-rank>b{font-size:10px;color:#405671;white-space:nowrap}
-.dash-alerts{display:flex;flex-direction:column;gap:9px}
-.dash-alert{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;background:#f7f9fc}
-.dash-alert>span{width:23px;height:23px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;flex:0 0 23px}
-.dash-alert.ok>span{background:#e3f5ed;color:#15966a}.dash-alert.warn>span{background:#fff1dc;color:#bd7b20}
-.dash-alert div{display:flex;flex-direction:column;gap:2px;min-width:0}
-.dash-alert b{font-size:10px;color:#435873}.dash-alert small{font-size:9px;color:#8794a5}
-.dash-recent{padding-bottom:7px}
-.dash-link{background:transparent!important;color:#2e68c6!important;padding:3px 0!important;box-shadow:none!important;font-size:10px!important}
-.dash-table-wrap{overflow:auto}
-.dash-table-wrap table{font-size:11px}
-.dash-table-wrap th{font-size:9px;padding:9px 10px}
-.dash-table-wrap td{padding:9px 10px}
-.dash-empty{color:#94a0af;text-align:center;padding:17px!important;font-size:11px}
-@media(max-width:1150px){.dash-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.dash-panels{grid-template-columns:1fr}.dash-welcome h1{font-size:21px}.dash-kpi strong{font-size:18px}}
-@media(max-width:480px){.dash-kpis{grid-template-columns:1fr 1fr;gap:8px}.dash-kpi{padding:12px}.dash-kpi strong{font-size:15px}.dash-fin-row{font-size:10px}}
-
-</style></head><body><nav class="toolbar"><button id="prev" class="secondary">Précédente</button><span id="pageLabel">Page 1 / 1</span><button id="next" class="secondary">Suivante</button><button id="zoomOut" class="secondary">Zoom −</button><button id="zoomIn" class="secondary">Zoom +</button><button id="print">Imprimer</button><button id="close" class="secondary">Fermer</button></nav><div class="viewport" id="viewport"><div id="scaleBox"><article class="paper" id="paper">${header}<main class="statement-sheet">${content}</main>${footer}</article></div></div>
+  </style></head><body><nav class="toolbar"><button id="prev" class="secondary">Précédente</button><span id="pageLabel">Page 1 / 1</span><button id="next" class="secondary">Suivante</button><button id="zoomOut" class="secondary">Zoom −</button><button id="zoomIn" class="secondary">Zoom +</button><button id="print">Imprimer</button><button id="close" class="secondary">Fermer</button></nav><div class="viewport" id="viewport"><div id="scaleBox"><article class="paper" id="paper">${header}<main class="statement-sheet">${content}</main>${footer}</article></div></div>
   <script>(function(){const paper=document.getElementById('paper'),box=document.getElementById('scaleBox'),view=document.getElementById('viewport'),label=document.getElementById('pageLabel');let zoom=1,page=0,total=1;const pageH=${pageHeight*3.779527559};function calc(){const h=paper.scrollHeight;total=Math.max(1,Math.ceil(h/pageH));page=Math.min(page,total-1);box.style.height=(h*zoom)+'px';box.style.width=(paper.offsetWidth*zoom)+'px';paper.style.transform='scale('+zoom+')';label.textContent='Page '+(page+1)+' / '+total;document.getElementById('prev').disabled=page===0;document.getElementById('next').disabled=page>=total-1;}function go(n){page=Math.max(0,Math.min(total-1,n));view.scrollTo({top:page*pageH*zoom,behavior:'smooth'});calc();}document.getElementById('prev').onclick=()=>go(page-1);document.getElementById('next').onclick=()=>go(page+1);document.getElementById('zoomIn').onclick=()=>{zoom=Math.min(1.8,zoom+.1);calc();};document.getElementById('zoomOut').onclick=()=>{zoom=Math.max(.55,zoom-.1);calc();};document.getElementById('print').onclick=()=>window.print();document.getElementById('close').onclick=()=>window.close();window.addEventListener('resize',calc);window.addEventListener('load',calc);setTimeout(calc,200);})();<\/script></body></html>`);
   w.document.close();return w;
 }
@@ -3035,89 +2325,53 @@ function renderControlAudit(host){
   refresh();
 }
 
-function renderHelp(host){
-  host.innerHTML=`<section class="advanced-card"><h3>Aide — CBPManagement</h3>
-    <h4>Organisation générale</h4><p>Les modules opérationnels, financiers et de ressources sont accessibles depuis le menu latéral. Les fiches peuvent être ajoutées, modifiées, filtrées, imprimées et supprimées selon les règles métier.</p>
-    <h4>Enregistrement et sauvegarde</h4><p>Les modifications sont préparées dans une copie de travail. Cliquez sur « Enregistrer » pour les conserver dans la base locale du navigateur. Les brouillons de formulaires sont récupérés automatiquement après rechargement.</p>
-    <p>Utilisez « Sauvegarde JSON » pour exporter une copie complète de la base, et « Restaurer JSON » pour la réimporter sur cet appareil ou un autre navigateur. L'export Excel reste disponible pour l'analyse et les échanges tabulaires.</p>
-    <h4>Production et stocks</h4><p>Créez d'abord les matières premières, les silos et les compositions des produits finis. Les entrées, consommations et régularisations alimentent automatiquement le stock théorique. Les régularisations exigent une date, un stock réel non négatif et un motif.</p>
-    <h4>Facturation</h4><p>Créez une facture à partir des opérations de production non encore facturées ou ajoutez des lignes manuelles. Une facture annulée libère les opérations de production liées sans effacer le numéro historique.</p>
-    <h4>Calculs</h4><p>Les montants sont calculés avec une précision au centime et un arrondi commercial de type HALF_UP. Les dettes clients et fournisseurs sont reconstituées depuis les livraisons/achats, règlements, remboursements et paiements.</p>
-    <h4>Portabilité des données</h4><p>Les données sont enregistrées sur l'appareil et dans le navigateur courant. Pour travailler sur un autre poste, exportez une sauvegarde JSON puis restaurez-la sur l'autre poste.</p>
-  </section>`;
+function renderMail(host){
+  host.innerHTML=`<section class="advanced-card"><h3>Messagerie</h3><p>Préparez un message depuis CBPManagement. L'envoi est confié au logiciel de messagerie configuré sur votre appareil.</p><div class="stock-entry-grid"><label>Destinataire<input id="mailTo" type="email" placeholder="destinataire@example.com"></label><label>Objet<input id="mailSubject" placeholder="Objet du message"></label><label style="grid-column:1/-1">Message<textarea id="mailBody" rows="7" class="adv-input" style="height:auto"></textarea></label></div><div class="advanced-actions"><button id="mailCompose" class="b-blue">Ouvrir le logiciel de messagerie</button><button id="mailCopy" class="b-navy">Copier le message</button></div><p class="cbpm-status">La réception et la synchronisation IMAP/SMTP de la version Java nécessitent un service de messagerie sécurisé côté serveur. Le navigateur ne peut pas se connecter directement à votre boîte IMAP/SMTP.</p></section>`;
+  const $m=id=>host.querySelector("#"+id);$m("mailCompose").onclick=()=>{const to=$m("mailTo").value,subject=$m("mailSubject").value,body=$m("mailBody").value;location.href=`mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;};$m("mailCopy").onclick=()=>{const msg=`À : ${$m("mailTo").value}\nObjet : ${$m("mailSubject").value}\n\n${$m("mailBody").value}`;navigator.clipboard?.writeText(msg).then(()=>info("Message copié.")).catch(()=>alert("Copie indisponible dans ce navigateur."));};
 }
 
-function renderDashboard(host){
-  const today=aujourdhui(),dateLabel=frDate(today);
-  const rows=(t)=>actifs(t);
-  const todayProd=rows("prod").filter(r=>r.date===today);
-  const todayAppro=rows("appro").filter(r=>r.date===today);
-  const todayIncome=rows("recette").filter(r=>r.date===today);
-  const todayExpense=rows("depense").filter(r=>r.date===today);
-  const monthStart=today.slice(0,7)+"-01";
-  const monthProd=rows("prod").filter(r=>String(r.date||"")>=monthStart&&String(r.date||"")<=today);
-  const monthIncome=rows("recette").filter(r=>String(r.date||"")>=monthStart&&String(r.date||"")<=today);
-  const monthExpense=rows("depense").filter(r=>String(r.date||"")>=monthStart&&String(r.date||"")<=today);
-  const total=(arr,k)=>arr.reduce((s,r)=>s+nb(r[k]),0);
-  const caMonth=total(monthProd,"ttc"),incomeMonth=total(monthIncome,"net"),expenseMonth=total(monthExpense,"montant");
-  const volumeToday=total(todayProd,"qte"),caToday=total(todayProd,"ttc");
-  const stock=allStockRows(today),stockAlerts=stock.filter(r=>nb(r.theoretical)<=0);
-  const debts=calculateClientDebts({clients:rows("client"),production:rows("prod"),receipts:rows("recette"),expenses:rows("depense")});
-  const debtTotal=debts.reduce((s,r)=>s+Math.max(0,r.balance),0);
-  const suppliers=calculateSupplierDebts({suppliers:rows("fournisseur"),purchases:rows("appro"),expenses:rows("depense")});
-  const supplierDebt=suppliers.reduce((s,r)=>s+Math.max(0,r.balance),0);
-  const last7=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-(6-i));const iso=new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);return {date:iso,label:d.toLocaleDateString("fr-FR",{weekday:"short",day:"2-digit"}),q:total(rows("prod").filter(r=>r.date===iso&&r.nature===PROD),"qte")};});
-  const maxQ=Math.max(1,...last7.map(x=>x.q));
-  const topClients=[...monthProd.reduce((m,r)=>{const name=nomDe("client",r.client,"nom")||"Client";m.set(name,(m.get(name)||0)+nb(r.ttc));return m;},new Map())].sort((a,b)=>b[1]-a[1]).slice(0,5);
-  const topMax=Math.max(1,...topClients.map(x=>x[1]));
-  const recent=[...rows("prod")].sort((a,b)=>String(b.date||"").localeCompare(String(a.date||""))||String(b.heure||"").localeCompare(String(a.heure||""))).slice(0,6);
-  const money=x=>`${fmt(x)} DA`;
-  host.innerHTML=`
-  <section class="dash-welcome"><div><div class="dash-eyebrow">VOTRE ESPACE DE PILOTAGE</div><h1>Tableau de bord</h1><p>Vue d’ensemble de l’activité de votre centrale · ${dateLabel}</p></div><button class="dash-refresh" id="dashRefresh">↻ Actualiser</button></section>
-  <section class="dash-kpis">
-    <article class="dash-kpi"><div class="dash-kpi-top"><span>Production du jour</span><i>▦</i></div><strong>${fmt(volumeToday)} <small>m³</small></strong><footer>${todayProd.length} opération(s) enregistrée(s)</footer></article>
-    <article class="dash-kpi"><div class="dash-kpi-top"><span>Chiffre d’affaires du jour</span><i>↗</i></div><strong>${money(caToday)}</strong><footer>Production TTC du jour</footer></article>
-    <article class="dash-kpi"><div class="dash-kpi-top"><span>Encaissements du mois</span><i>◉</i></div><strong>${money(incomeMonth)}</strong><footer>Recettes nettes enregistrées</footer></article>
-    <article class="dash-kpi"><div class="dash-kpi-top"><span>Charges du mois</span><i>↘</i></div><strong>${money(expenseMonth)}</strong><footer>Dépenses enregistrées</footer></article>
-  </section>
-  <section class="dash-panels">
-    <article class="dash-panel dash-chart-panel"><div class="dash-panel-head"><div><h3>Évolution de la production</h3><p>Volume produit · 7 derniers jours</p></div><span class="dash-chip">m³</span></div>
-      <div class="dash-bars">${last7.map(x=>`<div class="dash-bar-col"><b>${fmt(x.q)}</b><div class="dash-bar-track"><span style="height:${Math.max(3,x.q/maxQ*100)}%"></span></div><small>${esc(x.label)}</small></div>`).join("")}</div>
-    </article>
-    <article class="dash-panel"><div class="dash-panel-head"><div><h3>Situation financière</h3><p>Depuis le début du mois</p></div></div>
-      <div class="dash-fin-row"><span>Production facturable (TTC)</span><b>${money(caMonth)}</b></div>
-      <div class="dash-fin-row"><span>Encaissements</span><b class="positive">${money(incomeMonth)}</b></div>
-      <div class="dash-fin-row"><span>Dépenses</span><b class="negative">${money(expenseMonth)}</b></div>
-      <div class="dash-fin-total"><span>Solde des mouvements du mois</span><strong>${money(incomeMonth-expenseMonth)}</strong></div>
-    </article>
-  </section>
-  <section class="dash-panels dash-panels-bottom">
-    <article class="dash-panel"><div class="dash-panel-head"><div><h3>Top clients du mois</h3><p>Classement selon la production TTC</p></div></div>
-      ${topClients.length?topClients.map(([name,val])=>`<div class="dash-rank"><span title="${esc(name)}">${esc(name)}</span><div><i style="width:${Math.max(3,val/topMax*100)}%"></i></div><b>${money(val)}</b></div>`).join(""):'<p class="dash-empty">Aucune production ce mois-ci.</p>'}
-    </article>
-    <article class="dash-panel"><div class="dash-panel-head"><div><h3>Points de vigilance</h3><p>Éléments nécessitant votre attention</p></div></div>
-      <div class="dash-alerts">
-        <div class="dash-alert ${stockAlerts.length?'warn':'ok'}"><span>${stockAlerts.length?'!':'✓'}</span><div><b>Stocks matières premières</b><small>${stockAlerts.length?`${stockAlerts.length} référence(s) avec stock nul ou négatif`:'Aucun stock nul ou négatif'}</small></div></div>
-        <div class="dash-alert ${debtTotal>0?'warn':'ok'}"><span>${debtTotal>0?'!':'✓'}</span><div><b>Créances clients</b><small>${money(debtTotal)} à recouvrer</small></div></div>
-        <div class="dash-alert ${supplierDebt>0?'warn':'ok'}"><span>${supplierDebt>0?'!':'✓'}</span><div><b>Dettes fournisseurs</b><small>${money(supplierDebt)} à régler</small></div></div>
-      </div>
-    </article>
-  </section>
-  <article class="dash-panel dash-recent"><div class="dash-panel-head"><div><h3>Dernières productions</h3><p>Activité récente de la centrale</p></div><button class="dash-link" id="dashAllProd">Voir la production →</button></div>
-    <div class="dash-table-wrap"><table><thead><tr><th>Date</th><th>Client</th><th>Produit</th><th>Quantité</th><th>Montant TTC</th></tr></thead><tbody>
-    ${recent.length?recent.map(r=>`<tr><td>${frDate(r.date)}</td><td>${esc(nomDe("client",r.client,"nom"))}</td><td>${esc(nomDe("prod_fini",r.produit,"nom"))}</td><td class="n">${fmt(r.qte)}</td><td class="n">${money(r.ttc)}</td></tr>`).join(""):'<tr><td colspan="5" class="dash-empty">Aucune production enregistrée.</td></tr>'}
-    </tbody></table></div>
-  </article>`;
-  host.querySelector("#dashRefresh").onclick=()=>renderDashboard(host);
-  host.querySelector("#dashAllProd").onclick=()=>ouvrir("production");
+async function renderUsers(host){
+  if(role!=="admin"){host.innerHTML='<section class="advanced-card"><h3>Gestion des utilisateurs</h3><p>Accès réservé à l’administrateur.</p></section>';return;}
+  host.innerHTML=`<section class="advanced-card"><h3>Gestion des utilisateurs</h3><p>Comptes associés à cette entreprise. Les mots de passe sont gérés par Firebase Authentication et ne sont jamais affichés.</p><div class="stock-entry-grid">
+    <label>Identifiant / E-mail<input id="usrEmail" type="email" autocomplete="off"></label>
+    <label>Nom complet<input id="usrFullName" autocomplete="off"></label>
+    <label>Profil<select id="usrRole"><option value="admin">Administrateur</option><option value="utilisateur">Consultation</option></select></label>
+    <label style="flex-direction:row;align-items:center;gap:8px"><input id="usrActive" type="checkbox" checked> Compte actif</label>
+    <label>Mot de passe provisoire<input id="usrPass" type="password" autocomplete="new-password" minlength="8"></label>
+  </div><div class="advanced-actions">
+    <button id="usrNew" class="b-navy">Nouveau</button><button id="usrCreate" class="b-grn">Créer le compte</button><button id="usrEdit" class="b-blue" disabled>Modifier</button><button id="usrReset" class="b-teal" disabled>Réinitialiser le mot de passe</button>
+    <button id="usrDelete" class="b-red" disabled>Retirer de l'entreprise</button><button id="usrCompany" class="b-navy">Code entreprise</button><button id="usrPrint" class="b-navy">Imprimer la liste</button><button id="usrRefresh" class="b-navy">Actualiser</button>
+  </div><p id="usrMessage" class="msg" role="status"></p><p class="cbpm-status">La suppression retire le profil de cette entreprise. La suppression définitive de l'identité Firebase Authentication nécessite un service administrateur sécurisé.</p></section>
+  <section class="advanced-card"><h3>Comptes de l'entreprise</h3><div id="usrList" class="empty-note">Chargement…</div></section>`;
+  const $u=id=>host.querySelector("#"+id);let rows=[],selected=null;
+  const message=(text,error=false)=>{$u("usrMessage").textContent=text;$u("usrMessage").className=error?"msg":"msg ok";};
+  function clearForm(){selected=null;$u("usrEmail").value="";$u("usrEmail").readOnly=false;$u("usrFullName").value="";$u("usrRole").value="utilisateur";$u("usrActive").checked=true;$u("usrPass").value="";$u("usrCreate").hidden=false;$u("usrEdit").disabled=true;$u("usrReset").disabled=true;$u("usrDelete").disabled=true;}
+  function choose(row){selected=row;$u("usrEmail").value=row.email||"";$u("usrEmail").readOnly=true;$u("usrFullName").value=row.nomComplet||row.fullName||row.email||"";$u("usrRole").value=row.role||"utilisateur";$u("usrActive").checked=row.actif!==false;$u("usrPass").value="";$u("usrCreate").hidden=true;$u("usrEdit").disabled=false;$u("usrReset").disabled=false;$u("usrDelete").disabled=row.id===user?.uid;message(`Compte sélectionné : ${row.email||row.id}`);}
+  async function reload(){try{const snap=await getDocs(query(collection(db,"utilisateurs"),where("entrepriseId","==",ent.id)));rows=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>String(a.email||"").localeCompare(String(b.email||""),"fr"));
+      $u("usrList").innerHTML=tableHtml([{label:"Identifiant"},{label:"Nom complet"},{label:"Profil"},{label:"Actif"},{label:"Dernière modification"},{label:"Action"}],rows.map(r=>[esc(r.email||""),esc(r.nomComplet||r.fullName||""),esc(r.role==="admin"?"Administrateur":"Consultation"),r.actif===false?'<span class="status-pill bad">Non</span>':'<span class="status-pill good">Oui</span>',esc(r.modifiedAt?.toDate?r.modifiedAt.toDate().toLocaleString("fr-FR"):r.modifiedAt||""),`<div class="invoice-actions"><button class="b-blue usr-select" data-id="${esc(r.id)}">Sélectionner</button><button class="b-${r.actif===false?"grn":"red"} usr-toggle" data-id="${esc(r.id)}" data-active="${r.actif===false?"0":"1"}" ${r.id===user?.uid?"disabled":""}>${r.actif===false?"Activer":"Désactiver"}</button></div>`]));
+      host.querySelectorAll(".usr-select").forEach(b=>b.onclick=()=>{const row=rows.find(x=>x.id===b.dataset.id);if(row)choose(row);});
+      host.querySelectorAll(".usr-toggle").forEach(b=>b.onclick=async()=>{try{await updateDoc(doc(db,"utilisateurs",b.dataset.id),{actif:b.dataset.active==="1"?false:true,modifiedAt:serverTimestamp()});message("État du compte mis à jour.");await reload();}catch(e){message(e.message||String(e),true);}});
+      const activeCount=rows.filter(r=>r.actif!==false).length;$u("usrMessage").textContent=`Entreprise : ${ent.id} · ${activeCount} compte(s) actif(s) sur ${rows.length}.`;
+    }catch(e){$u("usrList").textContent="Lecture des utilisateurs refusée par les règles Firestore : "+(e.message||String(e));}}
+  $u("usrNew").onclick=()=>{clearForm();message("Nouvelle fiche utilisateur.");};
+  $u("usrCreate").onclick=async()=>{const email=$u("usrEmail").value.trim(),fullName=$u("usrFullName").value.trim(),pass=$u("usrPass").value,usrRole=$u("usrRole").value,active=$u("usrActive").checked;try{
+      if(!email||!/^\S+@\S+\.\S+$/.test(email))throw new Error("Saisissez une adresse e-mail valide.");if(pass.length<8)throw new Error("Le mot de passe doit contenir au moins 8 caractères, comme dans l'application Java.");if(!secondaryAuth)throw new Error("La création de comptes n'est pas disponible.");
+      const cred=await createUserWithEmailAndPassword(secondaryAuth,email,pass);await setDoc(doc(db,"utilisateurs",cred.user.uid),{email,nomComplet:fullName,role:usrRole,entrepriseId:ent.id,actif:active,createdAt:serverTimestamp(),modifiedAt:serverTimestamp(),createdBy:user?.email||""});await signOut(secondaryAuth);message("Compte créé et associé à cette entreprise.");clearForm();await reload();
+    }catch(e){message(e.message||String(e),true);try{if(secondaryAuth?.currentUser)await signOut(secondaryAuth);}catch{}}};
+  $u("usrEdit").onclick=async()=>{if(!selected)return;try{const fullName=$u("usrFullName").value.trim(),usrRole=$u("usrRole").value,active=$u("usrActive").checked;await updateDoc(doc(db,"utilisateurs",selected.id),{nomComplet:fullName,role:usrRole,actif:active,modifiedAt:serverTimestamp()});message("Fiche utilisateur modifiée.");selected=null;clearForm();await reload();}catch(e){message(e.message||String(e),true);}};
+  $u("usrReset").onclick=async()=>{if(!selected)return;try{await sendPasswordResetEmail(auth,selected.email);message(`E-mail de réinitialisation envoyé à ${selected.email}.`);}catch(e){message(e.message||String(e),true);}};
+  $u("usrDelete").onclick=async()=>{if(!selected)return;if(selected.id===user?.uid)return message("Vous ne pouvez pas retirer le compte actuellement connecté.",true);if(!confirm(`Retirer le profil de ${selected.email} de l'entreprise ${ent.nom} ?`))return;try{await deleteDoc(doc(db,"utilisateurs",selected.id));message("Profil d'accès retiré de l'entreprise. L'identité Firebase Authentication doit être supprimée côté serveur si elle ne doit plus exister.");clearForm();await reload();}catch(e){message(e.message||String(e),true);}};
+  $u("usrCompany").onclick=()=>alert(`Code entreprise : ${ent.id}`);
+  $u("usrPrint").onclick=()=>{const body=rows.map(r=>`<tr><td>${esc(r.email||"")}</td><td>${esc(r.nomComplet||r.fullName||"")}</td><td>${esc(r.role==="admin"?"Administrateur":"Consultation")}</td><td>${r.actif===false?"Non":"Oui"}</td></tr>`).join("");openStatementPrintPreview("Liste des utilisateurs",`<h1>LISTE DES UTILISATEURS</h1><p>Entreprise : ${esc(ent.nom)} · Code : ${esc(ent.id)}</p><table><thead><tr><th>Identifiant</th><th>Nom complet</th><th>Profil</th><th>Actif</th></tr></thead><tbody>${body}</tbody></table>`,null);};
+  $u("usrRefresh").onclick=reload;clearForm();await reload();
 }
-
-const SPECIAL_VIEWS={dashboard:renderDashboard,regstock:renderStock,factures:renderInvoices,dettes_clients:(h)=>renderDebts(h,"client"),dettes_fournisseurs:(h)=>renderDebts(h,"supplier"),rapports:renderReports,journal:renderJournal,controle_gestion:renderControlAudit,aide:renderHelp};
+function renderHelp(host){host.innerHTML=`<section class="advanced-card"><h3>Aide — CBPManagement</h3><h4>Fonctionnement général</h4><p>Les boutons Ajouter, Modifier et Supprimer préparent les opérations dans la copie de travail de l'entreprise. Cliquez sur Enregistrer pour transmettre l'ensemble des changements.</p><h4>Enregistrement</h4><p>Les brouillons sont conservés automatiquement dans le navigateur. L'enregistrement global synchronise les modifications avec Firebase. Les conflits sont présentés pour arbitrage.</p><h4>Production et stocks</h4><p>Créez les matières premières, les silos et les compositions des produits finis avant la saisie de production. Les mouvements de stock sont calculés à partir des approvisionnements, des consommations et des régularisations.</p><h4>Facturation</h4><p>Choisissez un client, sélectionnez ses opérations non facturées, puis créez et imprimez sa facture.</p><h4>Rôles</h4><p>L'administrateur peut modifier les données. Le profil Consultation peut consulter et imprimer les informations.</p></section>`;}
+const SPECIAL_VIEWS={regstock:renderStock,factures:renderInvoices,dettes_clients:(h)=>renderDebts(h,"client"),dettes_fournisseurs:(h)=>renderDebts(h,"supplier"),rapports:renderReports,journal:renderJournal,controle_gestion:renderControlAudit,mail:renderMail,users:renderUsers,aide:renderHelp};
 
 // Conversion des références métier et export Excel.
 function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=el("a");a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000);}
 function toLegacyExportRow(table,row){
-  const out=cleanRecord(row);
+  const out=cleanFirestoreDocument(row);
   const label=(target,id,field="nom")=>id?nomDe(target,id,field)||String(id):"";
   if(table==="appro"){out.fournisseur=label("fournisseur",row.fournisseur);out.produit=label("prod_appro",row.produit);out.silo=label("silo",row.silo);}
   else if(table==="prod"){out.client=label("client",row.client);out.produit=label("prod_fini",row.produit);out.silo=label("silo",row.silo);out.camion=label("materiel",row.camion,"immat");if(row.chauffeur){const p=tous.personnel?.get(row.chauffeur);out.chauffeur=p?`${p.nom||""} ${p.prenom||""}`.trim():String(row.chauffeur);}}
@@ -3132,103 +2386,6 @@ let xlsxModule=null;
 async function getXlsx(){if(xlsxModule)return xlsxModule;const mod=await import("https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs");xlsxModule=mod.default||mod;return xlsxModule;}
 async function exportXlsx(){try{const X=await getXlsx(),wb=X.utils.book_new();for(const table of TABLES){const rows=actifs(table);if(!rows.length)continue;const data=rows.map(r=>{const out={};for(const [k,v] of Object.entries(toLegacyExportRow(table,r)))out[k]=typeof v==="object"?JSON.stringify(v):v;return out;});const ws=X.utils.json_to_sheet(data);X.utils.book_append_sheet(wb,ws,table.slice(0,31));}const bytes=X.write(wb,{bookType:"xlsx",type:"array"});downloadBlob(new Blob([bytes],{type:"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}),`CBPManagement_${aujourdhui()}.xlsx`);info("Classeur Excel exporté.");}catch(e){info("Export Excel impossible : "+(e.message||String(e)),true);}}
 async function importXlsxFile(file){try{const X=await getXlsx(),wb=X.read(await file.arrayBuffer(),{type:"array"}),tables={};for(const name of wb.SheetNames){if(!COLLECTIONS.has(name))continue;tables[name]=X.utils.sheet_to_json(wb.Sheets[name],{defval:"",raw:false});}if(!Object.keys(tables).length)throw new Error("Aucune feuille reconnue dans le classeur.");await analyserParsedImport({format:"XLSX",version:1,tables});}catch(e){info("Import Excel impossible : "+(e.message||String(e)),true);}}
-
-// ===== Compatibilité des fichiers natifs .cbpm de l'application Java =====
-// Le format texte #CBPM est volontairement utilisé à l'export : le lecteur Java
-// accepte ce format et il reste lisible, alors que l'import prend aussi en charge
-// le format binaire gzip v2 produit par l'application Swing.
-const CBPM_JAVA_TABLES=["app_meta","affect","sousaff","client","fournisseur","appro","prod","recette","depense","transfert","personnel","materiel","prod_appro","silo","prod_fini","facture","regstock","journal"];
-const CBPM_META_FIELDS=new Set(["id","version","majPar","majLe","deleted"]);
-function cbpmEscape(value){return String(value??"").replace(/\\/g,"\\\\").replace(/\t/g,"\\t").replace(/\n/g,"\\n").replace(/\r/g,"\\r");}
-function cbpmUnescape(value){
-  let out="";
-  for(let i=0;i<value.length;i++){
-    const c=value[i];
-    if(c==="\\"&&i+1<value.length){const next=value[++i];out+=next==="t"?"\t":next==="n"?"\n":next==="r"?"\r":next;}
-    else out+=c;
-  }
-  return out;
-}
-async function exportCbpmBackup(){
-  try{
-    await stageDirtyForms();await saveAllLocal();
-    const lines=["#CBPM-WEB\t1"];
-    for(const table of CBPM_JAVA_TABLES){
-      for(const row of actifs(table)){
-        const legacy=toLegacyExportRow(table,row),fields=[];
-        if((table==="appro"||table==="prod")&&Object.prototype.hasOwnProperty.call(legacy,"tva"))legacy.tva=legacy.tva===true||legacy.tva===1||legacy.tva==="1"?"1":"0";
-        for(const [key,raw] of Object.entries(legacy)){
-          if(CBPM_META_FIELDS.has(key)||key.startsWith("_"))continue;
-          const value=raw&&typeof raw==="object"?JSON.stringify(raw):String(raw??"");
-          fields.push(`${key}=${cbpmEscape(value)}`);
-        }
-        lines.push([table,...fields].join("\t"));
-      }
-    }
-    downloadBlob(new Blob([lines.join("\n")+"\n"],{type:"text/plain;charset=utf-8"}),`CBPManagement_${aujourdhui()}.cbpm`);
-    info("Fichier .cbpm exporté. Les paramètres de l'entreprise restent dans la sauvegarde JSON, comme dans l'application Java.");
-  }catch(error){info("Export .cbpm impossible : "+(error?.message||String(error)),true);}
-}
-function parseCbpmText(text){
-  const lines=String(text||"").replace(/^\uFEFF/,"").split(/\r?\n/);
-  if(!lines[0]?.startsWith("#CBPM"))throw new Error("En-tête .cbpm texte non reconnu.");
-  const tables={},warnings=[];
-  for(let lineNo=1;lineNo<lines.length;lineNo++){
-    const line=lines[lineNo];if(!line)continue;
-    const parts=line.split("\t"),table=parts.shift();
-    if(!table||table==="param"||table==="mailcfg")continue;
-    if(!CBPM_JAVA_TABLES.includes(table))continue;
-    const row={};
-    for(const field of parts){const split=field.indexOf("=");if(split<=0)continue;row[field.slice(0,split)]=cbpmUnescape(field.slice(split+1));}
-    (tables[table]??=[]).push(row);
-  }
-  if(!Object.keys(tables).length)throw new Error("Aucune table métier exploitable dans ce fichier .cbpm.");
-  warnings.push("Les paramètres de l'entreprise ne font pas partie du format .cbpm Java ; conservez aussi une sauvegarde JSON pour transférer le logo et les préférences.");
-  return {format:"CBPM texte",version:1,tables,warnings};
-}
-function parseCbpmBinaryV2(bytes){
-  const view=new DataView(bytes.buffer,bytes.byteOffset,bytes.byteLength),decoder=new TextDecoder("utf-8");let offset=0,totalRecords=0;
-  const requireBytes=count=>{if(!Number.isSafeInteger(count)||count<0||offset+count>view.byteLength)throw new Error("Fichier .cbpm tronqué ou corrompu.");};
-  const readInt=()=>{requireBytes(4);const n=view.getUint32(offset,false);offset+=4;return n;};
-  const readString=max=>{const length=readInt();if(length>max)throw new Error("Une chaîne du fichier .cbpm dépasse la taille autorisée.");requireBytes(length);const value=decoder.decode(new Uint8Array(view.buffer,view.byteOffset+offset,length));offset+=length;return value;};
-  requireBytes(5);
-  if(bytes[0]!==67||bytes[1]!==66||bytes[2]!==80||bytes[3]!==77)throw new Error("Signature binaire CBPM invalide.");
-  offset=4;const version=bytes[offset++];if(version!==2)throw new Error(`Version .cbpm non prise en charge : ${version}.`);
-  const tableCount=readInt();if(tableCount>10000)throw new Error("Nombre de tables .cbpm invalide.");
-  const tables={};
-  for(let t=0;t<tableCount;t++){
-    const table=readString(4096),recordCount=readInt();if(recordCount>1000000)throw new Error(`Trop d'enregistrements dans la table ${table}.`);
-    if(!CBPM_JAVA_TABLES.includes(table)){for(let n=0;n<recordCount;n++){const fields=readInt();if(fields>10000)throw new Error("Nombre de champs invalide.");for(let f=0;f<fields;f++){readString(4096);readString(200*1024*1024);}}continue;}
-    if(tables[table])throw new Error(`Table répétée dans le fichier .cbpm : ${table}.`);
-    const rows=[];
-    for(let n=0;n<recordCount;n++){
-      totalRecords++;if(totalRecords>1000000)throw new Error("Le fichier contient trop d'enregistrements pour une importation sûre.");
-      const fieldCount=readInt();if(fieldCount>10000)throw new Error("Nombre de champs invalide.");
-      const row={};for(let f=0;f<fieldCount;f++){const key=readString(4096),value=readString(200*1024*1024);row[key]=value;}rows.push(row);
-    }
-    tables[table]=rows;
-  }
-  if(offset!==view.byteLength)throw new Error("Le fichier .cbpm contient des données supplémentaires ou est mal formé.");
-  if(!Object.keys(tables).length)throw new Error("Aucune table métier exploitable dans ce fichier .cbpm.");
-  return {format:"CBPM binaire",version:2,tables,warnings:["Les paramètres de l'entreprise sont stockés séparément par l'application Java ; utilisez aussi la sauvegarde JSON pour les paramètres et le logo."]};
-}
-async function importCbpmFile(file){
-  try{
-    if(!file) return;
-    if(file.size>150*1024*1024)throw new Error("Le fichier dépasse la limite d'importation de 150 Mo.");
-    let bytes=new Uint8Array(await file.arrayBuffer()),parsed;
-    if(bytes[0]===0x1f&&bytes[1]===0x8b){
-      if(typeof DecompressionStream!=="function")throw new Error("Ce navigateur ne prend pas en charge la décompression gzip requise par ce fichier .cbpm binaire.");
-      const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"));
-      const expanded=new Uint8Array(await new Response(stream).arrayBuffer());
-      if(expanded.byteLength>300*1024*1024)throw new Error("Le contenu décompressé dépasse la limite de sécurité.");
-      parsed=parseCbpmBinaryV2(expanded);
-    }else{
-      const text=new TextDecoder("utf-8").decode(bytes);parsed=parseCbpmText(text);
-    }
-    await analyserParsedImport(parsed);
-  }catch(error){info("Import .cbpm impossible : "+(error?.message||String(error)),true);}
-}
 
 // ===== Gestion intégrée Affectations / Sous-affectations (un seul bouton, comme Java) =====
 let affectManagerSelectedId=null, subAffectManagerSelectedId=null;
@@ -3367,28 +2524,56 @@ function ouvrirSous(fabrique) {
 $("subFerm").onclick = () => $("dlgSub").close();
 $("dlgSub").addEventListener("close", () => { if (sousVue) { sousVue.destroy(); sousVue = null; } if (vueCourante) vueCourante.reload(); });
 
+let allowUnload=false;
+async function terminerSession(){try{allowUnload=true;await signOut(auth);}catch(e){allowUnload=false;info("Déconnexion impossible : "+(e.message||e),true);}}
+function ouvrirConflits(){
+  const dlg=$("dlgConflicts");if(dlg.open)dlg.close();
+  const body=$("conflictBody");body.replaceChildren();
+  const conflicts=changeManager?.conflicts()||[];
+  if(!conflicts.length){body.textContent="Aucun conflit à résoudre.";$("dlgConflicts").showModal();return;}
+  for(const op of conflicts){
+    const card=el("section","cbpm-conflict"),title=el("h4"),desc=el("p");title.textContent=`${op.table} — ${op.id}`;card.append(title);
+    if(op.conflictReason){desc.textContent=op.conflictReason;card.append(desc);const actions=el("div","cbpm-actions");
+      const remote=el("button","b-navy");remote.type="button";remote.textContent="Garder la version Firebase";remote.onclick=()=>{try{changeManager.resolveStructuralConflict(op.table,op.id,"use-remote");ouvrirConflits();}catch(e){desc.textContent=e.message;}};actions.append(remote);
+      if(String(op.conflictReason).includes("supprimé à distance")){const local=el("button","b-blue");local.type="button";local.textContent="Restaurer ma version";local.onclick=()=>{try{changeManager.resolveStructuralConflict(op.table,op.id,"restore-local");ouvrirConflits();}catch(e){desc.textContent=e.message;}};actions.append(local);}
+      card.append(actions);
+    }else{
+      const choices={};
+      for(const c of op.conflicts||[]){const row=el("div","cbpm-option"),label=el("strong"),select=el("select");label.textContent=c.field;select.add(new Option("Choisir…",""));select.add(new Option("Ma valeur","local"));select.add(new Option("Valeur Firebase","remote"));select.onchange=()=>choices[c.field]=select.value;const detail=el("small");detail.textContent=`Local : ${String(c.local??"(vide)")} · Firebase : ${String(c.remote??"(vide)")}`;row.append(label,select,detail);card.append(row);}
+      const apply=el("button","b-blue");apply.type="button";apply.textContent="Appliquer mes choix";apply.onclick=()=>{try{changeManager.resolveConflict(op.table,op.id,choices);ouvrirConflits();}catch(e){alert(e.message);}};card.append(apply);
+    }
+    body.append(card);
+  }
+  $("dlgConflicts").showModal();
+}
 let pendingImportPlan=null, pendingImportParsed=null, unreadableImportTables=new Set();
 function countPlan(plan,key){return plan.items.filter(x=>x.action===key).length;}
 function renderImportPlan(plan){
   const host=$("importSummary");host.replaceChildren();
   const summary=el("div","card");
   const safe=countPlan(plan,"create"),present=countPlan(plan,"already-present"),review=countPlan(plan,"review-existing")+countPlan(plan,"review-references")+countPlan(plan,"ambiguous-match")+countPlan(plan,"duplicate-in-source"),unreadable=countPlan(plan,"unreadable");
-  const stats=el("p");stats.textContent=`${safe} nouvelle(s) ligne(s) importable(s) · ${present} déjà présente(s) · ${review} à examiner.`;summary.append(stats);
+  const stats=el("p");stats.textContent=`${safe} nouvelle(s) ligne(s) importable(s) · ${present} déjà présente(s) · ${review} à examiner · ${unreadable} table(s) non lisible(s).`;summary.append(stats);
   if(plan.warnings?.length){const h=el("strong");h.textContent="Avertissements";summary.append(h);for(const w of plan.warnings){const p=el("p");p.textContent="• "+w;summary.append(p);}}
   const rows=plan.items.filter(x=>x.action!=="create"&&x.action!=="already-present").slice(0,60);
   if(rows.length){const h=el("strong");h.textContent="Lignes nécessitant une vérification (60 maximum affichées)";summary.append(h);for(const item of rows){const p=el("p");p.textContent=`${item.table} — ligne ${item.sourceIndex+1} : ${item.action}${item.differences?.length?` (${item.differences.join(", ")})`:""}${item.referenceReview?.length?` — références : ${item.referenceReview.map(x=>x.field+"="+x.value).join(", ")}`:""}`;summary.append(p);}}
   host.append(summary);
   $("btnStageImport").disabled=!safe||!peutEcrire();
-  $("importStatus").textContent=`Fichier analysé : ${plan.format}, version ${plan.version}. Aucune donnée n'a encore été enregistrée localement.`;
+  $("importStatus").textContent=`Fichier analysé : ${plan.format}, version ${plan.version}. Aucune donnée n'a encore été enregistrée.`;
 }
 async function analyserParsedImport(parsed){
   pendingImportPlan=null;pendingImportParsed=null;unreadableImportTables=new Set();$("btnStageImport").disabled=true;$("importSummary").replaceChildren();$("importStatus").textContent="Comparaison avec les données de l'entreprise…";$("dlgImport").showModal();
   try{
-    const existing=new Map(),warnings=[...(parsed.warnings||[])];
+    const existing=new Map(),warnings=[];
     for(const table of Object.keys(parsed.tables||{})){
       if(table==="param")continue;
-      const effective=new Map(changeManager.rows(table,{includeDeleted:true}).map(row=>[row.id,row]));
-      existing.set(table,effective);
+      try{
+        // Relit la collection au moment de l'import : ne pas établir le plan sur une copie distante périmée.
+        const snap=await getDocs(collection(db,...chemin(table)));
+        const remote=new Map(snap.docs.map(d=>[d.id,{...d.data()}]));
+        changeManager.setRemoteTable(table,remote);
+        const effective=new Map(changeManager.rows(table,{includeDeleted:true}).map(row=>[row.id,row]));
+        existing.set(table,effective);
+      }catch(error){unreadableImportTables.add(table);warnings.push(`Lecture impossible pour la table « ${table} » : aucune ligne de cette table ne sera importée. ${error?.message||"Vérifiez les règles Firestore."}`);}
     }
     let plan=await buildLegacyMigrationPlan(parsed,existing);
     plan=mapMigrationPlanReferences(plan,parsed,existing);
@@ -3402,21 +2587,53 @@ $("importClose").onclick=()=>$("dlgImport").close();
 $("btnStageImport").onclick=()=>{
   if(!pendingImportPlan||!peutEcrire())return;
   try{
-    const entries=pendingImportPlan.items.filter(x=>x.action==="create").map(x=>({table:x.table,id:x.id,data:toLocalMigrationRecord(x)}));
+    const entries=pendingImportPlan.items.filter(x=>x.action==="create").map(x=>({table:x.table,id:x.id,data:toFirestoreMigrationDocument(x)}));
     changeManager.createMany(entries);journaliser("import", "Importation", recordId("app_meta"), null, {lignes:entries.length,format:pendingImportPlan.format});$("dlgImport").close();info(`${entries.length} nouvelle(s) ligne(s) ajoutée(s). Cliquez sur Enregistrer pour les transmettre.`);
     pendingImportPlan=null;pendingImportParsed=null;
   }catch(error){$("importStatus").textContent="Impossible de préparer l'importation : "+(error?.message||String(error));}
 };
+$("btnConflicts").onclick=ouvrirConflits;
+$("conflictClose").onclick=()=>$("dlgConflicts").close();
+
+let exitAction="logout";
+async function requestExit(action="logout"){
+  exitAction=action;
+  if(!changeManager||(!changeManager.isDirty()&&!hasFormChanges())){await terminerSession();if(action==="quit")location.replace("../");return;}
+  $("exitStatus").textContent="";$("dlgExit").showModal();
+}
+$("btnOut").onclick=()=>void requestExit("logout");
+$("btnQuit").onclick=()=>void requestExit("quit");
+$("exitCancel").onclick=()=>$("dlgExit").close();
+$("exitLocal").onclick=async()=>{
+  const b=$("exitLocal");b.disabled=true;
+  try{formDrafts.clear();await persistFormDrafts();if(changeManager)await changeManager.discardAll();if(draftStore&&draftScopeKey)await draftStore.remove(draftScopeKey);$("dlgExit").close();await terminerSession();if(exitAction==="quit")location.replace("../");}
+  catch(e){$("exitStatus").textContent="Impossible d'abandonner les modifications : "+(e.message||e);}
+  finally{b.disabled=false;}
+};
+async function saveAndExit(){
+  const b=$("exitSave");b.disabled=true;$("exitStatus").textContent="Vérification et enregistrement…";
+  try{
+    await stageDirtyForms();await changeManager.persist();const r=await saveAllToFirebase();
+    if(r.conflicts.length||r.errors.length||changeManager.isDirty()){
+      $("exitStatus").textContent=`Enregistrés : ${r.saved}. Conflits : ${r.conflicts.length}. Erreurs : ${r.errors.length}. Résolvez les problèmes avant de quitter.`;
+      if(r.conflicts.length)ouvrirConflits();return;
+    }
+    $("dlgExit").close();await terminerSession();if(exitAction==="quit")location.replace("../");
+  }catch(e){$("exitStatus").textContent=e.message||String(e);}
+  finally{b.disabled=false;updateSaveUI();}
+}
+$("exitSave").onclick=()=>void saveAndExit();
 
 async function saveFromToolbar(){
   if(!changeManager||!peutEcrire()||changeManager.saving)return;
   const b=$("btnSaveAll");b.disabled=true;b.textContent="Enregistrement…";
   try{
-    await stageDirtyForms();
-    const result=await saveAllLocal();
-    synchro("","Sauvegarde locale effectuée");
-    info(`${result.saved} modification(s) enregistrée(s) dans ce navigateur.`);
-  }catch(error){info(error?.message||String(error),true);}
+    await stageDirtyForms();await changeManager.persist();const r=await saveAllToFirebase();
+    const message=`${r.saved} enregistré(s) · ${r.unchanged} inchangé(s) · ${r.conflicts.length} conflit(s) · ${r.errors.length} erreur(s)`;
+    synchro((r.conflicts.length||r.errors.length)?"e":"",message);
+    if(r.conflicts.length)ouvrirConflits();
+    if(r.errors.length)console.error("Erreurs de sauvegarde CBPManagement",r.errors);
+  }catch(e){info(e.message||String(e),true);}
   finally{b.textContent="Enregistrer";updateSaveUI();}
 }
 $("btnSaveAll").onclick=()=>void saveFromToolbar();
@@ -3424,21 +2641,12 @@ $("btnExportXlsx").onclick=()=>void exportXlsx();
 $("btnImportXlsx").onclick=()=>$("inputXlsx").click();
 $("btnHelp").onclick=()=>ouvrir("aide");
 $("inputXlsx").addEventListener("change",()=>{const file=$("inputXlsx").files?.[0];if(file)void importXlsxFile(file);$("inputXlsx").value="";});
-$("btnExportJson").onclick=()=>void exportJsonBackup();
-$("btnImportJson").onclick=()=>$("inputJson").click();
-$("inputJson").addEventListener("change",()=>{const file=$("inputJson").files?.[0];if(file)void importJsonBackup(file);$("inputJson").value="";});
-$("btnExportCbpm").onclick=()=>void exportCbpmBackup();
-$("btnImportCbpm").onclick=()=>$("inputCbpm").click();
-$("inputCbpm").addEventListener("change",()=>{const file=$("inputCbpm").files?.[0];if(file)void importCbpmFile(file);$("inputCbpm").value="";});
-$("btnTheme").onclick=()=>toggleTheme();
-$("btnUndo").onclick=()=>applyUndoRedo("undo");
-$("btnRedo").onclick=()=>applyUndoRedo("redo");
 
 window.addEventListener("offline",()=>synchro("e","Hors ligne — brouillons conservés localement"));
-window.addEventListener("online",()=>synchro(changeManager?.isDirty()?"p":"",changeManager?.isDirty()?"Modifications en attente":"Navigateur en ligne"));
+window.addEventListener("online",()=>synchro(changeManager?.isDirty()?"p":"",changeManager?.isDirty()?"Modifications en attente":"Connecté à Firebase"));
 window.addEventListener("beforeunload",(event)=>{
-  if(!changeManager||(!changeManager.isDirty()&&!hasFormChanges()))return;
-  // Les brouillons sont déjà sauvegardés en continu dans IndexedDB. Le navigateur n'autorise
+  if(allowUnload||!changeManager||(!changeManager.isDirty()&&!hasFormChanges()))return;
+  // Les changements sont déjà sauvegardés en continu dans IndexedDB. Le navigateur n'autorise
   // qu'un avertissement natif générique lors de la fermeture directe d'un onglet/fenêtre.
   void changeManager.persist().catch(e=>console.error(e));void persistFormDrafts().catch(e=>console.error(e));
   event.preventDefault();event.returnValue="";
@@ -3447,56 +2655,50 @@ window.addEventListener("beforeunload",(event)=>{
 
 function buildNavigation(){
   const groups=[
-    ["ESPACE DE TRAVAIL",[["dashboard","Tableau de bord"]]],
     ["GESTION",[["clients","Clients"],["fournisseurs","Fournisseurs"],["appro","Approvisionnements"],["production","Production"],["regstock","Régularisation du stock"]]],
     ["FINANCES",[["factures","Facturation"],["recettes","Recettes"],["depenses","Dépenses"],["transferts","Transferts de trésorerie"],["dettes_clients","Dettes clients"],["dettes_fournisseurs","Dettes fournisseurs"],["controle_gestion","Contrôle de gestion"]]],
-    ["RESSOURCES",[["personnel","Personnel"],["materiels","Matériels"]]],
+    ["RESSOURCES",[["personnel","Personnel"],["materiels","Matériels"],["mail","Messagerie"]]],
     ["SYSTÈME",[["parametres","Paramètres"],["rapports","Rapports"],["journal","Journal des opérations"]]]
   ];
   const nav=$("menu");nav.replaceChildren();for(const [title,items] of groups){const h=el("div","nav-section");h.textContent=title;nav.append(h);for(const [key,label] of items){const b=el("button");b.type="button";b.textContent=label;b.dataset.k=key;b.onclick=()=>ouvrir(key);nav.append(b);}}
+  if(role==="admin"){const h=el("div","nav-section");h.textContent="ADMINISTRATION";nav.append(h);const b=el("button");b.type="button";b.textContent="Gestion des utilisateurs";b.dataset.k="users";b.onclick=()=>ouvrir("users");nav.append(b);}
 }
 
-// ===== Démarrage local : stockage IndexedDB, sans compte ni service distant =====
+// ===== Démarrage : comptes Web existants + copie de travail locale =====
 const TABLES = ["client","fournisseur","appro","prod","recette","prod_appro","prod_fini","silo","personnel","materiel","parametres","depense","transfert","facture","regstock","affect","sousaff","journal","app_meta"];
-
-async function demarrerApplicationLocale(){
-  try{
-    if(!globalThis.indexedDB)throw new Error("Ce navigateur ne prend pas en charge le stockage local IndexedDB.");
-    draftStore=new DraftStore();
-    draftScopeKey="cbpmanagement:local:v2";
-    changeManager=new ChangeManager({store:draftStore,scopeKey:draftScopeKey});
-
-    // Charger d'abord la base validée, puis réappliquer les brouillons non enregistrés.
-    const dataset=await draftStore.readDataset(draftScopeKey);
-    for(const table of TABLES){
-      const rows=Array.isArray(dataset?.[table])?dataset[table]:[];
-      const map=new Map(rows.filter(row=>row&&row.id).map(row=>[String(row.id),{...row,id:String(row.id)}]));
-      changeManager.remote.set(table,map);
-    }
-    const restored=await changeManager.restoreDraft();
-    formDrafts=new Map((await draftStore.readForms(draftScopeKey)).map(row=>[row.table,row]));
-    changeManager.subscribe(()=>{refreshEffectiveTables();updateSaveUI();});
-    refreshEffectiveTables();
-
-    updateCompanyBranding(changeManager.record("parametres","general")||{});
-    $("userInfo").textContent="Espace local · Données enregistrées sur cet appareil";
-    buildNavigation();
-    seedDefaultAffectations();
-    ouvrir("dashboard");
-    updateSaveUI();
-    applySavedTheme();
-    if(restored||formDrafts.size)info(`${restored} modification(s) en attente et ${formDrafts.size} formulaire(s) récupéré(s) depuis le dernier passage. Rien n'a encore été validé dans la sauvegarde principale.`);
-    else if(!Object.values(dataset||{}).some(rows=>Array.isArray(rows)&&rows.length))info("Bienvenue dans CBPManagement. Commencez par renseigner les paramètres de l'entreprise et vos référentiels.");
-    else info("Base locale chargée avec succès.");
-    synchro(changeManager.isDirty()?"p":"","Stockage local prêt");
-  }catch(error){
-    console.error("Démarrage local CBPManagement :",error);
-    synchro("e","Stockage local indisponible");
-    info(error?.message||"Impossible d'initialiser la base locale.",true);
-  }
+function demarrerSynchro(){
+  const readyForAffectations=new Set();
+  TABLES.forEach(t=>{
+    tous[t]=new Map();
+    onSnapshot(collection(db,"entreprises",ent.id,t),snapshot=>{
+      const docs=new Map(snapshot.docs.map(d=>[d.id,d.data()]));
+      changeManager.setRemoteTable(t,docs);
+      if(["affect","sousaff","app_meta"].includes(t)){
+        readyForAffectations.add(t);
+        if(readyForAffectations.size===3)seedDefaultAffectations();
+      }
+      synchro(changeManager.isDirty()?"p":"",changeManager.isDirty()?"Modifications en attente":"Synchronisé");
+    },error=>{console.error("Écoute Firestore "+t,error);synchro("e","Erreur de lecture : "+t);});
+  });
 }
-void demarrerApplicationLocale();
-
+onAuthStateChanged(auth,async u=>{
+  if(!u){location.replace("../");return;}
+  user=u;$("userInfo").textContent=u.email;
+  try{
+    const f=await getDoc(doc(db,"utilisateurs",u.uid));if(!f.exists())throw new Error("Ce compte n’est rattaché à aucune entreprise.");
+    role=f.data().role;if(f.data().actif===false)throw new Error("Ce compte a été désactivé. Contactez l'administrateur de l'entreprise.");
+    const e=await getDoc(doc(db,"entreprises",f.data().entrepriseId));if(!e.exists())throw new Error("Entreprise introuvable.");
+    ent={id:e.id,...e.data()};$("entNom").textContent=ent.nom;
+    if(ent.etat==="suspendue"){synchro("e","Suspendue");info("Cette entreprise est suspendue. Contactez le fournisseur de l’application.",true);return;}
+    draftStore=new DraftStore();draftScopeKey=`${ent.id}:${u.uid}`;changeManager=new ChangeManager({store:draftStore,scopeKey:draftScopeKey});
+    const restored=await changeManager.restoreDraft();formDrafts=new Map((await draftStore.readForms(draftScopeKey)).map(x=>[x.table,x]));
+    changeManager.subscribe(()=>{refreshEffectiveTables();updateSaveUI();});
+    if(!peutEcrire()){$("btnSaveAll").disabled=true;}
+    buildNavigation();
+    demarrerSynchro();ouvrir("clients");updateSaveUI();
+    if(restored||formDrafts.size)info(`${restored} modification(s) en attente et ${formDrafts.size} formulaire(s) récupéré(s) depuis le dernier passage. Rien n'a encore été enregistré.`);
+  }catch(err){console.error(err);info(err.message||"Accès refusé.",true);}
+});
 </script>
 </body>
 </html>
