@@ -339,6 +339,7 @@ body.theme-dark .cbpm-option,body.theme-dark .cbpm-conflict{background:#1f2937;b
 body.theme-dark .b-navy,body.theme-dark .bar .b-blue,body.theme-dark .bar .b-red{background:#263449;color:#dce5ef;border-color:#45546a}
 body.theme-dark .bar .b-red{color:#ff9d99}
 body.theme-dark #info{background:#1d2c46;border-color:#2f4670;color:#9cc2ff}
+th{cursor:default}th:hover{background:#f6f8fb}body.theme-dark th:hover{background:#263449}
 </style>
 </head>
 <body>
@@ -1107,7 +1108,7 @@ function refreshEffectiveTables(){
 function updateSaveUI(state){
   if(!changeManager)return;
   const count=changeManager.pendingCount(),forms=formDrafts.size||[...vues].filter(v=>v.dirty).length,dirty=count>0||forms>0;
-  const b=$("btnSaveAll");if(b)b.disabled=!peutEcrire()||!dirty||changeManager.saving;
+  const b=$("btnSaveAll");if(b)b.disabled=!peutEcrire()||count===0||changeManager.saving;
   const c=$("saveCount");if(c)c.textContent=dirty?`${count} opération(s) en attente${forms?` · ${forms} formulaire(s) modifié(s)`:""}`:"Aucune modification en attente";
   const cb=$("btnConflicts");if(cb){const n=changeManager.conflicts().length;cb.hidden=!n;cb.textContent=`Voir les conflits (${n})`;}
   if(state?.dirty)synchro("p","Modifications locales non envoyées");else if(!dirty)synchro("",syncLabel());
@@ -1195,7 +1196,6 @@ class Crud {
       bt("Imprimer la liste", "b-navy", () => this.printList());
       (c.extra || []).forEach((e) => bt(e.t, "b-navy", e.f));
       this.buildFilters();
-      this.q("thead").addEventListener("click", (e) => { const th = e.target.closest("th"); if (!th) return; const k = th.dataset.k; this.sort = { k, d: this.sort.k === k ? -this.sort.d : 1 }; this.refresh(); });
     }
     if (!peutEcrire()) Object.values(this.comp).forEach((x) => { if(x?.root)x.root.querySelectorAll("input,select,button").forEach(y=>y.disabled=true);else x.disabled = true; });
     this.clearForm(true); this.reload();
@@ -1405,7 +1405,7 @@ class Crud {
     const sf = this.fk(this.sort.k);
     if (sf) view.sort((a, b) => this.sort.d * ((sf.t === "nm" || sf.t === "ro") ? nb(a[sf.k]) - nb(b[sf.k]) : (sf.t === "dt" ? String(a[sf.k] || "").localeCompare(String(b[sf.k] || "")) : show(sf, a).localeCompare(show(sf, b)))));
     this.view = view;
-    const tr = el("tr"); cols.forEach((f) => { const th = el("th", f.t === "nm" || f.t === "ro" ? "n" : ""); th.dataset.k = f.k; th.textContent = f.l + (this.sort.k === f.k ? (this.sort.d > 0 ? " ▲" : " ▼") : ""); tr.append(th); });
+    const tr = el("tr"); cols.forEach((f) => { const th = el("th", f.t === "nm" || f.t === "ro" ? "n" : ""); th.dataset.k = f.k; th.textContent = f.l; tr.append(th); });
     this.q("thead").replaceChildren(tr);
     this.q("tbody").replaceChildren(...view.map((r) => {
       const t = el("tr"); t.dataset.id = r.id;
@@ -1764,6 +1764,7 @@ const MODULES = [
     // Les produits proposés dépendent de la nature ; le silo n'existe que pour les matières premières ; les montants se calculent seuls
     options: (f, c) => (f.k === "produit" ? actifs("prod_appro").filter((r) => r.nature === c.v("nature")).map((r) => ({ v: r.id, l: r.nom })).sort((a, b) => a.l.localeCompare(b.l)) : null),
     dependent: (c, k, user) => {
+      autoPrix(c, k, user, "appro", "fournisseur");
       if (k === "nature") { const mp = c.v("nature") === MP; if (user) c.set("produit", ""); c.refreshOptions("produit"); if (!mp) c.set("silo", ""); c.enable("silo", mp); }
       else if (user && ["qte", "pu", "tva"].includes(k)) { const m = montants({ qte: c.v("qte"), pu: c.v("pu"), tva: c.v("tva") }); for (const x in m) c.set(x, m[x]); }
     },
@@ -1785,6 +1786,7 @@ const MODULES = [
     filtres: [{ t: "dates", k: "date" }, { t: "cb", l: "Nature", k: "nature" }, { t: "cb", l: "Client", k: "client" }, { t: "cb", l: "Produit", k: "produit" }, { t: "cb", l: "Silo", k: "silo" }],
     options: (f, c) => f.k === "produit" ? actifs("prod_fini").filter(p => p.nature === (c.v("nature") === PROD ? "Produit" : "Service")).map(p => ({v:p.id,l:p.nom})).sort((a,b)=>a.l.localeCompare(b.l,"fr")) : null,
     dependent: (c, k, userChange) => {
+      autoPrix(c, k, userChange, "prod", "client");
       if (k === "nature") {
         const production = c.v("nature") === PROD;
         if (userChange) { c.set("produit", ""); for (const f of ["silo","classe","consistance","dosage","camion","chauffeur","heure"]) c.set(f, ""); }
@@ -2744,7 +2746,7 @@ $("exitLocal").onclick=async()=>{
 async function saveAndExit(){
   const b=$("exitSave");b.disabled=true;$("exitStatus").textContent="Vérification et enregistrement…";
   try{
-    await stageDirtyForms();await changeManager.persist();const r=await saveAllToFirebase();
+    await changeManager.persist();const r=await saveAllToFirebase();
     if(r.conflicts.length||r.errors.length||changeManager.isDirty()){
       $("exitStatus").textContent=`Enregistrés : ${r.saved}. Conflits : ${r.conflicts.length}. Erreurs : ${r.errors.length}. Résolvez les problèmes avant de quitter.`;
       if(r.conflicts.length)ouvrirConflits();return;
@@ -2759,11 +2761,12 @@ async function saveFromToolbar(){
   if(!changeManager||!peutEcrire()||changeManager.saving)return;
   const b=$("btnSaveAll");b.disabled=true;b.textContent="Enregistrement…";
   try{
-    await stageDirtyForms();await changeManager.persist();const r=await saveAllToFirebase();
+    await changeManager.persist();const r=await saveAllToFirebase();
     const message=`${r.saved} enregistré(s) · ${r.unchanged} inchangé(s) · ${r.conflicts.length} conflit(s) · ${r.errors.length} erreur(s)`;
     synchro((r.conflicts.length||r.errors.length)?"e":"",message);
     if(r.conflicts.length)ouvrirConflits();
     if(r.errors.length)console.error("Erreurs de sauvegarde CBPManagement",r.errors);
+    if(hasFormChanges())info("Le formulaire en cours n'a pas été enregistré : cliquez sur Ajouter ou Modifier pour le valider, puis sur Enregistrer.");
   }catch(e){info(e.message||String(e),true);}
   finally{b.textContent="Enregistrer";updateSaveUI();}
 }
@@ -2808,6 +2811,21 @@ function applyTheme(dark){document.body.classList.toggle("theme-dark",dark);cons
   document.addEventListener("click",e=>{const h=e.target.closest(".fiche > h3");if(h)h.parentElement.classList.toggle("collapsed");});
 })();
 
+
+// Reprise automatique du prix unitaire : dernière opération antérieure du même fournisseur/client pour le même produit
+function autoPrix(c,k,userChange,table,partyField){
+  if(!userChange||(k!==partyField&&k!=="produit"))return;
+  const party=c.v(partyField),product=c.v("produit"),date=c.v("date")||"";
+  if(!party||!product)return;
+  const ms=x=>x?.toMillis?x.toMillis():(Number(x?.seconds)*1000||0);
+  const rank=r=>[String(r.date||""),String(r.heure||""),r._pending?Infinity:ms(r.majLe)];
+  const prev=actifs(table).filter(r=>r.id!==c.sel?.id&&r[partyField]===party&&r.produit===product&&nb(r.pu)>0&&(!date||String(r.date||"")<=date))
+    .sort((a,b)=>{const x=rank(a),y=rank(b);return x[0].localeCompare(y[0])||x[1].localeCompare(y[1])||(x[2]===y[2]?0:x[2]<y[2]?-1:1);}).pop();
+  if(!prev)return;
+  c.set("pu",prev.pu);
+  const m=montants({qte:c.v("qte"),pu:c.v("pu"),tva:c.v("tva")});for(const f in m)c.set(f,m[f]);
+  c.msg(`Prix unitaire ${fmt(prev.pu)} DA repris de l'opération du ${frDate(prev.date)} (même ${partyField==="client"?"client":"fournisseur"}, même produit).`,true);
+}
 function buildNavigation(){
   const groups=[
     ["GESTION",[["clients","Clients"],["fournisseurs","Fournisseurs"],["appro","Approvisionnements"],["production","Production"],["regstock","Régularisation du stock"]]],
